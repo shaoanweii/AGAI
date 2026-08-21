@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.data.integration.mapper.ChannelExecutionResultMapper">
+    <select id="checkData"  >
+        select count(*) from voc_anal_di_stg_mate_data_finished_record
+        where  date(create_time) &lt; date_sub(date(now()),#{days})
+    </select>
+    <select id="checkHistoryData"  >
+        select count(*) from ods_channel_execution_result_history
+        where date(back_time) = date(now())
+    </select>
+    <select id="moveToHistoryData"  >
+        INSERT INTO ods_channel_execution_result_history
+        (id, data_id, work_id, channel_type, retry_count, error_code, error_msg, `data`, create_time, last_exec_time, status, tid,back_time)
+        select
+            id, data_id, work_id, channel_type, retry_count, error_code, error_msg, `data`, create_time, last_exec_time, status, tid, now()
+        from voc_anal_di_stg_mate_data_finished_record
+        where date(create_time) &lt; date_sub(date(now()), #{days})
+    </select>
+    <select id="deleteHistoryData"  >
+        delete from voc_anal_di_stg_mate_data_finished_record
+        where date(create_time) &lt; date_sub(date(now()),#{days})
+    </select>
+
+    <select id="findExecutionResult" resultType="java.lang.String">
+        SELECT
+            data_id
+        FROM voc_anal_di_stg_mate_data_finished_record
+        WHERE
+            (create_time BETWEEN #{start} AND #{end})
+        <if test="status !=null and status !='' ">
+            and status = 1
+            and error_code = #{errorCode}
+        </if>
+        GROUP BY data_id
+    </select>
+</mapper>

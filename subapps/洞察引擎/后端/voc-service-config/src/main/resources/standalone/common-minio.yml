@@ -1,0 +1,10 @@
+minio:
+  oss:
+    accessKeyId: minioadmin
+    accessKeySecret: minioadmin
+    endpoint: localhost
+    endpointPort: 9000
+    web_endpoint: http://localhost:9000/voc-cloud
+    resourceEndpoint: http://localhost:9000
+    bucketName: voc-cloud
+    maxSize: 1

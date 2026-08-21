@@ -1,0 +1,27 @@
+apply plugin: 'java-library'
+
+group = 'voc-analysis-risk'
+
+dependencies {
+    testImplementation  project(':voc-service-common').sourceSets.test.output
+    api project(':voc-service-common')
+    api project(':voc-service-components:voc-cmps-mybatis')
+    api project(':voc-service-components:voc-cmps-redis')
+    //api project(':voc-service-components:voc-cmps-swagger')
+    api project(':voc-service-components:voc-cmps-kafka')
+    api project(':voc-service-security:voc-security-client')
+    api project(':voc-service-insights:voc-insights-api')
+    api project(':voc-service-analysis:voc-analysis-api')
+    api project(':voc-service-components:voc-cmps-xxljob')
+    api project(':voc-service-bizlogs:voc-bizlogs-api')
+//    api project(':voc-service-security:voc-security-api')
+    api project(':voc-service-config')
+
+    implementation 'org.apache.commons:commons-math3:3.6.1'
+    compileOnly('org.springframework.boot:spring-boot-starter-web')
+    api('org.springframework.cloud:spring-cloud-starter-bootstrap')
+    api ("com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-discovery")
+    api ("com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-config")
+    api('com.github.pagehelper:pagehelper-spring-boot-starter')
+    api('org.springframework.boot:spring-boot-starter-validation')
+}

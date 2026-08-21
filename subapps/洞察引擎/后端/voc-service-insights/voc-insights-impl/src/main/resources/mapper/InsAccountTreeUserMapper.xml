@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.insights.engine.mapper.InsAccountTreeUserMapper">
+
+    <select id="findDepartAccountRelationList" resultType="com.voc.service.insights.engine.vo.InsDepartAccountRelationVo">
+        SELECT
+            ssud.dep_id AS deptCode,
+            u.id AS userId,
+            u.firstname AS userName,
+            u.employee_id AS employeeId
+        FROM sys_users u
+        INNER JOIN voc_ms_td.sta_sys_user_depart ssud ON ssud.user_id = u.username
+        WHERE u.enabled = 1
+        <if test="deptCodes != null and deptCodes.size() > 0">
+          AND ssud.dep_id IN
+          <foreach collection="deptCodes" item="deptCode" open="(" separator="," close=")">
+            #{deptCode}
+          </foreach>
+        </if>
+          AND EXISTS (
+            SELECT 1
+            FROM sys_credentials c
+            WHERE c.user_id = u.id
+              AND c.app_id = #{userModel.appId}
+              and c.enabled = 1
+        )
+        ORDER BY ssud.dep_id, u.username
+    </select>
+
+</mapper>

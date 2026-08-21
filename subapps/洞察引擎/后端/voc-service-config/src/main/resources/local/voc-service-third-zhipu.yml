@@ -1,0 +1,44 @@
+
+#智谱apikey
+third.zhipuai.api.key: 9a65f8768c213da4a703974c76675c77.2xVTmelsz2RfXTML
+#智谱web页面 删除时的Authorization
+third.zhipuai.api.batchFileDeleteAuthorization: 'eyJhbGciOiJIUzUxMiJ9.eyJ1c2VyX3R5cGUiOiJQRVJTT05BTCIsInVzZXJfaWQiOjMzMjE1NiwidXNlcl9rZXkiOiI1YzM2OWUyMC1lYWJmLTQ3ZDUtODhkZi01OWVhNTczYzMwNTIiLCJjdXN0b21lcl9pZCI6IjU4MDcxNzA2NjI3NDg5ODc1IiwidXNlcm5hbWUiOiIxODYyMTc4ODYzMiJ9.iubPSeAVTWO-rK3acolw-ikEO2_VV4MgQjAu3etDXtc81lXDirJoUnoXt6VeVT9VCT68RL4uqyhHViRiAPQocg'
+
+#实时模型参数配置
+third:
+  compound:
+    llm:
+      apiUrl: http://192.168.181.6:7007/generate
+      modelName: glm
+  compound-prompt:
+    - role: "system"
+      content: "你需要扮演一个汽车行业文本信息抽取器，可以针对用户的评论观点的各个元素进行全面且准确的抽取，不要多余的解释文字"
+    - role: "user"
+      content: "\n# CONTEXT #\n我会提供文本[TEXT]\n###########\n# OBJECTIVE #\n我希望你针对我提供的文本[TEXT]，进行信息提取，遵循以下步骤：1. 识别所有提到的车型，包括汽车的品牌vehicle_brand以及对应的车系vehicle_model，汽车品牌和车系必须在[TEXT]中出现,没有提及则默认为NA,汽车品牌比如上汽大众,奇瑞,长城等,汽车系列比如model 3,A6L,途观L Pro等;\n2. 针对每一个评价的车型，识别该车型所有观点评价[VIEWPOINTS]，其中每个观点评价由六元组构成，包含以下元素,每个维度输出在10个字之内;\n    SCENARIO:观点描述的用车场景，例如用车的天气、时速、操作下发生的用车场景，越野、自驾等生活场景中选取一种,没有明确提及则默认为NA;\n    SUBJECT: 观点针对的对象主体，例如汽车的位置(尾部/前脸等)/部件(大灯/车门/轮胎等)/配置(车载大屏/天窗/激光雷达等)/功能(智能驾驶/蓝牙车载电话等)/尺寸(车身尺寸/轮胎尺寸等)等，销售/售后/权益服务等中选择一种，默认为整车;\n    ASPECT: 观点对象的属性或者方面;\n    DESC: 观点对应对象/对象属性或者方面的评论描述词;\n    SENTIMENT: 观点所表达的情感意图，返回正向、负向、中性之一;\n    INTENT:观点所表达的意图,返回投诉、抱怨、咨询、其他之一;\n    CONFIDENCE: 观点的情感的置信度，用来表示情感的程度，-1到1 之间，数字越大正向程度越高，数字越小负向程度越高;\n注意：观点评价六元组要全面，不要有遗漏;\n###########\n# RESPONSE: JSON FORMAT #\n输出结果返回JSON格式，格式为[{\"vehicle_brand\":vehicle_brand,\"vehicle_model\":vehicle_model,\"viewpoints\":[VIEWPOINTS]}]\n###########\n# START ANALYSIS #\n如果你已经明白，请向我索要文本\n"
+    - role: "assistant"
+      content: "好的，请告诉我文本"
+  compound-models:
+    glm:
+      api_key: 9a65f8768c213da4a703974c76675c77.2xVTmelsz2RfXTML
+      base_url: https://open.bigmodel.cn/api/paas/v4
+      version: glm-4-flash
+      input_cost_per_1k_tokens: "0.001"
+      output_cost_per_1k_tokens: "0.002"
+    deepseek:
+      api_key:
+      base_url: https://api.deepseek.com/v1
+      version: deepseek-chat
+      input_cost_per_1k_tokens: "0.001"
+      output_cost_per_1k_tokens: "0.002"
+    qwen:
+      api_key:
+      base_url: https://dashscope.aliyuncs.com/compatible-mode/v1
+      version: qwen-long
+      input_cost_per_1k_tokens: "0.001"
+      output_cost_per_1k_tokens: "0.002"
+    Doubao:
+      api_key: 4db89a77-7960-4bb3-9c0c-3654e90b0bac
+      base_url: https://ark.cn-beijing.volces.com/api/v3
+      version: ep-20240821214540-vlf85
+      input_cost_per_1k_tokens: "0.001"
+      output_cost_per_1k_tokens: "0.002"

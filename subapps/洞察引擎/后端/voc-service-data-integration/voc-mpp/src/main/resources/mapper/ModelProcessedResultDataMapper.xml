@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.data.integration.mapper.ModelProcessedResultDataMapper">
+    <select id="refreshData"  >
+        REFRESH  MATERIALIZED VIEW sta_model_processed_data_out;
+    </select>
+    <insert id="saveOutputData"  >
+        INSERT INTO dwd_voc_platform_label_result_origin
+            (create_time,channel_id,voc_new_id, voc_new_original_id, voc_new_content_type, voc_new_sample_data_type, voc_new_original_text_scene, voc_new_brand_code_name
+        , voc_new_car_series_name, voc_new_label_type, voc_new_label_type_level_first, voc_new_label_type_level_second, voc_new_label_type_level_three
+        , voc_new_label_type_level_four, voc_new_label_type_level_five, voc_new_topic, voc_new_scenario, voc_new_sentiment, voc_new_intention_type
+        , voc_new_opinion, voc_new_subject, voc_new_fault_level, voc_new_description, voc_new_sentiment_score, voc_new_keywords, id, serverorder
+        , source_id, one_id, data_source, voc_types, channel, channel_subclass, channel_subclass_code, is_show, dlr_code_, dlr_short_name, dlr_brand
+        , abstract, voc_content, add_order, serveranswer, resolvemethodname, serverurgency, deal_content1, remark, casedate, statusname, category_1
+        , category_2, category_3, category_4, category_5, voc_age, order_type, cust_type, car_series, car_series_code, base_series, base_series_code
+        , car_config_cn, original_car_series, gender, age, satisfaction_score, carseriestype, carseries_platform, links, commentable_id, comment_id
+        , voc_process_at, max_business_type, created_at, car_config_code, user_name, extendjsonmain, fault_removing, pdtotaltime, dlrxytotaltime
+        , dlrjdtime, car_license_province, car_license_city, vocsource,vin)
+            select
+            create_time,
+            channel_id,
+            new_id	 as 	voc_new_id,
+            original_id	 as 	voc_new_original_id,
+            content_type	 as 	voc_new_content_type,
+            sample_data_type	 as 	voc_new_sample_data_type,
+            original_text_scene	 as 	voc_new_original_text_scene,
+            brand_code_name	 as 	voc_new_brand_code_name,
+            car_series_name	 as 	voc_new_car_series_name,
+            label_type	 as 	voc_new_label_type,
+            label_type_level_first	 as 	voc_new_label_type_level_first,
+            label_type_level_second	 as 	voc_new_label_type_level_second,
+            label_type_level_three	 as 	voc_new_label_type_level_three,
+            label_type_level_four	 as 	voc_new_label_type_level_four,
+            label_type_level_five	 as 	voc_new_label_type_level_five,
+            topic	 as 	voc_new_topic,
+            scenario	 as 	voc_new_scenario,
+            sentiment	 as 	voc_new_sentiment,
+            intention_type	 as 	voc_new_intention_type,
+            opinion	 as 	voc_new_opinion,
+            subject	 as 	voc_new_subject,
+            fault_level	 as 	voc_new_fault_level,
+            description	 as 	voc_new_description,
+            sentiment_score	 as 	voc_new_sentiment_score,
+            keywords	 as 	voc_new_keywords,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'id') AS id,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'serverorder') AS serverorder,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'source_id') AS source_id,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'one_id') AS one_id,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'data_source') AS data_source,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'voc_types') AS voc_types,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'channel') AS channel,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'channel_subclass') AS channel_subclass,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'channel_subclass_code') AS channel_subclass_code,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'is_show') AS is_show,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'dlr_code_') AS dlr_code_,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'dlr_short_name') AS dlr_short_name,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'dlr_brand') AS dlr_brand,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'abstract') AS abstract,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'voc_content') AS voc_content,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'add_order') AS add_order,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'serveranswer') AS serveranswer,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'resolvemethodname') AS resolvemethodname,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'serverurgency') AS serverurgency,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'deal_content1') AS deal_content1,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'remark') AS remark,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'casedate') AS casedate,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'statusname') AS statusname,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'category_1') AS category_1,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'category_2') AS category_2,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'category_3') AS category_3,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'category_4') AS category_4,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'category_5') AS category_5,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'voc_age') AS voc_age,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'order_type') AS order_type,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'cust_type') AS cust_type,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'car_series') AS car_series,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'car_series_code') AS car_series_code,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'base_series') AS base_series,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'base_series_code') AS base_series_code,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'car_config_cn') AS car_config_cn,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'original_car_series') AS original_car_series,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'gender') AS gender,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'age') AS age,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'satisfaction_score') AS satisfaction_score,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'carseriestype') AS carseriestype,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'carseries_platform') AS carseries_platform,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'links') AS links,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'commentable_id') AS commentable_id,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'comment_id') AS comment_id,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'voc_process_at') AS voc_process_at,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'max_business_type') AS max_business_type,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'created_at') AS created_at,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'car_config_code') AS car_config_code,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'user_name') AS user_name,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'extendjsonmain') AS extendjsonmain,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'fault_removing') AS fault_removing,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'pdtotaltime') AS pdtotaltime,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'dlrxytotaltime') AS dlrxytotaltime,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'dlrjdtime') AS dlrjdtime,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'car_license_province') AS car_license_province,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'car_license_city') AS car_license_city,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'vocsource') AS vocsource,
+            trim(`ays_post_process_data`.`biz_ext_attrs`-&gt;'vin') AS vin
+        from ays_post_process_data
+        where
+            date(create_time) = date(date_sub(now(),1))
+            and channel_id in
+            <foreach item="item" index="index" collection="channelList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+
+    </insert>
+</mapper>

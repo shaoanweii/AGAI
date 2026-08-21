@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.insights.engine.mapper.InsRoleMapper">
+
+
+    <select id="queryRoleList" resultType="com.voc.service.insights.engine.vo.RoleListVo">
+        SELECT
+        ir.id as roleId,
+        ir.role_name as roleName,
+        ir.enabled as status,
+        ir.remark,
+        IF(ir.enabled = 1, '启用中', '已禁用') as roleStatusName,
+        ir.create_time as createTime,
+        -- 关联用户ID聚合结果，若角色没有关联用户则显示NULL
+        if(ur.user_ids is null,0,ur.user_ids )  as userCount
+        FROM
+        ins_role ir
+        -- 左连接用户角色关联表的聚合结果
+        LEFT JOIN (
+        SELECT
+        role_id,
+        count(1) AS user_ids  -- 聚合同一角色的所有用户ID
+        FROM ins_user_role
+        GROUP BY role_id
+        ) ur ON ir.id = ur.role_id  -- 通过role_id关联
+        WHERE 1=1
+        <if test="model.searchKeyword != null and model.searchKeyword != '' ">
+            and ir.role_name like concat('%',#{model.searchKeyword},'%')
+        </if>
+        ORDER BY
+        ir.create_time desc
+    </select>
+    <select id="allQueryRoleList" resultType="com.voc.service.insights.engine.vo.RoleListVo">
+        SELECT
+            ir.id as roleId,
+            ir.role_name as roleName,
+            ir.enabled as status,
+            ir.remark,
+            IF(ir.enabled = 1, '启用中', '已禁用') as roleStatusName,
+            ir.create_time as createTime,
+            -- 关联用户ID聚合结果，若角色没有关联用户则显示NULL
+            ur.user_ids as userIdsStr
+        FROM
+            ins_role ir
+                -- 左连接用户角色关联表的聚合结果
+                LEFT JOIN (
+                SELECT
+                    role_id,
+                    GROUP_CONCAT(user_id SEPARATOR ',') AS user_ids  -- 聚合同一角色的所有用户ID
+                FROM ins_user_role
+                GROUP BY role_id
+            ) ur ON ir.id = ur.role_id  -- 通过role_id关联
+        WHERE 1=1
+        ORDER BY
+            ir.create_time desc
+    </select>
+
+</mapper>

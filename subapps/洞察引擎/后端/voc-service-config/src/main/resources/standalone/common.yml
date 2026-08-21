@@ -1,0 +1,67 @@
+k8s_host: localhost
+project_id: 4cb464bb8f604284dd83c92356fd62a4
+
+clients.ds.mappings:
+  '0': 'voc'
+  '1': 'futong'
+  '764547797eb2e192763f5334028d49c9': 'dndc'
+
+spring:
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+  cloud:
+    openfeign:
+      okhttp:
+        enabled: true
+      httpclient:
+        enabled: false
+      compression:
+        request:
+          enabled: true
+        response:
+          enabled: true
+
+management:
+  security:
+    enabled: false
+  endpoints:
+    web:
+      exposure:
+        base-path: /actuator
+        include: "*"
+    enabled-by-default: true
+  endpoint:
+    health:
+      enabled: true
+      show-details: always
+    beans:
+      enabled: true
+
+threadpool:
+  async:
+    executor:
+      enabled: true
+      corePoolSize: 10
+      maxPoolSize: 100
+      queueCapacity: 200
+      threadNamePrefix: standalone-
+
+service.url: localhost:8086
+service.auth.login.v1: http://localhost:8081/auth/login
+service.auth.sso.v1: http://localhost:8081
+service.auth.logout.v1: http://localhost:8081/logout
+service.auth.v1: http://localhost:8081
+service.logs.v1: http://localhost:8086
+service.msg.v1: http://localhost:8086
+service.ins.v1: http://localhost:8086
+service.model.v1: http://localhost:8086
+service.template.v1: http://localhost:8086
+service.analysis.v1: http://localhost:8086
+service.onnx.v1: http://localhost:8086
+service.risk.v1: http://localhost:8086
+service.integertaion.v1: http://localhost:8086

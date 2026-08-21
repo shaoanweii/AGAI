@@ -1,0 +1,54 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <title>AGAI AI Data Engine Logo Concept</title>
+  <defs>
+    <linearGradient id="flowA" x1="102" y1="108" x2="420" y2="400" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1EC8FF"/>
+      <stop offset="0.48" stop-color="#3B7CFF"/>
+      <stop offset="1" stop-color="#7D5CFF"/>
+    </linearGradient>
+    <linearGradient id="flowB" x1="398" y1="82" x2="120" y2="418" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#A7B9FF"/>
+      <stop offset="0.45" stop-color="#EEF4FF"/>
+      <stop offset="1" stop-color="#74D9FF"/>
+    </linearGradient>
+    <linearGradient id="flowC" x1="119" y1="384" x2="392" y2="126" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#4CD7FF"/>
+      <stop offset="0.52" stop-color="#5D7CFF"/>
+      <stop offset="1" stop-color="#B59DFF"/>
+    </linearGradient>
+    <linearGradient id="coreStroke" x1="175" y1="176" x2="338" y2="336" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#EAF3FF"/>
+      <stop offset="1" stop-color="#7E9DFF"/>
+    </linearGradient>
+    <filter id="softGlow" x="42" y="42" width="428" height="428" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feGaussianBlur in="SourceGraphic" stdDeviation="10"/>
+    </filter>
+  </defs>
+
+  <g filter="url(#softGlow)" opacity="0.5">
+    <path d="M92 257C92 166 166 92 257 92C303 92 345 111 375 142" stroke="#42CFFF" stroke-width="40" stroke-linecap="round"/>
+    <path d="M382 132C435 205 419 307 346 360C308 388 260 397 216 386" stroke="#726CFF" stroke-width="40" stroke-linecap="round"/>
+    <path d="M211 389C127 352 89 254 126 171C144 131 177 101 216 87" stroke="#5B8BFF" stroke-width="40" stroke-linecap="round"/>
+  </g>
+
+  <path d="M93 252C96 160 172 88 264 92C302 94 337 109 365 133C388 153 394 188 379 214L325 308C306 341 261 348 233 322L127 225C104 204 92 178 111 151" stroke="url(#flowA)" stroke-width="54" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <path d="M383 130C437 205 421 311 346 365C315 387 278 397 241 393C210 390 186 365 184 334L177 225C175 188 207 157 244 161L385 176C421 180 441 216 426 249" stroke="url(#flowB)" stroke-width="46" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <path d="M213 389C130 354 91 258 126 175C143 135 176 105 215 91C246 80 280 96 292 127L333 232C348 270 322 313 281 317L142 329C109 332 83 303 91 271" stroke="url(#flowC)" stroke-width="38" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <path d="M208 190H304L352 256L304 322H208L160 256L208 190Z" fill="#07111F" fill-opacity="0.92"/>
+  <path d="M208 190H304L352 256L304 322H208L160 256L208 190Z" stroke="url(#coreStroke)" stroke-width="6" stroke-linejoin="round"/>
+
+  <path d="M211 284L232 228H254L275 284M221 267H265M294 229V284" stroke="#F5F9FF" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M174 256H119M393 256H338M256 174V121M256 391V338" stroke="#B9D5FF" stroke-width="10" stroke-linecap="round"/>
+  <circle cx="119" cy="256" r="12" fill="#1EC8FF"/>
+  <circle cx="393" cy="256" r="12" fill="#7D5CFF"/>
+  <circle cx="256" cy="121" r="11" fill="#74D9FF"/>
+  <circle cx="256" cy="391" r="11" fill="#5D7CFF"/>
+  <circle cx="184" cy="184" r="7" fill="#EAF3FF"/>
+  <circle cx="328" cy="184" r="7" fill="#EAF3FF"/>
+  <circle cx="328" cy="328" r="7" fill="#EAF3FF"/>
+  <circle cx="184" cy="328" r="7" fill="#EAF3FF"/>
+</svg>

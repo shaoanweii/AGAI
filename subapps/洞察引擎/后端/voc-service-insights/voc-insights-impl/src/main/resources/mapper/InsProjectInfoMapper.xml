@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.insights.engine.mapper.InsProjectInfoMapper">
+    <resultMap id="BaseResultMap" type="com.voc.service.insights.engine.entity.InsProjectInfoEntity" >
+        <result column="id" property="id" />
+        <result column="project_Name" property="projectName" />
+        <result column="project_desc" property="projectDesc" />
+        <result column="status" property="status" />
+        <result column="create_time" property="createTime" />
+        <result column="create_user" property="createUser" />
+        <result column="update_time" property="updateTime" />
+        <result column="update_user" property="updateUser" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,
+                project_Name,
+                project_desc,
+                status,
+                create_time,
+                create_user,
+                update_time,
+                update_user
+    </sql>
+
+    <select id="findProjectList" resultMap="BaseResultMap">
+        select
+            <include refid="Base_Column_List"/>
+        from ins_project_info
+        where 1=1
+        <if test="insProjectInfoModel.projectName !=null and insProjectInfoModel.projectName !=''">
+            and project_Name like concat('%',#{insProjectInfoModel.projectName},'%')
+        </if>
+        <if test="insProjectInfoModel.status !=null and insProjectInfoModel.status !=''">
+            and status = #{insProjectInfoModel.status}
+        </if>
+        <if test="insProjectInfoModel.id !=null and insProjectInfoModel.id !=''">
+            and id = #{insProjectInfoModel.id}
+        </if>
+        <if test="insProjectInfoModel.order !=null and insProjectInfoModel.order !=''">
+            order by ${insProjectInfoModel.order}
+        </if>
+        <if test="insProjectInfoModel.order ==null or insProjectInfoModel.order ==''">
+            order by create_time desc
+        </if>
+    </select>
+
+    <select id="findProjectInfo" resultMap="BaseResultMap">
+        select
+            <include refid="Base_Column_List"/>
+        from ins_project_info
+        where id = #{insProjectInfoModel.id}
+    </select>
+</mapper>

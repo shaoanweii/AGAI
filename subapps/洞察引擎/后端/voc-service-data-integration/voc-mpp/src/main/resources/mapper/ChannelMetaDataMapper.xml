@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.data.integration.mapper.ChannelMetaDataMapper">
+    <select id="checkData"  >
+        select count(*) from voc_anal_di_stg_mate_data_m_inc_v
+        where  date(biz_create_time) &lt; date_sub(date(now()),#{days})
+    </select>
+    <select id="checkHistoryData"  >
+        select count(*) from ods_channel_meta_data_history
+        where date(back_time) = date(now())
+    </select>
+    <select id="moveToHistoryData"  >
+        INSERT INTO  ods_channel_meta_data_history
+        (id, one_id, channel_biz, channel_dc, data_id, create_time, biz_create_time, biz_update_time, delivery_at_time, content, customer_name, customer_sex, customer_phone, license_plate, car_series_code, dealership_code_delivery, dealership_code_purchase, dealership_code_return, ext_attrs, ext_attrs2, ext_attrs3,back_time)
+        select id, one_id, channel_biz, channel_dc, data_id, create_time, biz_create_time, biz_update_time, delivery_at_time, content, customer_name, customer_sex, customer_phone, license_plate, car_series_code, dealership_code_delivery, dealership_code_purchase, dealership_code_return, ext_attrs, ext_attrs2, ext_attrs3,now()
+        from ods_channel_meta_data
+        where date(biz_create_time ) &lt; date_sub(date(now()), #{days})
+    </select>
+    <select id="deleteHistoryData"  >
+        /*delete from ods_channel_meta_data_view
+        where date(biz_create_time) &lt; date_sub(date(now()),#{days})*/
+    </select>
+    <resultMap id="BaseResultMap" type="com.voc.service.data.integration.entity.ChannelMetaDataEntity" >
+        <result column="id" property="id" />
+        <result column="one_id" property="oneId" />
+        <result column="channel_code" property="channelCode" />
+        <result column="data_id" property="dataId" />
+        <result column="create_time" property="createTime" />
+        <result column="data_create_time" property="dataCreateTime" />
+        <result column="content" property="content" />
+        <result column="content_type" property="contentType" />
+        <result column="attrs" property="attrs" />
+        <result column="attrs2" property="attrs2" />
+    </resultMap>
+
+
+
+
+
+
+
+    <select id="findAll" resultMap="BaseResultMap">
+        select id, data_id from voc_anal_di_stg_mate_data_m_inc_v
+        where channel_code is not null
+            and data_create_time  is not null
+            and work_id is not null
+            and one_id is not null
+        <if test="channelList !=null and channelList.size() >0">
+            and channel_code in
+            <foreach item="item" index="index" collection="channelList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+
+
+
+
+    <!--<select id="findAll" >
+        select
+            id
+        from
+        (
+            select * from ods_channel_meta_data_view
+            where date(create_time) between date(#{startDate}) and date(#{endDate})
+            and channel_dc in
+            <foreach item="item" index="index" collection="channelList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        )f1
+        left join
+        (
+            select data_id as biz_data_id,status,channel_type from ods_channel_execution_result
+            where date(create_time) between date(#{startDate}) and date(#{endDate})
+            and channel_type in
+            <foreach item="item" index="index" collection="channelList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+                and status &lt;&gt; 1
+        )f2 on f1.channel_dc = f2.channel_type and f1.data_id = f2.biz_data_id
+        where status is null
+    </select>-->
+    <select id="findRawData" resultMap="BaseResultMap">
+<!--        select-->
+<!--           cmdv.id,-->
+<!--           cmdv.one_id,-->
+<!--           cmdv.channel_biz,-->
+<!--           cmdv.channel_dc,-->
+<!--           cmdv.data_id,-->
+<!--           cmdv.create_time,-->
+<!--           cmdv.biz_create_time,-->
+<!--           cmdv.biz_update_time,-->
+<!--           cmdv.delivery_at_time,-->
+<!--           cmdv.content,-->
+<!--           cmdv.customer_name,-->
+<!--           cmdv.customer_sex,-->
+<!--           cmdv.customer_phone,-->
+<!--           cmdv.license_plate,-->
+<!--           cmdv.car_series_code,-->
+<!--           cmdv.dealership_code_delivery,-->
+<!--           cmdv.dealership_code_purchase,-->
+<!--           cmdv.dealership_code_return,-->
+<!--           cmdv.ext_attrs,-->
+<!--           cmdv.ext_attrs2-->
+<!--       from voc_anal_di_stg_mate_data_m_inc_v cmdv-->
+<!--        left join voc_anal_di_stg_mate_data_finished_record ocer on cmdv.data_id = ocer.data_id-->
+<!--        where-->
+<!--        ocer.create_time >= date(#{start}) and ocer.create_time &lt; date_add(#{start},1)-->
+<!--        <if test="status !=null and status !='' ">-->
+<!--            and ocer.status = 1-->
+<!--            and ocer.error_code = #{errorCode}-->
+<!--        </if>-->
+    </select>
+
+    <select id="checkAllMetaData"  >
+        select count(*) from dwd_voc2_all_meta_data
+        where data_status =0
+    </select>
+</mapper>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.insights.engine.mapper.InsRoleRelationPermissionMapper">
+
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into ins_role_relation_permission(id, role_id, permission_id, button_permission, permission_type,
+        create_time)
+        values
+        <foreach collection="model" item="entity" separator=",">
+            (#{entity.id}, #{entity.roleId}, #{entity.permissionId}, #{entity.buttonPermission},
+            #{entity.permissionType},#{entity.createTime})
+        </foreach>
+    </insert>
+
+</mapper>

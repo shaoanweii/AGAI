@@ -1,0 +1,16 @@
+spring.application.name: voc-app-logs-impl
+
+
+spring:
+  cloud.nacos:
+    config:
+      enabled: false
+    discovery:
+      enabled: false
+  config:
+    location: classpath:${spring.profiles.active}/common.yml,classpath:${spring.profiles.active}/common-redis.yml,classpath:${spring.profiles.active}/common-security-client.yml,classpath:${spring.profiles.active}/common-swagger.yml
+
+
+consumer.biglogs.enabled: true
+
+

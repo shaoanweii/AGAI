@@ -1,0 +1,168 @@
+- generic [ref=f2e3]:
+  - complementary [ref=f2e4]:
+    - generic [ref=f2e5]:
+      - img "AI消费者洞察平台" [ref=f2e6]
+      - generic [ref=f2e7]:
+        - strong [ref=f2e8]: AI消费者洞察平台
+        - generic [ref=f2e9]: Consumer Insight OS
+    - navigation [ref=f2e10]:
+      - generic [ref=f2e11]:
+        - button "模拟问答" [ref=f2e12] [cursor=pointer]
+        - button "消费调研" [ref=f2e16] [cursor=pointer]
+      - generic [ref=f2e20]:
+        - generic [ref=f2e21]: 数据资产
+        - button "消费者库" [ref=f2e22] [cursor=pointer]
+        - button "调研场景" [ref=f2e27] [cursor=pointer]
+        - button "标签体系" [ref=f2e31] [cursor=pointer]
+        - button "用户数据" [ref=f2e36] [cursor=pointer]
+      - generic [ref=f2e41]:
+        - generic [ref=f2e42]: 问答记录
+        - generic [ref=f2e43]:
+          - button "20万定价接受度追问" [ref=f2e44] [cursor=pointer]
+          - button "后排娱乐屏必要性" [ref=f2e50] [cursor=pointer]
+          - button "智能座舱卖点验证" [ref=f2e56] [cursor=pointer]
+          - button "18.5万价格下探" [ref=f2e62] [cursor=pointer]
+    - generic [ref=f2e68]:
+      - generic [ref=f2e69]:
+        - generic [ref=f2e70]: 李
+        - generic [ref=f2e71]:
+          - strong [ref=f2e72]: 李建秋
+          - generic [ref=f2e73]: 产品经理
+      - button "系统设置" [ref=f2e74] [cursor=pointer]
+  - main [ref=f2e78]:
+    - generic [ref=f2e81]:
+      - generic [ref=f2e82]:
+        - heading "消费调研" [level=2] [ref=f2e83]
+        - generic [ref=f2e84]:
+          - tablist "任务状态筛选" [ref=f2e85]:
+            - button "全部" [ref=f2e86] [cursor=pointer]
+            - button "已完成" [ref=f2e87] [cursor=pointer]
+            - button "进行中" [ref=f2e88] [cursor=pointer]
+            - button "未开始" [ref=f2e89] [cursor=pointer]
+          - button "新建调研" [ref=f2e91] [cursor=pointer]
+      - generic [ref=f2e93]:
+        - generic [ref=f2e94]:
+          - generic [ref=f2e95]: 任务编号
+          - generic [ref=f2e96]: 任务名称
+          - generic [ref=f2e97]: 调研场景
+          - generic [ref=f2e98]: 消费者
+          - generic [ref=f2e99]: 创建人
+          - generic [ref=f2e100]: 创建时间
+          - generic [ref=f2e101]: 任务状态
+          - generic [ref=f2e102]: 操作
+        - generic [ref=f2e103]:
+          - article [ref=f2e104]:
+            - generic [ref=f2e105]: T-240718-001
+            - strong [ref=f2e106]: 2025款 智行 Compact EV SUV · 造型方向验证
+            - generic [ref=f2e107]: 造型方向验证
+            - generic [ref=f2e108]: 25-35岁新能源潜客
+            - generic [ref=f2e109]: 张明
+            - generic [ref=f2e110]: 今天 11:20
+            - generic [ref=f2e111]: 已完成
+            - generic [ref=f2e114]:
+              - button "查看报告" [ref=f2e115] [cursor=pointer]
+              - button "删除" [ref=f2e116] [cursor=pointer]
+          - article [ref=f2e117]:
+            - generic [ref=f2e118]: T-240718-002
+            - strong [ref=f2e119]: 中配版配置组合偏好测试
+            - generic [ref=f2e120]: 配置偏好验证
+            - generic [ref=f2e121]: 家庭首购换购人群
+            - generic [ref=f2e122]: 李倩
+            - generic [ref=f2e123]: 今天 10:06
+            - generic [ref=f2e124]: 进行中
+            - button "中止任务" [ref=f2e128] [cursor=pointer]
+          - article [ref=f2e129]:
+            - generic [ref=f2e130]: T-240717-009
+            - strong [ref=f2e131]: 上市前购买意愿与市占预测
+            - generic [ref=f2e132]: 购买意愿与市占预测
+            - generic [ref=f2e133]: 中高消费新能源潜客
+            - generic [ref=f2e134]: 王珂
+            - generic [ref=f2e135]: 昨天 18:42
+            - generic [ref=f2e136]: 已完成
+            - generic [ref=f2e139]:
+              - button "查看报告" [ref=f2e140] [cursor=pointer]
+              - button "删除" [ref=f2e141] [cursor=pointer]
+          - article [ref=f2e142]:
+            - generic [ref=f2e143]: T-240716-004
+            - strong [ref=f2e144]: 20万价格点敏感度复测
+            - generic [ref=f2e145]: 价格敏感度与定价优化
+            - generic [ref=f2e146]: 待配置
+            - generic [ref=f2e147]: 赵宁
+            - generic [ref=f2e148]: 昨天 15:30
+            - generic [ref=f2e149]: 未开始
+            - generic [ref=f2e152]:
+              - button "开始任务" [ref=f2e153] [cursor=pointer]
+              - button "编辑" [ref=f2e154] [cursor=pointer]
+              - button "删除" [ref=f2e155] [cursor=pointer]
+          - article [ref=f2e156]:
+            - generic [ref=f2e157]: T-240716-003
+            - strong [ref=f2e158]: 前脸贯穿灯带接受度复核
+            - generic [ref=f2e159]: 造型方向验证
+            - generic [ref=f2e160]: 科技尝鲜者
+            - generic [ref=f2e161]: 陈露
+            - generic [ref=f2e162]: 07-16 14:12
+            - generic [ref=f2e163]: 已完成
+            - generic [ref=f2e166]:
+              - button "查看报告" [ref=f2e167] [cursor=pointer]
+              - button "删除" [ref=f2e168] [cursor=pointer]
+          - article [ref=f2e169]:
+            - generic [ref=f2e170]: T-240715-011
+            - strong [ref=f2e171]: 后排娱乐屏选装价值评估
+            - generic [ref=f2e172]: 配置偏好验证
+            - generic [ref=f2e173]: 有孩家庭用户
+            - generic [ref=f2e174]: 周航
+            - generic [ref=f2e175]: 07-15 17:36
+            - generic [ref=f2e176]: 已完成
+            - generic [ref=f2e179]:
+              - button "查看报告" [ref=f2e180] [cursor=pointer]
+              - button "删除" [ref=f2e181] [cursor=pointer]
+          - article [ref=f2e182]:
+            - generic [ref=f2e183]: T-240715-006
+            - strong [ref=f2e184]: 18.5万价格点购买概率测试
+            - generic [ref=f2e185]: 价格敏感度与定价优化
+            - generic [ref=f2e186]: 预算15-25万潜客
+            - generic [ref=f2e187]: 赵宁
+            - generic [ref=f2e188]: 07-15 12:08
+            - generic [ref=f2e189]: 已完成
+            - generic [ref=f2e192]:
+              - button "查看报告" [ref=f2e193] [cursor=pointer]
+              - button "删除" [ref=f2e194] [cursor=pointer]
+          - article [ref=f2e195]:
+            - generic [ref=f2e196]: T-240714-014
+            - strong [ref=f2e197]: 智能座舱卖点吸引力测试
+            - generic [ref=f2e198]: 购买意愿与市占预测
+            - generic [ref=f2e199]: 汽车垂媒高活跃
+            - generic [ref=f2e200]: 王珂
+            - generic [ref=f2e201]: 07-14 19:20
+            - generic [ref=f2e202]: 进行中
+            - button "中止任务" [ref=f2e206] [cursor=pointer]
+          - article [ref=f2e207]:
+            - generic [ref=f2e208]: T-240714-008
+            - strong [ref=f2e209]: 悬浮式车顶审美分层分析
+            - generic [ref=f2e210]: 造型方向验证
+            - generic [ref=f2e211]: 一线城市年轻用户
+            - generic [ref=f2e212]: 陈露
+            - generic [ref=f2e213]: 07-14 10:46
+            - generic [ref=f2e214]: 已完成
+            - generic [ref=f2e217]:
+              - button "查看报告" [ref=f2e218] [cursor=pointer]
+              - button "删除" [ref=f2e219] [cursor=pointer]
+          - article [ref=f2e220]:
+            - generic [ref=f2e221]: T-240713-017
+            - strong [ref=f2e222]: 基础版配置减配风险评估
+            - generic [ref=f2e223]: 配置偏好验证
+            - generic [ref=f2e224]: 首次购车用户
+            - generic [ref=f2e225]: 李倩
+            - generic [ref=f2e226]: 07-13 16:24
+            - generic [ref=f2e227]: 未开始
+            - generic [ref=f2e230]:
+              - button "开始任务" [ref=f2e231] [cursor=pointer]
+              - button "编辑" [ref=f2e232] [cursor=pointer]
+              - button "删除" [ref=f2e233] [cursor=pointer]
+        - generic [ref=f2e234]:
+          - generic [ref=f2e235]: 共 20 条，每页 10 条
+          - generic [ref=f2e236]:
+            - button "上一页" [disabled] [ref=f2e237]
+            - button "1" [ref=f2e238] [cursor=pointer]
+            - button "2" [ref=f2e239] [cursor=pointer]
+            - button "下一页" [ref=f2e240] [cursor=pointer]

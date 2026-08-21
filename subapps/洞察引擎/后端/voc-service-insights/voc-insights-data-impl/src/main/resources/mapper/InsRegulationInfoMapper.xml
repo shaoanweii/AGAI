@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.insights.engine.data.mapper.InsRegulationInfoMapper">
+    <resultMap id="BaseResultMap" type="com.voc.service.insights.engine.data.entity.InsRegulationInfoEntity" >
+        <result column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="client_id" property="clientId" />
+        <result column="description" property="description" />
+        <result column="process_phase" property="processPhase" />
+        <result column="regulation_type" property="regulationType" />
+        <result column="content_type" property="contentType"/>
+        <result column="channel" property="channel" typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
+        <result column="matching_rule" property="matchingRule" />
+        <result column="regulation_weight" property="regulationWeight" />
+        <result column="relevancy_table" property="relevancyTable" />
+        <result column="virtualization" property="virtualization" />
+        <result column="status" property="status" />
+        <result column="del_flag" property="delFlag" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="create_user" property="createUser" />
+        <result column="update_user" property="updateUser" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+                id,
+                name,
+                client_id,
+                description,
+                process_phase,
+                regulation_type,
+                content_type,
+                channel,
+                matching_rule,
+                regulation_weight,
+                relevancy_table,
+                virtualization,
+                status,
+                del_flag,
+                create_time,
+                update_time,
+                create_user,
+                update_user
+    </sql>
+
+    <update id="deleteRegulationInfo">
+        delete from ins_regulation_info where id = #{id}
+    </update>
+
+    <select id="findRegulationInfoList" resultMap="BaseResultMap">
+        select
+            ri.id,
+            ri.name,
+            ri.client_id,
+            ri.matching_rule,
+            ri.description,
+            ri.regulation_type,
+            ri.content_type,
+            ri.channel,
+            ri.process_phase,
+            ri.regulation_weight,
+            ri.create_time,
+            ri.status
+        from ins_regulation_info ri
+        where 1=1
+        and ri.virtualization = '0'
+        <if test="regulationInfoModel.ruleIds !=null and regulationInfoModel.ruleIds.size() >0">
+            and ri.id in
+            <foreach collection="regulationInfoModel.ruleIds" item="ruleIds" open="(" separator="," close=")">
+                #{ruleIds}
+            </foreach>
+        </if>
+        <if test="regulationInfoModel.regulationClassify !=null and regulationInfoModel.regulationClassify !=''">
+            and ri.regulation_classify = #{regulationInfoModel.regulationClassify}
+        </if>
+        <if test="regulationInfoModel.regulationType !=null and regulationInfoModel.regulationType !=''">
+            and ri.regulation_type = #{regulationInfoModel.regulationType}
+        </if>
+        <if test="regulationInfoModel.contentType !=null and regulationInfoModel.contentType !=''">
+            and ri.content_type = #{regulationInfoModel.contentType}
+        </if>
+        <if test="regulationInfoModel.regulationTypes !=null and regulationInfoModel.regulationTypes.size() >0">
+            and ri.regulation_type in
+            <foreach collection="regulationInfoModel.regulationTypes" item="regulationTypes" open="(" separator="," close=")">
+                #{regulationTypes}
+            </foreach>
+        </if>
+        <if test="regulationInfoModel.contentTypes !=null and regulationInfoModel.contentTypes.size() >0">
+            and ri.content_type in
+            <foreach collection="regulationInfoModel.contentTypes" item="contentTypes" open="(" separator="," close=")">
+                #{contentTypes}
+            </foreach>
+        </if>
+        <if test="regulationInfoModel.name !=null and regulationInfoModel.name !=''">
+            and ri.name like concat('%',#{regulationInfoModel.name},'%')
+        </if> <if test="regulationInfoModel.status !=null and regulationInfoModel.status !=''">
+            and ri.status = #{regulationInfoModel.status}
+        </if> <if test="regulationInfoModel.channel !=null and regulationInfoModel.channel !=''">
+            and json_contains(ri.channel,#{regulationInfoModel.channel,typeHandler=com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler})
+        </if>
+        <if test="regulationInfoModel.clientId !=null and regulationInfoModel.clientId !=''">
+            and ri.client_id = #{regulationInfoModel.clientId}
+        </if>
+        <if test="regulationInfoModel.processPhases !=null and regulationInfoModel.processPhases.size()>0">
+            and ri.process_phase in
+            <foreach collection="regulationInfoModel.processPhases" item="processPhases" open="(" separator="," close=")">
+                #{processPhases}
+            </foreach>
+        </if>
+        <if test="regulationInfoModel.processPhase !=null and regulationInfoModel.processPhase!='' ">
+            and ri.process_phase = #{regulationInfoModel.processPhase}
+        </if>
+        <if test="regulationInfoModel.statusList !=null and regulationInfoModel.statusList.size()>0">
+            and ri.status in
+            <foreach collection="regulationInfoModel.statusList" item="statusList" open="(" separator="," close=")">
+                #{statusList}
+            </foreach>
+        </if>
+        group by ri.id
+        <if test="regulationInfoModel.order !=null and regulationInfoModel.order !=''">
+            order by ${regulationInfoModel.order}
+        </if>
+        <if test="regulationInfoModel.order ==null or regulationInfoModel.order ==''">
+            order by ri.create_time desc
+        </if>
+    </select>
+
+    <select id="findRegulationInfoById" resultMap="BaseResultMap">
+        select
+            <include refid="Base_Column_List"/>
+        from ins_regulation_info
+        where id = #{id}
+    </select>
+
+    <select id="checkRegulationName" resultType="java.lang.Integer">
+        select
+            count(1)
+        from
+            ins_regulation_info
+        where
+            name = #{regulationInfoModel.name}
+        and
+            client_id = #{regulationInfoModel.clientId}
+        and
+            del_flag = 0
+    </select>
+
+    <select id="checkRegulationStatusById" resultType="java.lang.String">
+        select status from ins_regulation_info where id = #{id}
+    </select>
+
+    <select id="findStaticTableNames" resultType="java.lang.String">
+        select
+            relevancy_table
+        from
+            ins_regulation_info
+        where
+            virtualization = 1
+        <if test="regulationType !=null and regulationType !=''">
+            and regulation_type = #{regulationType}
+        </if>
+    </select>
+
+    <select id="findTableNames" resultType="java.lang.String">
+        select
+            relevancy_table
+        from
+            ins_regulation_info
+        where
+            virtualization = 0
+        and
+            client_id = #{tableInfoModel.clientId}
+        and
+            del_flag = 0
+        and
+            status = 'Enabled'
+    </select>
+
+    <select id="findTableInfoList" resultType="com.voc.service.insights.engine.entity.InsTableInfoEntity">
+        select
+        c.TABLE_NAME,
+        c.COLUMN_NAME,
+        c.COLUMN_COMMENT,
+        t.TABLE_COMMENT
+        from INFORMATION_SCHEMA.COLUMNS c
+        left join INFORMATION_SCHEMA.TABLES t on t.TABLE_NAME = c.TABLE_NAME
+        where 1=1
+        <if test="tableNames !=null and tableNames.size()>0">
+            and c.TABLE_NAME in
+            <foreach item="item" index="index" collection="tableNames" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+
+        <if test="tableColumns !=null and tableColumns.size()>0">
+            and c.COLUMN_NAME in
+            <foreach item="item" index="index" collection="tableColumns" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+    <select id="findTableDataInfo" resultType="com.alibaba.fastjson.JSONObject">
+        select
+        <foreach item="item" index="index" collection="columns"  separator=",">
+            ${item}
+        </foreach>
+        from
+        ${tableName}
+    </select>
+
+    <select id="findResourceGroupRegulationList" resultMap="BaseResultMap">
+        select
+            ri.id,
+            ri.name,
+            ri.client_id,
+            ri.regulation_classify,
+            SUBSTRING_INDEX(ri.regulation_type, '_', 1) as regulation_type,
+            ri.status
+        from
+            ins_regulation_info ri
+                right join (
+                select
+                    regulation_id
+                from
+                    ins_regulation_detail
+                where
+                    condition_type = 'resourceGroup'
+                  and detail_type = '0'
+                  and condition_detail = #{detailsModel.resourceGroupId}
+            ) d on d.regulation_id = ri.id
+    </select>
+
+    <select id="findResourceGroupRegulationStatusCount" resultMap="BaseResultMap">
+        select
+            status,
+            count(status) as statusCount
+        from
+            ins_regulation_info ri
+                right join (
+                select
+                    regulation_id
+                from
+                    ins_regulation_detail
+                where
+                    condition_type = 'resourceGroup'
+                  and detail_type = '0'
+                  and condition_detail = #{detailsModel.resourceGroupId}
+            ) d on d.regulation_id = ri.id
+        group by ri.status
+    </select>
+
+    <select id="findChannelHierarchical" resultType="com.voc.service.insights.engine.entity.InsChannelInfoEntity">
+        WITH RECURSIVE CTE AS (
+            SELECT * FROM ins_channel_distribution
+            WHERE id in
+            <foreach item="item" index="index" collection="channelIds" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+            UNION ALL
+            SELECT t.* FROM ins_channel_distribution t INNER JOIN CTE ON t.id = CTE.parent_id
+        )
+        SELECT * FROM CTE group by id ORDER BY level
+    </select>
+
+    <select id="findRegulationName" resultType="java.lang.String">
+        select name from ins_regulation_info where name like concat('%',#{name},'%') order by create_time desc limit 1
+    </select>
+</mapper>

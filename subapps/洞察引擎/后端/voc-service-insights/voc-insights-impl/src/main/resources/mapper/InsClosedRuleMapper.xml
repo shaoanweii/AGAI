@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.insights.engine.mapper.InsClosedRuleMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.voc.service.insights.engine.entity.InsClosedRuleEntity">
+        <id column="rule_id" property="ruleId"/>
+        <result column="rule_name" property="ruleName"/>
+        <result column="data_source" property="dataSource"
+                typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
+        <result column="rule_type" property="ruleType"/>
+        <result column="category_type" property="categoryType"/>
+        <result column="category_type_name" property="categoryTypeName"/>
+        <result column="brand_code" property="brandCode"/>
+        <result column="brand_name" property="brandName"/>
+        <result column="event_level" property="eventLevel"/>
+        <result column="process_priority" property="processPriority"/>
+        <result column="audit_method" property="auditMethod"/>
+        <result column="audit_department" property="auditDepartment"
+                typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
+        <result column="auditor" property="auditor"
+                typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
+        <result column="main_department" property="mainDepartment"
+                typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
+        <result column="main_responder" property="mainResponder"
+                typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
+        <result column="cc_personnel" property="ccPersonnel"
+                typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
+        <result column="confirm_method" property="confirmMethod"/>
+        <result column="confirm_department" property="confirmDepartment"
+                typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
+        <result column="confirmer" property="confirmer"
+                typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
+        <result column="is_enabled" property="isEnabled"/>
+        <result column="version" property="version"/>
+        <result column="creator" property="creator"
+                typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
+        <result column="updater" property="updater"
+                typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        r.rule_id, r.rule_name, r.data_source, r.rule_type, r.category_type, r.event_level, r.process_priority,
+        r.audit_method, r.auditor, r.main_department, r.main_responder, r.cc_personnel, r.confirm_method,
+        r.confirmer, r.is_enabled, r.version, r.creator, r.updater, r.create_time, r.update_time,
+        bi.name as brand_name, r.brand_code, r.confirm_department, r.audit_department
+    </sql>
+
+    <sql id="Base_Condition">
+        <if test="model.ruleName != null and model.ruleName != ''">
+            and r.rule_name like concat('%', #{model.ruleName}, '%')
+        </if>
+        <if test="model.ruleType != null and model.ruleType != ''">
+            and r.rule_type = #{model.ruleType}
+        </if>
+        <if test="model.categoryType != null and model.categoryType != ''">
+            and r.category_type = #{model.categoryType}
+        </if>
+        <if test="model.eventLevel != null and model.eventLevel != ''">
+            and r.event_level = #{model.eventLevel}
+        </if>
+        <if test="model.processPriority != null and model.processPriority != ''">
+            and r.process_priority = #{model.processPriority}
+        </if>
+        <if test="model.isEnabled != null and model.isEnabled != ''">
+            and r.is_enabled = #{model.isEnabled}
+        </if>
+        <if test="model.brandCode != null and model.brandCode != ''">
+            and r.brand_code = #{model.brandCode}
+        </if>
+    </sql>
+
+    <select id="queryRulePage" resultMap="BaseResultMap"
+            parameterType="com.voc.service.insights.engine.model.InsClosedRuleQueryModel">
+        select
+        <include refid="Base_Column_List"/>,
+        dr.name as category_type_name
+        from ins_closed_rule r
+        left join ins_data_resource dr on dr.id = r.category_type and dr.type = 'closedLoop'
+        left join ins_brand_info bi on bi.code = r.brand_code
+        where 1 = 1
+        <include refid="Base_Condition"/>
+        and r.rule_id != '1'
+
+        <choose>
+            <when test="model.order !=null and model.order !=''">
+                order by r.${model.order}
+            </when>
+            <otherwise>
+                order by r.create_time desc
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="selectIdsByModel" resultType="java.lang.String"
+            parameterType="com.voc.service.insights.engine.model.InsClosedRuleQueryModel">
+        select r.rule_id from ins_closed_rule r
+        where 1 = 1
+        <include refid="Base_Condition"/>
+    </select>
+
+    <select id="queryRuleById" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>,
+        dr.name as category_type_name
+        from ins_closed_rule r
+        left join ins_data_resource dr on dr.id = r.category_type and dr.type = 'closedLoop'
+        left join ins_brand_info bi on bi.code = r.brand_code
+        where rule_id = #{ruleId}
+    </select>
+
+    <select id="countByCategoryIds" resultType="com.voc.service.insights.engine.vo.InsClosedRuleCountVo"
+            parameterType="java.util.Set">
+        WITH all_types AS (
+        <foreach collection="categoryIds" item="type" separator=" UNION ALL ">
+            SELECT #{type} AS category_type
+        </foreach>
+        )
+        SELECT
+        t.category_type AS categoryType,
+        COUNT(r.category_type) AS `count`
+        FROM all_types t
+        left join ins_closed_rule r ON t.category_type = r.category_type
+        GROUP BY t.category_type
+    </select>
+
+
+    <update id="batchUpdateIsEnabled">
+        update ins_closed_rule
+        set is_enabled = #{isEnabled},
+        updater = #{operator},
+        update_time = #{updateTime}
+        where rule_id in
+        <foreach collection="idSet" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </update>
+
+    <select id="selectRepetitionCount" resultType="java.lang.String" parameterType="java.util.Map">
+        select rule_name from
+        ( select
+        r.rule_id,
+        r.rule_name,
+        md5(concat( data_source, '-', brand_code, '-', group_concat(c.condition_type, '-', c.operator, '-', c.option,
+        '-', c.value_type , '-', c.value order by c.condition_type asc))) as md5_str
+        from ins_closed_rule r
+        left join ins_closed_rule_condition c on c.rule_id = r.rule_id
+        where r.is_enabled = 'enabled'
+        and r.rule_type = 'single'
+        group by r.rule_id
+        ) s
+        where s.md5_str = md5(#{resultStr})
+        <if test="ruleId != null and ruleId != ''">
+            and s.rule_id != #{ruleId}
+        </if>
+        limit 1
+    </select>
+
+    <select id="selectRepetitionCountBatch" resultType="com.voc.service.insights.engine.vo.InsClosedRuleMd5Vo"
+            parameterType="java.util.Set">
+        select
+        r.rule_id,
+        md5(concat( data_source, '-', brand_code, '-', group_concat(c.condition_type, '-', c.operator, '-', c.value_type
+        , '-', c.value order by c.condition_type asc))) as md5_str
+        from
+        ins_closed_rule r
+        left join ins_closed_rule_condition c on
+        c.rule_id = r.rule_id
+        where
+        (r.is_enabled = 'enabled'
+        and r.rule_type = 'single')
+        or r.rule_id in
+        <foreach collection="idSet" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        group by r.rule_id
+    </select>
+    <select id="findIdsByCategoryIds" resultType="java.lang.String">
+        select distinct category_type from ins_closed_rule
+        where category_type in
+        <foreach item="item" index="index" collection="categoryIds" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and is_enabled = #{status}
+    </select>
+
+</mapper>

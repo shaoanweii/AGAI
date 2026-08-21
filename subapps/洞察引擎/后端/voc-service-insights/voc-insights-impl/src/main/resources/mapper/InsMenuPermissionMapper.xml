@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.insights.engine.mapper.InsMenuPermissionMapper">
+
+
+    <select id="getMenuPermission" resultType="com.voc.service.insights.engine.vo.InsRolePermissionVo">
+        SELECT id, parent_id, name, null as html_uri,button_code, sort_no, icon, last_level, app_id,api_url,create_time,1 as permissionType,permission_key as permissionKey,filter_status as filterStatus
+        FROM ins_button_permission
+        union all
+        SELECT id, parent_id, name, html_uri, null as button_code,sort_no, icon, last_level, app_id,api_url, create_time,2 as permissionType,permission_key as permissionKey,filter_status as filterStatus
+        FROM ins_menu_permission where del_flag=0
+    </select>
+
+    <select id="getUserMenuPermission" resultType="com.voc.service.insights.engine.vo.InsRolePermissionVo">
+        WITH RECURSIVE tree (id,parent_id,name,html_uri,button_code, sort_no, icon, last_level, app_id,api_url,create_time,permissionType,permissionKey) AS
+           ( select d.* from (SELECT id, parent_id, name, null as html_uri,button_code, sort_no, icon, last_level, app_id,api_url,create_time,1 as permissionType,permission_key as permissionKey
+                              FROM ins_button_permission where  filter_status=0
+                              union all
+                              SELECT id, parent_id, name, html_uri, null as button_code,sort_no, icon, last_level, app_id,api_url, create_time,2 as permissionType,permission_key as permissionKey
+                              FROM ins_menu_permission where del_flag=0 and filter_status=0) d
+             where d.id in
+                <foreach item="item" index="index" collection="permissionIdList" open="(" separator="," close=")">
+                #{item}
+               </foreach>
+             union all
+             select f.* from  ( SELECT id, parent_id, name, null as html_uri,button_code, sort_no, icon, last_level, app_id,api_url,create_time,1 as permissionType,permission_key as permissionKey
+                                FROM ins_button_permission where  filter_status=0
+                                union all
+                                SELECT id, parent_id, name, html_uri, null as button_code,sort_no, icon, last_level, app_id,api_url, create_time,2 as permissionType,permission_key as permissionKey
+                                FROM ins_menu_permission where del_flag=0 and filter_status=0) f
+                                  INNER JOIN tree t ON t.parent_id = f.id
+           )
+        SELECT * FROM tree  group by id;
+    </select>
+
+
+    <insert id="updateUserButtonPermission">
+        INSERT INTO ins_button_permission (id,parent_id,name,button_code,sort_no,icon,last_level,app_id,api_url,create_time,permission_key)
+        WITH RECURSIVE tree (id,parent_id,name,html_uri,button_code, sort_no, icon, last_level, app_id,api_url,create_time,permissionType,permissionKey) AS
+                           ( select d.* from (SELECT id, parent_id, name, null as html_uri,button_code, sort_no, icon, last_level, app_id,api_url,create_time,1 as permissionType,permission_key as permissionKey
+                                              FROM voc.ins_button_permission
+                                              union all
+                                              SELECT id, parent_id, name, html_uri, null as button_code,sort_no, icon, last_level, app_id,api_url, create_time,2 as permissionType,permission_key as permissionKey
+                                              FROM voc.ins_menu_permission where del_flag=0 and filter_status=0) d
+                             where d.id in  (select permission_id from voc.ins_customer_permission where client_id =#{clientId} and permission_type=1)
+                             union all
+                             select f.* from  ( SELECT id, parent_id, name, null as html_uri,button_code, sort_no, icon, last_level, app_id,api_url,create_time,1 as permissionType,permission_key as permissionKey
+                                                FROM voc.ins_button_permission
+                                                union all
+                                                SELECT id, parent_id, name, html_uri, null as button_code,sort_no, icon, last_level, app_id,api_url, create_time,2 as permissionType,permission_key as permissionKey
+                                                FROM voc.ins_menu_permission where del_flag=0 and filter_status=0) f
+                                                  INNER JOIN tree t ON t.parent_id = f.id
+                           )
+        SELECT id,parent_id,name,button_code,sort_no,icon,last_level,app_id,api_url,now(),permissionKey FROM tree where permissionType=1  group by id ;
+
+    </insert>
+
+    <insert id="updateUserMenuPermission">
+        INSERT INTO ins_menu_permission (id,parent_id,name,html_uri,api_url,sort_no,icon,last_level,app_id,create_time,permission_key,del_flag)
+        WITH RECURSIVE tree (id,parent_id,name,html_uri,button_code, sort_no, icon, last_level, app_id,api_url,create_time,permissionType,permissionKey) AS
+                           ( select d.* from (SELECT id, parent_id, name, null as html_uri,button_code, sort_no, icon, last_level, app_id,api_url,create_time,1 as permissionType,permission_key as permissionKey
+                                              FROM voc.ins_button_permission
+                                              union all
+                                              SELECT id, parent_id, name, html_uri, null as button_code,sort_no, icon, last_level, app_id,api_url, create_time,2 as permissionType,permission_key as permissionKey
+                                              FROM voc.ins_menu_permission where del_flag=0 and filter_status=0) d
+                             where d.id in  (select permission_id from voc.ins_customer_permission where client_id =#{clientId}  and permission_type=1)
+                             union all
+                             select f.* from  ( SELECT id, parent_id, name, null as html_uri,button_code, sort_no, icon, last_level, app_id,api_url,create_time,1 as permissionType,permission_key as permissionKey
+                                                FROM voc.ins_button_permission
+                                                union all
+                                                SELECT id, parent_id, name, html_uri, null as button_code,sort_no, icon, last_level, app_id,api_url, create_time,2 as permissionType,permission_key as permissionKey
+                                                FROM voc.ins_menu_permission where del_flag=0 and filter_status=0) f
+                                                  INNER JOIN tree t ON t.parent_id = f.id
+                           )
+        SELECT id,parent_id,name,html_uri,api_url,sort_no,icon,last_level,app_id,now(),permissionKey,0 as del_flag FROM tree where permissionType=2  group by id ;
+    </insert>
+
+
+    <delete id="deleteMenuPermission">
+        delete from ins_menu_permission
+    </delete>
+
+    <delete id="deleteButtonPermission">
+        delete from ins_button_permission
+    </delete>
+
+</mapper>

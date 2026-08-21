@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.data.integration.mapper.CleanHistoryDataMapper">
+    <select id="checkChannelMetaData">
+        select count(*)
+        from dwd_voc_platform_all_channel_onversation_details
+        where date(voc_process_at) &lt; date(date_sub(now(), #{days}))
+    </select>
+    <select id="checkChannelMetaDataHistoryData">
+        select count(*)
+        from ods_channel_meta_data_history
+        where date(back_time) = date(now())
+    </select>
+    <select id="moveChannelMetaDataToHistoryData">
+        INSERT INTO dwd_voc_platform_all_channel_onversation_details_history
+        (id, serverorder, source_id, one_id, data_source, voc_types, channel, channel_subclass, channel_subclass_code,
+         is_show, dlr_code, dlr_short_name, dlr_brand, abstract, voc_content, add_order, serveranswer,
+         resolvemethodname, serverurgency, deal_content1, remark, casedate, statusname, category_1, category_2,
+         category_3, category_4, category_5, voc_age, order_type, cust_type, car_series, car_series_code, base_series,
+         base_series_code, car_config_cn, original_car_series, gender, age, satisfaction_score, carseriestype,
+         carseries_platform, links, commentable_id, comment_id, voc_process_at, max_business_type, created_at,
+         car_config_code, user_name, extendjsonmain, fault_removing, pdtotaltime, dlrxytotaltime, dlrjdtime,
+         car_license_province, car_license_city, vocsource)
+        select id,
+               serverorder,
+               source_id,
+               one_id,
+               data_source,
+               voc_types,
+               channel,
+               channel_subclass,
+               channel_subclass_code,
+               is_show,
+               dlr_code,
+               dlr_short_name,
+               dlr_brand,
+               abstract,
+               voc_content,
+               add_order,
+               serveranswer,
+               resolvemethodname,
+               serverurgency,
+               deal_content1,
+               remark,
+               casedate,
+               statusname,
+               category_1,
+               category_2,
+               category_3,
+               category_4,
+               category_5,
+               voc_age,
+               order_type,
+               cust_type,
+               car_series,
+               car_series_code,
+               base_series,
+               base_series_code,
+               car_config_cn,
+               original_car_series,
+               gender,
+               age,
+               satisfaction_score,
+               carseriestype,
+               carseries_platform,
+               links,
+               commentable_id,
+               comment_id,
+               voc_process_at,
+               max_business_type,
+               created_at,
+               car_config_code,
+               user_name,
+               extendjsonmain,
+               fault_removing,
+               pdtotaltime,
+               dlrxytotaltime,
+               dlrjdtime,
+               car_license_province,
+               car_license_city,
+               vocsource
+        from dwd_voc_platform_all_channel_onversation_details
+        where date(voc_process_at) &lt; date(date_sub(now(), #{days}))
+    </select>
+    <delete id="deleteChannelMetaData">
+        delete
+        from dwd_voc_platform_all_channel_onversation_details
+        where date(voc_process_at) &lt; date(date_sub(now(), #{days}))
+    </delete>
+
+
+    <select id="checkAysMetaAnalysisData">
+        select count(*)
+        from ays_meta_data_analysis
+        where date(create_time) &lt; date(date_sub(now(), #{days}))
+    </select>
+    <select id="checkAysMetaAnalysisDataHistoryData">
+        select count(*)
+        from ays_meta_data_analysis_history
+        where date(back_time) = date(now())
+    </select>
+    <select id="moveAysMetaAnalysisDataToHistoryData">
+        INSERT INTO ays_meta_data_analysis_history
+        (new_id, id, work_id, one_id, client_id, channel_id, content_type, title, content, user_name, `data`, done,
+         data_status, model_type, ext_fields, biz_ext_attrs, biz_ext_attrs2, biz_ext_attrs3, publish_time, create_time)
+        select new_id,
+               id,
+               work_id,
+               one_id,
+               client_id,
+               channel_id,
+               content_type,
+               title,
+               content,
+               user_name,
+               `data`,
+               done,
+               data_status,
+               model_type,
+               ext_fields,
+               biz_ext_attrs,
+               biz_ext_attrs2,
+               biz_ext_attrs3,
+               publish_time,
+               create_time
+        from ays_meta_data_analysis 
+        where date(create_time) &lt; date(date_sub(now(), #{days}))
+    </select>
+    <delete id="deleteAysMetaAnalysisData">
+        delete
+        from ays_meta_data_analysis
+        where date(create_time) &lt; date(date_sub(now(), #{days}))
+    </delete>
+
+
+    <select id="checkAysPostProcessData">
+        select count(*)
+        from ays_post_process_data
+        where date(create_time) &lt; date(date_sub(now(), #{days}))
+    </select>
+    <select id="checkAysPostProcessDataHistoryData">
+        select count(*)
+        from ays_post_process_data_history
+        where date(back_time) = date(now())
+    </select>
+    <select id="moveAysPostProcessDataToHistoryData">
+        INSERT INTO ays_post_process_data_history
+        (new_id, id, one_id, work_id, client_id, channel_id, original_id, content_type, input_data_id, sample_data_type,
+         original_text_scene, brand_code_name, car_series_name, label_type, label_type_level_first,
+         label_type_level_second, label_type_level_three, label_type_level_four, label_type_level_five, scenario,
+         sentiment, intention_type, topic, opinion, subject, fault_level, description, sentiment_score, keywords,
+         model_type, ext_fields, biz_ext_attrs, biz_ext_attrs2, biz_ext_attrs3, publish_time, create_time, update_time,
+         abandon, hit_rules, done)
+        select new_id,
+               id,
+               one_id,
+               work_id,
+               client_id,
+               channel_id,
+               original_id,
+               content_type,
+               input_data_id,
+               sample_data_type,
+               original_text_scene,
+               brand_code_name,
+               car_series_name,
+               label_type,
+               label_type_level_first,
+               label_type_level_second,
+               label_type_level_three,
+               label_type_level_four,
+               label_type_level_five,
+               scenario,
+               sentiment,
+               intention_type,
+               topic,
+               opinion,
+               subject,
+               fault_level,
+               description,
+               sentiment_score,
+               keywords,
+               model_type,
+               ext_fields,
+               biz_ext_attrs,
+               biz_ext_attrs2,
+               biz_ext_attrs3,
+               publish_time,
+               create_time,
+               update_time,
+               abandon,
+               hit_rules,
+               done
+        from ays_post_process_data
+        where date(create_time) &lt; date(date_sub(now(), #{days}))
+    </select>
+    <delete id="deleteAysPostProcessData">
+        delete
+        from ays_post_process_data
+        where date(create_time) &lt; date(date_sub(now(), #{days}))
+    </delete>
+
+
+    <delete id="deleteAysMetaData">
+        delete
+        from ays_meta_data
+        where date(create_time) &lt; date(date_sub(now(), #{days}))
+    </delete>
+
+    <delete id="deleteAysPreProcessData">
+        delete
+        from ays_pre_process_data
+        where date(create_time) &lt; date(date_sub(now(), #{days}))
+    </delete>
+
+    <delete id="deleteAysApiResltData">
+        delete
+        from ays_api_reslt_data
+        where date(create_time) &lt; date(date_sub(now(), #{days}))
+    </delete>
+
+    <delete id="deleteApiResltDataAnalysis">
+        delete
+        from ays_api_reslt_data_analysis
+        where date(create_time) &lt; date(date_sub(now(), #{days}))
+    </delete>
+
+    <delete id="deleteApiResltDataAnalysisMiss">
+        delete
+        from ays_api_reslt_data_analysis_miss
+        where date(create_time) &lt; date(date_sub(now(), #{days}))
+    </delete>
+
+
+    <delete id="deleteAysBatchPushRecord">
+        delete
+        from ays_batch_push_record
+        where date(create_time) &lt; date(date_sub(now(), #{days}))
+    </delete>
+
+    <delete id="deleteDmLabeledResultData">
+        delete
+        from dwd_voc_platform_label_result_origin
+        where date(create_time) &lt; date(date_sub(now(), #{days}))
+    </delete>
+
+    <delete id="deleteoDsChannelExecutionResult">
+        delete
+        from dwd_voc2_processing_data_record
+        where date(create_time) &lt; date(date_sub(now(), #{days}))
+    </delete>
+
+    <delete id="deleteInsRecordLogs">
+        delete
+        from ins_record_logs
+        where date(create_time) &lt; ( now() - INTERVAL #{days} day)
+    </delete>
+
+
+</mapper>

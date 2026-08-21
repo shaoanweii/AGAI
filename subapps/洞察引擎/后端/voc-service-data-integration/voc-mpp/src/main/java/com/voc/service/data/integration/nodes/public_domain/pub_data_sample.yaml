@@ -1,0 +1,979 @@
+public-domain:
+  channel_mapping_exclude_list:
+    - {"site_domain":"qichemen.com","path":"url","val":["qichemen.com/sp"]}             # 汽车门网-新闻    20260202
+    - {"site_domain":"qiche365.org.cn","path":"url","val":["qiche365.org.cn/index/index/search","qiche365.org.cn/index/guarantee","qiche365.org.cn/index/recall"]}  # 20260202
+    - {"site_domain":"12365auto.com","path":"url","val":["m.12365auto.com/scbg"]}       # 车质网-论坛    20260202
+    - {"site_domain":"yiche.com","path":"publisher.platform","val":["芝麻阿坝","杨旭游记阿坝","发现阿坝","汽车杂谈阿坝","好运阿坝","高山阿坝","热腾腾的话题讨论阿坝","自驾游阿坝","测试阿坝","森林人阿坝","综合阿坝","摩托车阿坝","版务公告与交流阿坝"]}
+    - {"site_domain":"pcauto.com.cn","path":"publisher.platform","val":["汽车模型阿坝","无线电阿坝","二手车阿坝","摄影阿坝","宠物阿坝","卡丁车阿坝","全民讨论阿坝","改装车阿坝","摩托车阿坝","免费试用阿坝","有奖活动阿坝","自驾游阿坝","跑车阿坝","自行车阿坝","房车阿坝","美食阿坝","女神圈数码阿坝","自动驾驶阿坝","卡车阿坝","混动汽车阿坝","车友圈阿坝","电动车阿坝","最汽车阿坝","版务公告与交流阿坝"]}
+    - {"site_domain":"autohome.com.cn","path":"publisher.platform","val":["经典车阿坝","维修保养用车阿坝","汽车插画阿坝","二手车阿坝","摄影阿坝","宠物阿坝","模型阿坝","车主动态阿坝","无人机/无人飞行器阿坝","电瓶车阿坝","机油阿坝","机器人阿坝","轮胎阿坝","电子玩家阿坝","自驾游阿坝","车表不分家阿坝","自行车阿坝","房车阿坝","美食阿坝","装饰改装阿坝","文玩把件论阿坝","交通事故阿坝","坛摩托车阿坝","赛事阿坝","钓鱼阿坝","车生活阿坝"]}
+    - {"site_domain":"xcar.com.cn","path":"publisher.platform","val":["爱卡自助游阿坝","妞开妞车阿坝","摄影部落阿坝","ATV-UTV联盟阿坝","汽车赛事专区阿坝","图说世界阿坝","海外阿坝","恋爱物语阿坝","越野车俱乐部阿坝","太阳膜阿坝","Formula E 电动方程式论坛阿坝"]}
+    - {"site_domain":"dcd.zjbyte.cn","path":"publisher.platform","val":["丰田考斯特（柯斯达）商务改装阿坝","维修保养交流阿坝","玩车家族阿坝","广场阿坝","带你看遍房车阿坝","摩托车阿坝","南哥说车兄弟连阿坝"]}
+  channel_mapping_sub_domain:
+    - {"channel_code":"pd_post_tpyqc_sp","site_domain":"pcvideo.com.cn","sub_domain":["pcauto.pcvideo.com.cn"]}                     #   太平洋汽车-视频
+    - {"channel_code":"pd_post_dcd","site_domain":"dongchedi.com","sub_domain":["www.dongchedi.com"]}                               #   懂车帝
+    - {"channel_code":"pd_post_dcd_pl","site_domain":"dcd.zjbyte.cn","sub_domain":["m.dcdapp.com"]}                                 #   懂车帝
+    - {"channel_code":"pd_post_dcd_pl","site_domain":"dcd.zjbyte.cn","sub_domain":["m.dcdapp.com"],"type":"opinion"}                #   懂车帝
+    - {"channel_code":"pd_post_qctsw","site_domain":"qctsw.com","sub_domain":["www.qctsw.com"]}                                     #   汽车投诉网-资讯
+    - {"channel_code":"pd_post_qctsw_zs","site_domain":"qctsw.com","sub_domain":["www.qctsw.com"],"type":"complaint"}               #   汽车投诉网
+    - {"channel_code":"pd_post_qczhw_zx","site_domain":"qiche365.org.cn","sub_domain":[]}                                           #   汽车召回网
+    - {"channel_code":"pd_post_qczhw_zx","site_domain":"qiche365.org.cn","sub_domain":[],"type":"complaint"}                        #   汽车召回网
+    - {"channel_code":"pd_post_zgqcw","site_domain":"china.com.cn","sub_domain":["auto.china.com.cn","315.auto.china.com.cn"],"type":"complaint"}      #   中国网汽车-投诉 20260202
+    - {"channel_code":"pd_post_zg315w","site_domain":"315qc.com","sub_domain":[],"type":"complaint"}                                #   315
+    - {"channel_code":"pd_post_zgqczlw_xw","site_domain":"aqsiqauto.com","sub_domain":["www.aqsiqauto.com"]}                        #   汽车质量网
+    - {"channel_code":"pd_post_zgqczlw_xw","site_domain":"aqsiqauto.com","sub_domain":["www.aqsiqauto.com"],"type":"complaint"}     #   汽车质量网
+    - {"channel_code":"pd_post_hmts_ts","site_domain":"tousu.sina.com.cn","sub_domain":["tousu.sina.com.cn"]}                       #   黑猫投诉
+    - {"channel_code":"pd_post_hmts_ts","site_domain":"tousu.sina.com.cn","sub_domain":["tousu.sina.com.cn"],"type":"complaint"}    #   黑猫投诉
+    - {"channel_code":"pd_post_qczj_k","site_domain":"k.autohome.com.cn","sub_domain":["k.autohome.com.cn"]}                        #   汽车之家
+    - {"channel_code":"pd_post_qczj_k","site_domain":"k.autohome.com.cn","sub_domain":["k.autohome.com.cn"],"type":"opinion"}       #   汽车之家
+    - {"channel_code":"pd_post_qczj_cjh","site_domain":"autohome.com.cn","sub_domain":["chejiahao.autohome.com.cn","fs.autohome.com.cn"]}   #   汽车之家
+    - {"channel_code":"pd_post_qczj_lt","site_domain":"club.autohome.com.cn","sub_domain":["club.autohome.com.cn"]}                         #   汽车之家
+    - {"channel_code":"pd_post_qczj_lt","site_domain":"autohome.com.cn","sub_domain":["club.autohome.com.cn"]}                              #   汽车之家
+    - {"channel_code":"pd_post_qczj_jxs","site_domain":"autohome.com.cn","sub_domain":["dealer.autohome.com.cn"]}                           #   汽车之家
+    - {"channel_code":"pd_post_qczj_wz","site_domain":"autohome.com.cn","sub_domain":["m.autohome.com.cn"]}                                 #   汽车之家
+    - {"channel_code":"pd_post_qczj_sp","site_domain":"autohome.com.cn","sub_domain":["live.autohome.com.cn","v.autohome.com.cn"]}          #   汽车之家
+    - {"channel_code":"pd_post_dy","site_domain":"iesdouyin.com","sub_domain":["live.douyin.com","www.iesdouyin.com"]}          #   抖音
+    - {"channel_code":"pd_post_ks","site_domain":"live.kuaishou.com","sub_domain":["www.kuaishou.com","live.kuaishou.com"]}     #   快手
+    - {"channel_code":"pd_post_wb","site_domain":"weibo.com","sub_domain":[]}                                                   #   微博
+    - {"channel_code":"pd_post_wxgzh","site_domain":"mp.weixin.qq.com","sub_domain":["mp.weixin.qq.com","weixin.qq.com"]}       #   微信公众号
+    - {"channel_code":"pub_post_wx_spx","site_domain":"weixin.qq.com","sub_domain":["weixin.qq.com"]}                           #   微信视频号
+    - {"channel_code":"pd_post_xhs","site_domain":"xiaohongshu.com","sub_domain":["www.xiaohongshu.com"]}                       #   小红书
+    - {"channel_code":"pd_post_bilibili","site_domain":"bilibili.com","sub_domain":["t.bilibili.com","www.bilibili.com"]}       #   b站
+    - {"channel_code":"pd_post_jrtt","site_domain":"toutiao.com","sub_domain":["www.toutiao.com","weitoutiao.zjurl.cn","api.toutiaoapi.com"]}   #   头条
+    - {"channel_code":"pd_post_ydzx","site_domain":"yidianzixun.com","sub_domain":["www.yidianzixun.com"]}                      #   一点资讯
+    - {"channel_code":"pd_post_bdzd","site_domain":"zhidao.baidu.com","sub_domain":["zhidao.baidu.com"]}                        #   百度知道
+    - {"channel_code":"pd_post_bdtb","site_domain":"tieba.baidu.com","sub_domain":["tieba.baidu.com"]}                          #   百度贴吧
+    - {"channel_code":"pd_post_bjh","site_domain":"baidu.com","sub_domain":["mbd.baidu.com"]}                                   #   百家号
+    - {"channel_code":"pd_post_yj","site_domain":"baidu.com","sub_domain":["youjia.baidu.com","yoojia.baidu.com","www.yoojia.com"]}     #   百度有驾
+    - {"channel_code":"pd_post_yj","site_domain":"yoojia.com","sub_domain":["youjia.baidu.com","www.yoojia.com"]}                       #   百度有驾
+    - {"channel_code":"pd_post_ws","site_domain":"weishi.qq.com","sub_domain":["h5.weishi.qq.com","weishi.qq.com"]}                     #   腾讯微视
+    - {"channel_code":"pd_post_txsp","site_domain":"qq.com","sub_domain":["v.qq.com"]}                                          #   腾讯视频
+    - {"channel_code":"pd_post_txxw","site_domain":"qq.com","sub_domain":["new.qq.com"]}                                        #   腾讯新闻
+    - {"channel_code":"pd_post_xlkd","site_domain":"k.sina.cn","sub_domain":["k.sina.cn"]}                                      #   新浪看点
+    - {"channel_code":"pd_post_xlkd","site_domain":"sina.cn","sub_domain":["k.sina.cn"]}                                        #   新浪看点
+    - {"channel_code":"pd_post_xlxw","site_domain":"sina.cn","sub_domain":["news.sina.com.cn","news.sina.cn"]}                  #   新浪新闻
+    - {"channel_code":"pd_post_xlqc","site_domain":"sina.cn","sub_domain":["auto.sina.cn","xa.auto.sina.cn"]}                   #   新浪汽车
+    - {"channel_code":"pd_post_shsp","site_domain":"sohu.com","sub_domain":["tv.sohu.com"]}                                     #   搜狐视频
+    - {"channel_code":"pd_post_shsp","site_domain":"tv.sohu.com","sub_domain":["tv.sohu.com"]}                                  #   搜狐视频
+    - {"channel_code":"pd_post_shxw","site_domain":"sohu.com","sub_domain":["3g.k.sohu.com","k.sohu.com"]}                      #   搜狐新闻
+    - {"channel_code":"pd_post_shwz","site_domain":"sohu.com","sub_domain":["www.sohu.com"]}                                    #   搜狐文章
+    - {"channel_code":"pd_post_wyh","site_domain":"163.com","sub_domain":["m.163.com","c.m.163.com"]}                           #   网易号
+    - {"channel_code":"pd_post_yc_k","site_domain":"yiche.com","sub_domain":["dianping.yiche.com"]}                                 #   易车
+    - {"channel_code":"pd_post_yc_k","site_domain":"yiche.com","sub_domain":["dianping.yiche.com"],"type":"opinion"}                #   易车
+    - {"channel_code":"pd_post_yc_sq","site_domain":"yiche.com","sub_domain":["baa.yiche.com"]}                                     #   易车
+    - {"channel_code":"pd_post_yc_sp","site_domain":"yiche.com","sub_domain":["vc.yiche.com","i.yiche.com"]}                        #   易车
+    - {"channel_code":"pd_post_yc_jxs","site_domain":"yiche.com","sub_domain":["dealer.yiche.com"]}                                 #   易车
+    - {"channel_code":"pd_post_yc_wz","site_domain":"yiche.com","sub_domain":["hao.yiche.com","news.yiche.com"]}                    #   易车号 20260202
+    - {"channel_code":"pd_post_tpyqc_jxs","site_domain":"pcauto.com.cn","sub_domain":["price.pcauto.com.cn"]}                       #   太平洋汽车
+    - {"channel_code":"pd_post_tpyqc_jxs","site_domain":"pcauto.com.cn","sub_domain":["price.pcauto.com.cn"]}                       #   太平洋汽车
+    - {"channel_code":"pd_post_tpyqc_wz","site_domain":"pcauto.com.cn","sub_domain":["mrobot.pcauto.com.cn","drivers.pcauto.com.cn","baike.pcauto.com.cn"]}     #   太平洋汽车
+    - {"channel_code":"pd_post_tpyqc_lt","site_domain":"pcauto.com.cn","sub_domain":["bbs.pcauto.com.cn"]}                          #   太平洋汽车
+    - {"channel_code":"pd_post_tpyh","site_domain":"pcauto.com.cn","sub_domain":["www.pcauto.com.cn"]}                              #   太平洋汽车
+    - {"channel_code":"pd_post_akqh","site_domain":"xcar.com.cn","sub_domain":["aikahao.xcar.com.cn"]}                              #   爱卡
+    - {"channel_code":"pd_post_akqc_sp","site_domain":"xcar.com.cn","sub_domain":["xtv.xcar.com.cn"]}                               #   爱卡汽车
+    - {"channel_code":"pd_post_akqc_wz","site_domain":"xcar.com.cn","sub_domain":["info.xcar.com.cn"]}                              #   爱卡汽车-文章 20260202 pd_post_akqc -> pd_post_akqc_wz
+    - {"channel_code":"pd_post_xcx","site_domain":"xchuxing.com","sub_domain":["www.xchuxing.com"]}                                 #   新出行
+    - {"channel_code":"pd_post_czzj","site_domain":"16888.com","sub_domain":["news.16888.com","tousu.16888.com"]}                   #   车主之家
+    - {"channel_code":"pd_post_czw_ts","site_domain":"12365auto.com","sub_domain":["www.12365auto.com"]}                            #   车质网
+    - {"channel_code":"pd_post_czw_ts","site_domain":"12365auto.com","sub_domain":["www.12365auto.com"],"type":"complaint"}         #   车质网
+    - {"channel_code":"pd_post_czw_ts","site_domain":"12365auto.com","sub_domain":["www.12365auto.com"],"type":"opinion"}           #   车质网
+    - {"channel_code":"pd_post_czw_lt","site_domain":"12365auto.com","sub_domain":["bbs.12365auto.com","m.12365auto.com"]}          #   车质网
+    - {"channel_code":"pd_post_qcmw_xw","site_domain":"qichemen.com","sub_domain":["www.qichemen.com"]}                             #   汽车门
+    - {"channel_code":"pd_post_qcmw_ts","site_domain":"qichemen.com","sub_domain":["www.qichemen.com"],"type":"complaint"}          #   汽车门
+    - {"channel_code":"pd_post_zh","site_domain":"zhihu.com","sub_domain":["www.zhihu.com","zhuanlan.zhihu.com"]}                   #   知乎
+    - {"channel_code":"pd_post_dfcfw","site_domain":"eastmoney.com","sub_domain":["data.eastmoney.com","stock.eastmoney.com","caifuhao.eastmoney.com","finance.eastmoney.com","emcreative.eastmoney.com","mguba.eastmoney.com","choicew2z.eastmoney.com","choicegw.eastmoney.com","fund.eastmoney.com","choicemhw.eastmoney.com","biz.eastmoney.com","money.eastmoney.com"]}    #   东方财富
+    - {"channel_code":"pd_post_21cj","site_domain":"21jingji.com","sub_domain":["www.21jingji.com","m.21jingji.com"]}               #   21经济
+    - {"channel_code":"pd_post_xq","site_domain":"xueqiu.com","sub_domain":[]}                                                      #   雪球
+    - {"channel_code":"pd_post_zgxww","site_domain":"chinanews.com.cn","sub_domain":["jx.chinanews.com.cn","www.jx.chinanews.com.cn","hb.chinanews.com.cn","www.hb.chinanews.com.cn","sc.chinanews.com.cn","www.sc.chinanews.com.cn","xj.chinanews.com.cn","www.xj.chinanews.com.cn","ah.chinanews.com.cn","www.ah.chinanews.com.cn","sh.chinanews.com.cn","www.sh.chinanews.com.cn","shx.chinanews.com.cn","www.shx.chinanews.com.cn","www.chinanews.com.cn","js.chinanews.com.cn","fj.chinanews.com.cn","www.fj.chinanews.com.cn","jl.chinanews.com.cn","www.jl.chinanews.com.cn","heb.chinanews.com.cn","www.heb.chinanews.com.cn","hn.chinanews.com.cn","www.hn.chinanews.com.cn","ln.chinanews.com.cn","hlj.chinanews.com.cn","www.hlj.chinanews.com.cn","bj.chinanews.com.cn","www.bj.chinanews.com.cn","qh.chinanews.com.cn","www.qh.chinanews.com.cn","cq.chinanews.com.cn","www.cq.chinanews.com.cn","sd.chinanews.com.cn","www.sd.chinanews.com.cn","gd.chinanews.com.cn","www.gd.chinanews.com.cn","sx.chinanews.com.cn","www.sx.chinanews.com.cn","gs.chinanews.com.cn","ha.chinanews.com.cn","www.ha.chinanews.com.cn","yn.chinanews.com.cn","www.yn.chinanews.com.cn","hi.chinanews.com.cn","www.hi.chinanews.com.cn","gz.chinanews.com.cn","www.gz.chinanews.com.cn"]}       #   中国新闻网
+    - {"channel_code":"pd_post_rmw","site_domain":"people.com.cn","sub_domain":["tj.people.com.cn","hn.people.com.cn","gx.people.com.cn","nx.people.com.cn","finance.people.com.cn","sc.people.com.cn","nm.people.com.cn","acftu.people.com.cn","hb.people.com.cn","hi.people.com.cn","he.people.com.cn","cq.people.com.cn","jl.people.com.cn","opinion.people.com.cn","sn.people.com.cn","qh.people.com.cn","sh.people.com.cn","weiquan.people.com.cn","yn.people.com.cn","liuyan.people.com.cn","xj.people.com.cn","fj.people.com.cn","cpc.people.com.cn","xz.people.com.cn","dangjian.people.com.cn","korea.people.com.cn","ln.people.com.cn","gs.people.com.cn","theory.people.com.cn","japan.people.com.cn","leaders.people.com.cn","edu.people.com.cn","politics.people.com.cn","hainan.people.com.cn","usa.people.com.cn","society.people.com.cn","zj.people.com.cn","js.people.com.cn","english.people.com.cn","ah.people.com.cn","ent.people.com.cn","world.people.com.cn","gd.people.com.cn","jx.people.com.cn","kpzg.people.com.cn","henan.people.com.cn","gz.people.com.cn","ha.people.com.cn","bj.people.com.cn","pic.people.com.cn","hm.people.com.cn","military.people.com.cn","sd.people.com.cn","sx.people.com.cn","health.people.com.cn","j.people.com.cn","spanish.people.com.cn","sz.people.com.cn","fujian.people.com.cn","hlj.people.com.cn","portuguese.people.com.cn","renshi.people.com.cn","vip.people.com.cn","paper.people.com.cn","bbs1.people.com.cn"]}       #   人民网
+    - {"channel_code":"pd_post_rmw","site_domain":"liuyan.people.com.cn","sub_domain":["liuyan.people.com.cn"]}                     #   人民网
+    - {"channel_code":"pd_post_xxqg","site_domain":"xuexi.cn","sub_domain":["article.xuexi.cn","www.xuexi.cn"]}                     #   学习强国
+    - {"channel_code":"pd_post_ysp","site_domain":"yangshipin.cn","sub_domain":["m.yangshipin.cn"]}                                 #   央视频
+    - {"channel_code":"pd_post_bqw","site_domain":"ynet.com","sub_domain":["fashion.ynet.com","life.ynet.com","news.ynet.com","ent.ynet.com","sports.ynet.com","culture.ynet.com","financial.ynet.com","auto.ynet.com","opinion.ynet.com","epaper.ynet.com"]}
+  channel_mapping_path_rule:  #渠道编码替换
+    - {"target_channel_code":"pd_post_wyh","channel_code":"pd_post_wyqc","path":"retweeted.channel","val":["汽车"]}   # 网易汽车 20260202
+    - {"target_channel_code":"pd_post_wyh","channel_code":"pd_post_wysp","path":"url","val":["c.m.163.com/news/v"]}     # 网易视频 20260202
+    - {"target_channel_code":"pd_post_qczhw_zx","channel_code":"pd_post_qczhw","path":"url","val":["qiche365.org.cn/index/complaints"]}   # 汽车召回网-投诉 20260202
+    - {"target_channel_code":"pd_post_tpyh","channel_code":"pd_post_tpyqc_wz","path":"url","val":["pcauto.com.cn/hj/article"]}  # 太平洋汽车-文章 20260202
+    - {"target_channel_code":"pd_post_xcx","channel_code":"pd_post_xcx_wz","path":"url","val":["xchuxing.com/article"]}     # 新出行-文章 20260202
+    - {"target_channel_code":"pd_post_xcx","channel_code":"pd_post_xcx_sp","path":"url","val":["xchuxing.com/video"]}       # 新出行-视频 20260202
+    - {"target_channel_code":"pd_post_czw_lt","channel_code":"pd_post_czw_xw","path":"url","val":["m.12365auto.com/news","m.12365auto.com/xcdg","m.12365auto.com/parts"]}      # 车质网-新闻 20260202
+    - {"target_channel_code":"pd_post_czw_lt","channel_code":"pd_post_czw_dy","path":"url","val":["m.12365auto.com/zjdy"]}     # 车质网-答疑 20260202
+    - {"target_channel_code":"pd_post_zgqczlw_xw","channel_code":"pd_post_zgqczlw_ts","path":"url","val":["aqsiqauto.com/complaint/"]}      # 中国汽车质量网-投诉 20260202
+    - {"target_channel_code":"pd_post_zgqczlw_xw","channel_code":"pd_post_zgqczlw_xw","path":"url","val":["aqsiqauto.com/newcars/"]}        # 中国汽车质量网-新闻
+    - {"target_channel_code":"pd_post_dcd","channel_code":"pd_post_dcd_sp","path":"url","val":["dongchedi.com/video"]}      # 懂车帝-视频    20260202
+    - {"target_channel_code":"pd_post_dcd","channel_code":"pd_post_dcd_wz","path":"url","val":["dongchedi.com/article"]}    # 懂车帝-文章    20260202
+    - {"target_channel_code":"pd_post_zgqcw","channel_code":"pd_post_zgqcw","path":"url","val":["315.auto.china.com.cn/zlts"]}    # 中国网汽车-投诉    20260202
+  channel_mapping_opinion_rule2:      # 口碑描述
+    - {"source_channel_code":"pd_post_dcd_pl","target_channel_code":"pd_post_dcd_kbms","required_fields":["opinions"]}      # 懂车帝
+    - {"source_channel_code":"pd_post_qczj_k","target_channel_code":"pd_post_qczj_kbms","required_fields":["opinions"]}     # 汽车之家
+    - {"source_channel_code":"pd_post_yc_k","target_channel_code":"pd_post_yc_kbms","required_fields":["opinions"]}         # 易车
+    - {"source_channel_code":"pd_post_czw_ts","target_channel_code":"pd_post_czw_kbms","required_fields":["opinions"]}      # 车质网
+  channel_mapping_opinion_rule3:      # 评分
+    - {"source_channel_code":"pd_post_dcd_kbms","target_channel_code":"pd_post_dcd_kb","required_fields":["opinions"]}      # 懂车帝
+    - {"source_channel_code":"pd_post_qczj_kbms","target_channel_code":"pd_post_qczj_kb","required_fields":["opinions"]}    # 汽车之家
+    - {"source_channel_code":"pd_post_yc_kbms","target_channel_code":"pd_post_yc_dp","required_fields":["opinions"]}        # 易车
+  channel_mapping_opinion_score_list:
+    - {"channel_code":"pd_post_dcd_kbms","field":"score_exterior","name":"外观评分"}
+    - {"channel_code":"pd_post_dcd_kbms","field":"score_interior","name":"内饰评分"}
+    - {"channel_code":"pd_post_dcd_kbms","field":"score_space","name":"空间评分"}
+    - {"channel_code":"pd_post_dcd_kbms","field":"score_battery_life","name":"续航评分"}
+    - {"channel_code":"pd_post_dcd_kbms","field":"score_configuration","name":"配置评分"}
+    - {"channel_code":"pd_post_dcd_kbms","field":"score_driving","name":"驾驶感受评分"}
+    - {"channel_code":"pd_post_dcd_kbms","field":"score_smart_cockpit","name":"智能座舱评分"}
+    - {"channel_code":"pd_post_dcd_kbms","field":"score_assist_driving","name":"辅助驾驶评分"}
+    - {"channel_code":"pd_post_dcd_kbms","field":"score_oil","name":"油耗评分"}
+    - {"channel_code":"pd_post_yc_kbms","field":"score_space","name":"空间评分"}
+    - {"channel_code":"pd_post_yc_kbms","field":"score_exterior","name":"外观评分"}
+    - {"channel_code":"pd_post_yc_kbms","field":"score_interior","name":"内饰评分"}
+    - {"channel_code":"pd_post_yc_kbms","field":"score_control","name":"操控评分"}
+    - {"channel_code":"pd_post_yc_kbms","field":"score_comfort","name":"舒适性评分"}
+    - {"channel_code":"pd_post_yc_kbms","field":"score_intelligent","name":"智能化评分"}
+    - {"channel_code":"pd_post_yc_kbms","field":"score_battery_life","name":"续航评分"}
+    - {"channel_code":"pd_post_yc_kbms","field":"score_driveline","name":"动力评分"}
+    - {"channel_code":"pd_post_yc_kbms","field":"score_oil","name":"油耗评分"}
+    - {"channel_code":"pd_post_qczj_kbms","field":"score_space","name":"空间评分"}
+    - {"channel_code":"pd_post_qczj_kbms","field":"score_exterior","name":"外观评分"}
+    - {"channel_code":"pd_post_qczj_kbms","field":"score_interior","name":"内饰评分"}
+    - {"channel_code":"pd_post_qczj_kbms","field":"score_control","name":"操控评分"}
+    - {"channel_code":"pd_post_qczj_kbms","field":"score_comfort","name":"舒适性评分"}
+    - {"channel_code":"pd_post_qczj_kbms","field":"score_intelligent","name":"智能化评分"}
+    - {"channel_code":"pd_post_qczj_kbms","field":"score_battery_life","name":"续航评分"}
+    - {"channel_code":"pd_post_qczj_kbms","field":"score_oil","name":"油耗评分"}
+  brand_mapping_post_cmt_weibo_brand_mapping:
+    - {"user_id":"7955935442","brand":"长安引力"}
+    - {"user_id":"1040331325","brand":"长安引力"}
+    - {"user_id":"7863687999","brand":"长安引力"}
+    - {"user_id":"3220891083","brand":"长安引力"}
+    - {"user_id":"1459556214","brand":"长安凯程"}
+    - {"user_id":"3161282997","brand":"阿维塔"}
+    - {"user_id":"1174963862","brand":"深蓝汽车"}
+    - {"user_id":"2733249292","brand":"长安引力"}
+    - {"user_id":"7955597471","brand":"阿维塔"}
+    - {"user_id":"7899305885","brand":"阿维塔"}
+    - {"user_id":"3630987901","brand":"阿维塔"}
+    - {"user_id":"7952384544","brand":"长安引力"}
+    - {"user_id":"7181485858","brand":"长安启源"}
+    - {"user_id":"7999041148","brand":"长安凯程"}
+    - {"user_id":"6232978780","brand":"长安凯程"}
+    - {"user_id":"7503200345","brand":"长安引力"}
+    - {"user_id":"7680169490","brand":"长安凯程"}
+    - {"user_id":"7914431352","brand":"长安启源"}
+    - {"user_id":"1740936973","brand":"长安引力"}
+    - {"user_id":"3194397971","brand":"长安启源"}
+    - {"user_id":"Topspace","brand":"长安启源"}
+    - {"user_id":"7396009734","brand":"长安引力"}
+    - {"user_id":"3823834374","brand":"长安凯程"}
+    - {"user_id":"7739742229","brand":"长安凯程"}
+    - {"user_id":"7751244203","brand":"深蓝汽车"}
+    - {"user_id":"7714083748","brand":"阿维塔"}
+  brand_mapping_post_cmt_city_list:
+    - {"name":"阿坝"}
+    - {"name":"桐乡市"}
+    - {"name":"常宁市"}
+    - {"name":"阿尔山市"}
+    - {"name":"无锡市"}
+    - {"name":"尉犁县"}
+    - {"name":"石首市"}
+    - {"name":"龙口市"}
+    - {"name":"柳州市"}
+    - {"name":"华蓥市"}
+    - {"name":"白沙黎族自治县"}
+    - {"name":"冷水江市"}
+    - {"name":"轮台县"}
+    - {"name":"巍山彝族回族自治县"}
+    - {"name":"漠河市"}
+    - {"name":"乌兰察布市"}
+    - {"name":"文昌市"}
+    - {"name":"上海市"}
+    - {"name":"江油市"}
+    - {"name":"额敏县"}
+    - {"name":"南昌市"}
+    - {"name":"陇南市"}
+    - {"name":"广州市"}
+    - {"name":"临汾市"}
+    - {"name":"许昌市"}
+    - {"name":"佳木斯市"}
+    - {"name":"辽宁省"}
+    - {"name":"清镇市"}
+    - {"name":"合肥市"}
+    - {"name":"义乌市"}
+    - {"name":"介休市"}
+    - {"name":"北票市"}
+    - {"name":"仪征市"}
+    - {"name":"汕尾市"}
+    - {"name":"津市市"}
+    - {"name":"舒兰市"}
+    - {"name":"抚州市"}
+    - {"name":"西昌市"}
+    - {"name":"石狮市"}
+    - {"name":"临沧市"}
+    - {"name":"二连浩特市"}
+    - {"name":"鹤壁市"}
+    - {"name":"临湘市"}
+    - {"name":"普洱市"}
+    - {"name":"渭南市"}
+    - {"name":"葫芦岛市"}
+    - {"name":"五常市"}
+    - {"name":"岑溪市"}
+    - {"name":"丰镇市"}
+    - {"name":"商丘市"}
+    - {"name":"丽江市"}
+    - {"name":"墨玉县"}
+    - {"name":"敦煌市"}
+    - {"name":"拉萨市"}
+    - {"name":"瑞金市"}
+    - {"name":"淮南市"}
+    - {"name":"西畴县"}
+    - {"name":"吴川市"}
+    - {"name":"广东省"}
+    - {"name":"荆州市"}
+    - {"name":"铜仁市"}
+    - {"name":"三亚市"}
+    - {"name":"玉林市"}
+    - {"name":"高碑店市"}
+    - {"name":"呼和浩特市"}
+    - {"name":"绵阳市"}
+    - {"name":"贵港市"}
+    - {"name":"醴陵市"}
+    - {"name":"张家界市"}
+    - {"name":"吉林省"}
+    - {"name":"昆明市"}
+    - {"name":"呼伦贝尔市"}
+    - {"name":"布尔津县"}
+    - {"name":"郑州市"}
+    - {"name":"广南县"}
+    - {"name":"通化市"}
+    - {"name":"德兴市"}
+    - {"name":"宣城市"}
+    - {"name":"临海市"}
+    - {"name":"孝感市"}
+    - {"name":"澳门半岛"}
+    - {"name":"玉溪市"}
+    - {"name":"福州市"}
+    - {"name":"大冶市"}
+    - {"name":"三河市"}
+    - {"name":"界首市"}
+    - {"name":"大理市"}
+    - {"name":"澳门特别行政区"}
+    - {"name":"涟源市"}
+    - {"name":"呼图壁县"}
+    - {"name":"古交市"}
+    - {"name":"南华县"}
+    - {"name":"氹仔"}
+    - {"name":"柯坪县"}
+    - {"name":"长春市"}
+    - {"name":"龙岩市"}
+    - {"name":"贵阳市"}
+    - {"name":"鄂尔多斯市"}
+    - {"name":"金平苗族瑶族傣族自治县"}
+    - {"name":"武穴市"}
+    - {"name":"盘锦市"}
+    - {"name":"德钦县"}
+    - {"name":"特克斯县"}
+    - {"name":"本溪市"}
+    - {"name":"常德市"}
+    - {"name":"湖州市"}
+    - {"name":"宿州市"}
+    - {"name":"延安市"}
+    - {"name":"汕头市"}
+    - {"name":"周口市"}
+    - {"name":"信阳市"}
+    - {"name":"张家口市"}
+    - {"name":"胶州市"}
+    - {"name":"屯昌县"}
+    - {"name":"自治区"}
+    - {"name":"连云港市"}
+    - {"name":"伊宁市"}
+    - {"name":"西安市"}
+    - {"name":"乐清市"}
+    - {"name":"莱西市"}
+    - {"name":"云南省"}
+    - {"name":"海伦市"}
+    - {"name":"陕西省"}
+    - {"name":"监利市"}
+    - {"name":"富宁县"}
+    - {"name":"格尔木市"}
+    - {"name":"塔城市"}
+    - {"name":"丰城市"}
+    - {"name":"宁乡市"}
+    - {"name":"潮州市"}
+    - {"name":"新郑市"}
+    - {"name":"张掖市"}
+    - {"name":"双柏县"}
+    - {"name":"丹江口市"}
+    - {"name":"南涧彝族自治县"}
+    - {"name":"河口瑶族自治县"}
+    - {"name":"富蕴县"}
+    - {"name":"沧州市"}
+    - {"name":"喀什市"}
+    - {"name":"牡丹江市"}
+    - {"name":"临江市"}
+    - {"name":"扶余市"}
+    - {"name":"海安市"}
+    - {"name":"南平市"}
+    - {"name":"七台河市"}
+    - {"name":"珲春市"}
+    - {"name":"招远市"}
+    - {"name":"德惠市"}
+    - {"name":"禹城市"}
+    - {"name":"弥渡县"}
+    - {"name":"桦甸市"}
+    - {"name":"安康市"}
+    - {"name":"图们市"}
+    - {"name":"新源县"}
+    - {"name":"什邡市"}
+    - {"name":"潜江市"}
+    - {"name":"温泉县"}
+    - {"name":"泉州市"}
+    - {"name":"疏勒县"}
+    - {"name":"兰州市"}
+    - {"name":"云龙县"}
+    - {"name":"通辽市"}
+    - {"name":"黄冈市"}
+    - {"name":"太仓市"}
+    - {"name":"四会市"}
+    - {"name":"宣威市"}
+    - {"name":"福安市"}
+    - {"name":"汨罗市"}
+    - {"name":"酒泉市"}
+    - {"name":"伽师县"}
+    - {"name":"东宁市"}
+    - {"name":"苏州市"}
+    - {"name":"霍城县"}
+    - {"name":"福清市"}
+    - {"name":"枣庄市"}
+    - {"name":"济南市"}
+    - {"name":"长沙市"}
+    - {"name":"东兴市"}
+    - {"name":"齐齐哈尔市"}
+    - {"name":"阿合奇县"}
+    - {"name":"平湖市"}
+    - {"name":"东莞市"}
+    - {"name":"琼中黎族苗族自治县"}
+    - {"name":"湘乡市"}
+    - {"name":"盘州市"}
+    - {"name":"中卫市"}
+    - {"name":"绵竹市"}
+    - {"name":"峨眉山市"}
+    - {"name":"贵州省"}
+    - {"name":"安达市"}
+    - {"name":"个旧市"}
+    - {"name":"隆昌市"}
+    - {"name":"石屏县"}
+    - {"name":"博湖县"}
+    - {"name":"库车市"}
+    - {"name":"丽水市"}
+    - {"name":"韶山市"}
+    - {"name":"元谋县"}
+    - {"name":"兴平市"}
+    - {"name":"厦门市"}
+    - {"name":"安国市"}
+    - {"name":"陵水黎族自治县"}
+    - {"name":"六盘水市"}
+    - {"name":"密山市"}
+    - {"name":"驻马店市"}
+    - {"name":"阜阳市"}
+    - {"name":"龙南市"}
+    - {"name":"简阳市"}
+    - {"name":"淮北市"}
+    - {"name":"娄底市"}
+    - {"name":"青岛市"}
+    - {"name":"漳州市"}
+    - {"name":"新密市"}
+    - {"name":"登封市"}
+    - {"name":"叶城县"}
+    - {"name":"朔州市"}
+    - {"name":"巴楚县"}
+    - {"name":"运城市"}
+    - {"name":"天门市"}
+    - {"name":"赤壁市"}
+    - {"name":"韶关市"}
+    - {"name":"瑞安市"}
+    - {"name":"博乐市"}
+    - {"name":"五大连池市"}
+    - {"name":"瑞昌市"}
+    - {"name":"濮阳市"}
+    - {"name":"库尔勒市"}
+    - {"name":"金昌市"}
+    - {"name":"邯郸市"}
+    - {"name":"利川市"}
+    - {"name":"台州市"}
+    - {"name":"平度市"}
+    - {"name":"漯河市"}
+    - {"name":"宜都市"}
+    - {"name":"阜康市"}
+    - {"name":"无为市"}
+    - {"name":"嫩江市"}
+    - {"name":"马鞍山市"}
+    - {"name":"宁德市"}
+    - {"name":"邹平市"}
+    - {"name":"裕民县"}
+    - {"name":"迁安市"}
+    - {"name":"日照市"}
+    - {"name":"城市清单"}
+    - {"name":"吉安市"}
+    - {"name":"梧州市"}
+    - {"name":"辉县市"}
+    - {"name":"铜川市"}
+    - {"name":"东港市"}
+    - {"name":"根河市"}
+    - {"name":"锡林浩特市"}
+    - {"name":"江山市"}
+    - {"name":"景洪市"}
+    - {"name":"大安市"}
+    - {"name":"龙泉市"}
+    - {"name":"昌都市"}
+    - {"name":"淄博市"}
+    - {"name":"平凉市"}
+    - {"name":"肥城市"}
+    - {"name":"北安市"}
+    - {"name":"巴中市"}
+    - {"name":"新界"}
+    - {"name":"武安市"}
+    - {"name":"乐山市"}
+    - {"name":"宜昌市"}
+    - {"name":"黑河市"}
+    - {"name":"黄石市"}
+    - {"name":"如皋市"}
+    - {"name":"溧阳市"}
+    - {"name":"高平市"}
+    - {"name":"岳普湖县"}
+    - {"name":"沈阳市"}
+    - {"name":"吉首市"}
+    - {"name":"江阴市"}
+    - {"name":"彭州市"}
+    - {"name":"新乡市"}
+    - {"name":"孟州市"}
+    - {"name":"盐城市"}
+    - {"name":"榆树市"}
+    - {"name":"黑龙江省"}
+    - {"name":"香港岛"}
+    - {"name":"鹰潭市"}
+    - {"name":"宝鸡市"}
+    - {"name":"崇左市"}
+    - {"name":"营口市"}
+    - {"name":"阿里地区"}
+    - {"name":"湛江市"}
+    - {"name":"满洲里市"}
+    - {"name":"晋江市"}
+    - {"name":"广元市"}
+    - {"name":"万宁市"}
+    - {"name":"林芝市"}
+    - {"name":"玉树市"}
+    - {"name":"永仁县"}
+    - {"name":"平泉市"}
+    - {"name":"富锦市"}
+    - {"name":"五指山市"}
+    - {"name":"吉木乃县"}
+    - {"name":"武定县"}
+    - {"name":"项城市"}
+    - {"name":"澄迈县"}
+    - {"name":"和田县"}
+    - {"name":"广安市"}
+    - {"name":"清远市"}
+    - {"name":"常州市"}
+    - {"name":"托里县"}
+    - {"name":"长治市"}
+    - {"name":"若羌县"}
+    - {"name":"霍州市"}
+    - {"name":"永安市"}
+    - {"name":"深州市"}
+    - {"name":"麻城市"}
+    - {"name":"沙河市"}
+    - {"name":"滁州市"}
+    - {"name":"潍坊市"}
+    - {"name":"江门市"}
+    - {"name":"云浮市"}
+    - {"name":"赤峰市"}
+    - {"name":"丹阳市"}
+    - {"name":"安徽省"}
+    - {"name":"临清市"}
+    - {"name":"和龙市"}
+    - {"name":"新泰市"}
+    - {"name":"洱源县"}
+    - {"name":"靖江市"}
+    - {"name":"宾川县"}
+    - {"name":"开原市"}
+    - {"name":"贡山独龙族怒族自治县"}
+    - {"name":"邵东市"}
+    - {"name":"广水市"}
+    - {"name":"忻州市"}
+    - {"name":"青铜峡市"}
+    - {"name":"深圳市"}
+    - {"name":"高邮市"}
+    - {"name":"调兵山市"}
+    - {"name":"保亭黎族苗族自治县"}
+    - {"name":"青州市"}
+    - {"name":"山南市"}
+    - {"name":"枝江市"}
+    - {"name":"南安市"}
+    - {"name":"洛阳市"}
+    - {"name":"平顶山市"}
+    - {"name":"漾濞彝族自治县"}
+    - {"name":"杭州市"}
+    - {"name":"上饶市"}
+    - {"name":"鹤岗市"}
+    - {"name":"克拉玛依市"}
+    - {"name":"海阳市"}
+    - {"name":"乌什县"}
+    - {"name":"定西市"}
+    - {"name":"泸西县"}
+    - {"name":"来宾市"}
+    - {"name":"勐腊县"}
+    - {"name":"牟定县"}
+    - {"name":"西宁市"}
+    - {"name":"抚顺市"}
+    - {"name":"宜兴市"}
+    - {"name":"安宁市"}
+    - {"name":"灵宝市"}
+    - {"name":"开封市"}
+    - {"name":"兴宁市"}
+    - {"name":"屏边苗族自治县"}
+    - {"name":"台山市"}
+    - {"name":"温宿县"}
+    - {"name":"雷州市"}
+    - {"name":"韩城市"}
+    - {"name":"邓州市"}
+    - {"name":"晋中市"}
+    - {"name":"晋城市"}
+    - {"name":"文山市"}
+    - {"name":"华阴市"}
+    - {"name":"龙井市"}
+    - {"name":"建德市"}
+    - {"name":"定安县"}
+    - {"name":"仁怀市"}
+    - {"name":"哈尔滨市"}
+    - {"name":"六安市"}
+    - {"name":"临高县"}
+    - {"name":"南通市"}
+    - {"name":"莆田市"}
+    - {"name":"梁河县"}
+    - {"name":"青河县"}
+    - {"name":"扎兰屯市"}
+    - {"name":"福泉市"}
+    - {"name":"郴州市"}
+    - {"name":"十堰市"}
+    - {"name":"涿州市"}
+    - {"name":"蚌埠市"}
+    - {"name":"瓦房店市"}
+    - {"name":"海南省"}
+    - {"name":"滨州市"}
+    - {"name":"惠州市"}
+    - {"name":"沙湾市"}
+    - {"name":"萍乡市"}
+    - {"name":"武夷山市"}
+    - {"name":"明光市"}
+    - {"name":"句容市"}
+    - {"name":"乌苏市"}
+    - {"name":"广西壮族自治区"}
+    - {"name":"乌兰浩特市"}
+    - {"name":"诸暨市"}
+    - {"name":"砚山县"}
+    - {"name":"四川省"}
+    - {"name":"兴城市"}
+    - {"name":"乌鲁木齐市"}
+    - {"name":"大姚县"}
+    - {"name":"玉环市"}
+    - {"name":"洮南市"}
+    - {"name":"淮安市"}
+    - {"name":"铁力市"}
+    - {"name":"东方市"}
+    - {"name":"新和县"}
+    - {"name":"福海县"}
+    - {"name":"昌江黎族自治县"}
+    - {"name":"大连市"}
+    - {"name":"遂宁市"}
+    - {"name":"北京市"}
+    - {"name":"钦州市"}
+    - {"name":"泸州市"}
+    - {"name":"益阳市"}
+    - {"name":"广汉市"}
+    - {"name":"永平县"}
+    - {"name":"河间市"}
+    - {"name":"辽阳市"}
+    - {"name":"廉江市"}
+    - {"name":"眉山市"}
+    - {"name":"金华市"}
+    - {"name":"合作市"}
+    - {"name":"天水市"}
+    - {"name":"高州市"}
+    - {"name":"建瓯市"}
+    - {"name":"宁夏回族自治区"}
+    - {"name":"湖北省"}
+    - {"name":"莱州市"}
+    - {"name":"白城市"}
+    - {"name":"卫辉市"}
+    - {"name":"汝州市"}
+    - {"name":"新民市"}
+    - {"name":"建水县"}
+    - {"name":"香港特别行政区"}
+    - {"name":"尚志市"}
+    - {"name":"九江市"}
+    - {"name":"樟树市"}
+    - {"name":"沅江市"}
+    - {"name":"固原市"}
+    - {"name":"伊宁县"}
+    - {"name":"朝阳市"}
+    - {"name":"德州市"}
+    - {"name":"牙克石市"}
+    - {"name":"白山市"}
+    - {"name":"盈江县"}
+    - {"name":"兴义市"}
+    - {"name":"成都市"}
+    - {"name":"兰溪市"}
+    - {"name":"青海省"}
+    - {"name":"岳阳市"}
+    - {"name":"安陆市"}
+    - {"name":"宁安市"}
+    - {"name":"凭祥市"}
+    - {"name":"巩留县"}
+    - {"name":"策勒县"}
+    - {"name":"邹城市"}
+    - {"name":"祁阳市"}
+    - {"name":"松原市"}
+    - {"name":"河池市"}
+    - {"name":"新余市"}
+    - {"name":"泽普县"}
+    - {"name":"福建省"}
+    - {"name":"乌海市"}
+    - {"name":"巴彦淖尔市"}
+    - {"name":"凌源市"}
+    - {"name":"山西省"}
+    - {"name":"勐海县"}
+    - {"name":"祥云县"}
+    - {"name":"那曲市"}
+    - {"name":"凤城市"}
+    - {"name":"随州市"}
+    - {"name":"阳江市"}
+    - {"name":"维西傈僳族自治县"}
+    - {"name":"蒙自市"}
+    - {"name":"温岭市"}
+    - {"name":"高密市"}
+    - {"name":"九龙"}
+    - {"name":"三沙市"}
+    - {"name":"吉林市"}
+    - {"name":"肇庆市"}
+    - {"name":"沙雅县"}
+    - {"name":"威海市"}
+    - {"name":"茂名市"}
+    - {"name":"海东市"}
+    - {"name":"温州市"}
+    - {"name":"定州市"}
+    - {"name":"霸州市"}
+    - {"name":"陇川县"}
+    - {"name":"河源市"}
+    - {"name":"三明市"}
+    - {"name":"乐东黎族自治县"}
+    - {"name":"丘北县"}
+    - {"name":"东阳市"}
+    - {"name":"寿光市"}
+    - {"name":"武冈市"}
+    - {"name":"塔什库尔干塔吉克自治县"}
+    - {"name":"大同市"}
+    - {"name":"麻栗坡县"}
+    - {"name":"慈溪市"}
+    - {"name":"莱阳市"}
+    - {"name":"长垣市"}
+    - {"name":"弥勒市"}
+    - {"name":"海城市"}
+    - {"name":"雅安市"}
+    - {"name":"鹤庆县"}
+    - {"name":"哈密市"}
+    - {"name":"景德镇市"}
+    - {"name":"北海市"}
+    - {"name":"内江市"}
+    - {"name":"凯里市"}
+    - {"name":"信宜市"}
+    - {"name":"梅河口市"}
+    - {"name":"镇江市"}
+    - {"name":"吕梁市"}
+    - {"name":"黄骅市"}
+    - {"name":"恩平市"}
+    - {"name":"江苏省"}
+    - {"name":"承德市"}
+    - {"name":"龙港市"}
+    - {"name":"烟台市"}
+    - {"name":"当阳市"}
+    - {"name":"防城港市"}
+    - {"name":"扬州市"}
+    - {"name":"平果市"}
+    - {"name":"三门峡市"}
+    - {"name":"永康市"}
+    - {"name":"济源市"}
+    - {"name":"仙桃市"}
+    - {"name":"香格里拉市"}
+    - {"name":"襄阳市"}
+    - {"name":"滦州市"}
+    - {"name":"宁波市"}
+    - {"name":"精河县"}
+    - {"name":"揭阳市"}
+    - {"name":"阆中市"}
+    - {"name":"盖州市"}
+    - {"name":"广德市"}
+    - {"name":"安庆市"}
+    - {"name":"贵溪市"}
+    - {"name":"姚安县"}
+    - {"name":"芜湖市"}
+    - {"name":"灵武市"}
+    - {"name":"拜城县"}
+    - {"name":"孝义市"}
+    - {"name":"乐平市"}
+    - {"name":"马关县"}
+    - {"name":"直辖市"}
+    - {"name":"桂平市"}
+    - {"name":"万源市"}
+    - {"name":"张家港市"}
+    - {"name":"莎车县"}
+    - {"name":"四平市"}
+    - {"name":"德令哈市"}
+    - {"name":"开远市"}
+    - {"name":"晋州市"}
+    - {"name":"老河口市"}
+    - {"name":"化州市"}
+    - {"name":"兴化市"}
+    - {"name":"永州市"}
+    - {"name":"额尔古纳市"}
+    - {"name":"武威市"}
+    - {"name":"白银市"}
+    - {"name":"沁阳市"}
+    - {"name":"乐昌市"}
+    - {"name":"鞍山市"}
+    - {"name":"舟山市"}
+    - {"name":"新疆维吾尔自治区"}
+    - {"name":"聊城市"}
+    - {"name":"义马市"}
+    - {"name":"康定市"}
+    - {"name":"舞钢市"}
+    - {"name":"武汉市"}
+    - {"name":"新沂市"}
+    - {"name":"湖南省"}
+    - {"name":"邵武市"}
+    - {"name":"大庆市"}
+    - {"name":"东营市"}
+    - {"name":"陆丰市"}
+    - {"name":"泊头市"}
+    - {"name":"元阳县"}
+    - {"name":"禹州市"}
+    - {"name":"巩义市"}
+    - {"name":"德阳市"}
+    - {"name":"麦盖提县"}
+    - {"name":"乐陵市"}
+    - {"name":"霍尔果斯市"}
+    - {"name":"大石桥市"}
+    - {"name":"蛟河市"}
+    - {"name":"福鼎市"}
+    - {"name":"新乐市"}
+    - {"name":"潜山市"}
+    - {"name":"井冈山市"}
+    - {"name":"商洛市"}
+    - {"name":"安丘市"}
+    - {"name":"滕州市"}
+    - {"name":"鄂州市"}
+    - {"name":"赣州市"}
+    - {"name":"西藏自治区"}
+    - {"name":"黄山市"}
+    - {"name":"泸水市"}
+    - {"name":"昌吉市"}
+    - {"name":"红河县"}
+    - {"name":"扬中市"}
+    - {"name":"桂林市"}
+    - {"name":"崇州市"}
+    - {"name":"乳山市"}
+    - {"name":"邢台市"}
+    - {"name":"儋州市"}
+    - {"name":"绥芬河市"}
+    - {"name":"山东省"}
+    - {"name":"汉川市"}
+    - {"name":"湘潭市"}
+    - {"name":"庐山市"}
+    - {"name":"都江堰市"}
+    - {"name":"肇东市"}
+    - {"name":"徐州市"}
+    - {"name":"南阳市"}
+    - {"name":"于田县"}
+    - {"name":"焉耆回族自治县"}
+    - {"name":"唐山市"}
+    - {"name":"遵义市"}
+    - {"name":"丹东市"}
+    - {"name":"铜陵市"}
+    - {"name":"安阳市"}
+    - {"name":"贺州市"}
+    - {"name":"特别行政区"}
+    - {"name":"双辽市"}
+    - {"name":"北流市"}
+    - {"name":"铁岭市"}
+    - {"name":"榆林市"}
+    - {"name":"荆门市"}
+    - {"name":"百色市"}
+    - {"name":"伊春市"}
+    - {"name":"皮山县"}
+    - {"name":"高安市"}
+    - {"name":"天津市"}
+    - {"name":"鹤山市"}
+    - {"name":"株洲市"}
+    - {"name":"衡阳市"}
+    - {"name":"芒市"}
+    - {"name":"达州市"}
+    - {"name":"茫崖市"}
+    - {"name":"玛纳斯县"}
+    - {"name":"池州市"}
+    - {"name":"穆棱市"}
+    - {"name":"甘肃省"}
+    - {"name":"邛崃市"}
+    - {"name":"余姚市"}
+    - {"name":"应城市"}
+    - {"name":"灯塔市"}
+    - {"name":"玉门市"}
+    - {"name":"哈巴河县"}
+    - {"name":"东台市"}
+    - {"name":"共青城市"}
+    - {"name":"赤水市"}
+    - {"name":"河南省"}
+    - {"name":"琼海市"}
+    - {"name":"临沂市"}
+    - {"name":"开平市"}
+    - {"name":"洪江市"}
+    - {"name":"资阳市"}
+    - {"name":"遵化市"}
+    - {"name":"菏泽市"}
+    - {"name":"泰州市"}
+    - {"name":"兴仁市"}
+    - {"name":"天长市"}
+    - {"name":"兰坪白族普米族自治县"}
+    - {"name":"焦作市"}
+    - {"name":"敦化市"}
+    - {"name":"剑川县"}
+    - {"name":"日喀则市"}
+    - {"name":"讷河市"}
+    - {"name":"绿春县"}
+    - {"name":"和静县"}
+    - {"name":"临夏市"}
+    - {"name":"衡水市"}
+    - {"name":"南宫市"}
+    - {"name":"怀仁市"}
+    - {"name":"诸城市"}
+    - {"name":"宁国市"}
+    - {"name":"南宁市"}
+    - {"name":"察布查尔锡伯自治县"}
+    - {"name":"常熟市"}
+    - {"name":"梅州市"}
+    - {"name":"延吉市"}
+    - {"name":"和布克赛尔蒙古自治县"}
+    - {"name":"北镇市"}
+    - {"name":"英吉沙县"}
+    - {"name":"咸宁市"}
+    - {"name":"昆山市"}
+    - {"name":"洪湖市"}
+    - {"name":"吴忠市"}
+    - {"name":"且末县"}
+    - {"name":"抚远市"}
+    - {"name":"海口市"}
+    - {"name":"霍林郭勒市"}
+    - {"name":"台湾省"}
+    - {"name":"鸡西市"}
+    - {"name":"宜春市"}
+    - {"name":"阿克苏市"}
+    - {"name":"浏阳市"}
+    - {"name":"漳平市"}
+    - {"name":"虎林市"}
+    - {"name":"邵阳市"}
+    - {"name":"海宁市"}
+    - {"name":"嘉峪关市"}
+    - {"name":"凌海市"}
+    - {"name":"民丰县"}
+    - {"name":"曲靖市"}
+    - {"name":"海林市"}
+    - {"name":"钟祥市"}
+    - {"name":"阳泉市"}
+    - {"name":"瑞丽市"}
+    - {"name":"公主岭市"}
+    - {"name":"秦皇岛市"}
+    - {"name":"启东市"}
+    - {"name":"嵊州市"}
+    - {"name":"锦州市"}
+    - {"name":"巢湖市"}
+    - {"name":"太原市"}
+    - {"name":"磐石市"}
+    - {"name":"佛山市"}
+    - {"name":"银川市"}
+    - {"name":"绍兴市"}
+    - {"name":"济宁市"}
+    - {"name":"恩施市"}
+    - {"name":"曲阜市"}
+    - {"name":"疏附县"}
+    - {"name":"攀枝花市"}
+    - {"name":"福贡县"}
+    - {"name":"汾阳市"}
+    - {"name":"荥阳市"}
+    - {"name":"南京市"}
+    - {"name":"集安市"}
+    - {"name":"奎屯市"}
+    - {"name":"同江市"}
+    - {"name":"林州市"}
+    - {"name":"楚雄市"}
+    - {"name":"马尔康市"}
+    - {"name":"昭通市"}
+    - {"name":"资兴市"}
+    - {"name":"都匀市"}
+    - {"name":"任丘市"}
+    - {"name":"禄丰市"}
+    - {"name":"亳州市"}
+    - {"name":"阿勒泰市"}
+    - {"name":"靖西市"}
+    - {"name":"枣阳市"}
+    - {"name":"保定市"}
+    - {"name":"阜新市"}
+    - {"name":"辛集市"}
+    - {"name":"嘉兴市"}
+    - {"name":"自贡市"}
+    - {"name":"庆阳市"}
+    - {"name":"安顺市"}
+    - {"name":"侯马市"}
+    - {"name":"泰兴市"}
+    - {"name":"栖霞市"}
+    - {"name":"耒阳市"}
+    - {"name":"绥化市"}
+    - {"name":"路环"}
+    - {"name":"永济市"}
+    - {"name":"宿迁市"}
+    - {"name":"保山市"}
+    - {"name":"荣成市"}
+    - {"name":"永城市"}
+    - {"name":"原平市"}
+    - {"name":"宜城市"}
+    - {"name":"双鸭山市"}
+    - {"name":"庄河市"}
+    - {"name":"昭苏县"}
+    - {"name":"衢州市"}
+    - {"name":"泰安市"}
+    - {"name":"河津市"}
+    - {"name":"吐鲁番市"}
+    - {"name":"石家庄市"}
+    - {"name":"洛浦县"}
+    - {"name":"和硕县"}
+    - {"name":"包头市"}
+    - {"name":"和田市"}
+    - {"name":"尼勒克县"}
+    - {"name":"廊坊市"}
+    - {"name":"江西省"}
+    - {"name":"中山市"}
+    - {"name":"内蒙古自治区"}
+    - {"name":"石嘴山市"}
+    - {"name":"昌邑市"}
+    - {"name":"浙江省"}
+    - {"name":"毕节市"}
+    - {"name":"珠海市"}
+    - {"name":"汉中市"}
+    - {"name":"宜宾市"}
+    - {"name":"河北省"}
+    - {"name":"重庆市"}
+    - {"name":"长葛市"}
+    - {"name":"南雄市"}
+    - {"name":"京山市"}
+    - {"name":"怀化市"}
+    - {"name":"松滋市"}
+    - {"name":"咸阳市"}
+    - {"name":"南充市"}
+    - {"name":"辽源市"}
+    - {"name":"桐城市"}
+    - {"name":"邳州市"}

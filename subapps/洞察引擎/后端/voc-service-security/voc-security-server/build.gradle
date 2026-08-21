@@ -1,0 +1,34 @@
+apply plugin: 'java-library'
+
+group = 'voc-security-server'
+version = "1.0.0.0"
+
+dependencies {
+    testImplementation  project(':voc-service-common').sourceSets.test.output
+    api project(':voc-service-security:voc-security-api')
+    api project(':voc-service-components:voc-cmps-mybatis')
+    api project(':voc-service-components:voc-cmps-redis')
+    //api project(':voc-service-components:voc-cmps-swagger')
+    api project(':voc-service-bizlogs:voc-bizlogs-api')
+//    api project(':voc-service-common')
+//    testCompileOnly ':voc-service-common'
+    api project(':voc-service-config')
+
+    compileOnly('org.springframework.boot:spring-boot-starter-web')
+    api('org.springframework.cloud:spring-cloud-starter-bootstrap')
+//    api('org.springframework.boot:spring-boot-starter-data-jpa')
+    api('org.springframework.boot:spring-boot-starter-security')
+    api ("com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-discovery")
+    api ("com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-config")
+
+//    api 'com.alipay.sofa:rpc-sofa-boot-starter'
+//    api 'com.alipay.sofa:actuator-sofa-boot-starter'
+
+    api 'io.jsonwebtoken:jjwt:0.13.0'
+    api 'javax.xml.bind:jaxb-api:2.4.0-b180830.0359'
+    api 'cn.hutool:hutool-all'
+    api 'javax.annotation:javax.annotation-api:1.3.2'
+    api('com.mysql:mysql-connector-j')
+}
+
+

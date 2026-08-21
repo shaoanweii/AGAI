@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.insights.engine.mapper.InsStaSysDepartMapper">
+
+    <select id="findSubDepartListByDeptId" resultType="com.voc.service.insights.engine.entity.InsStaSysDepartEntity">
+        WITH RECURSIVE dept_cte AS (
+            SELECT *
+            FROM sta_sys_depart
+            WHERE id = #{deptId}
+              AND status = '1'
+
+            UNION ALL
+
+            SELECT t.*
+            FROM sta_sys_depart t
+            INNER JOIN dept_cte c ON t.parent_id = c.id
+            WHERE t.status = '1'
+        )
+        SELECT *
+        FROM dept_cte
+        ORDER BY parent_id, id
+    </select>
+
+    <select id="findParentDepartListByDeptId" resultType="com.voc.service.insights.engine.entity.InsStaSysDepartEntity">
+        WITH RECURSIVE dept_cte AS (
+            SELECT *
+            FROM sta_sys_depart
+            WHERE id = #{deptId}
+              AND status = '1'
+
+            UNION ALL
+
+            SELECT t.*
+            FROM sta_sys_depart t
+            INNER JOIN dept_cte c ON t.id = c.parent_id
+            WHERE t.status = '1'
+        )
+        SELECT *
+        FROM dept_cte
+        ORDER BY parent_id, id
+    </select>
+
+</mapper>

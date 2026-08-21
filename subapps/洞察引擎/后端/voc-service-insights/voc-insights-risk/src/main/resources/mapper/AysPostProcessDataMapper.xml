@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.analysis.risk.mapper.AysPostProcessDataMapper">
+
+    <select id="emotionRisk" resultType="com.voc.service.analysis.model.AnalysisEmotionRiskModel" >
+        SELECT
+            res.brand_code as brandName,
+            res.car_series_name as carSeriesName,
+            #{statisticType} as statistic_type,
+            res.label_type,
+            res.label_type_level_first,
+            res.label_type_level_second,
+            res.label_type_level_three,
+            res.label_type_level_four,
+            res.label_type_level_five,
+            res.keywords,
+            res.publish_time as publish_date,
+            res.negative_c as negativeNum,
+            res.positive_c as positiveNum,
+            res.complain_c as complainNum,
+            res.voiceNum,
+            res.channelNum,
+            res.new_id_array,
+            res.city_code,
+            res.channel_id as channelId,
+            res.negative_c + res.positive_c as totalNum,
+            (
+                        (
+                            CASE
+                                WHEN res.negative_c + res.positive_c > 0 THEN
+                                        (
+                                                1 + (
+                                                        res.negative_c - res.positive_c
+                                                        ) / (
+                                                        res.negative_c + res.positive_c
+                                                        )
+                                            ) * 0.5
+                                ELSE
+                                    0
+                                END
+                            ) * 0.6 + (
+                                          CASE
+                                              WHEN (res.negative_c) > 0 THEN
+                                                      (
+                                                              1 + (
+                                                                      res.complain_c - res.negative_c
+                                                                      ) / res.negative_c
+                                                          ) * 0.5
+                                              ELSE
+                                                  0
+                                              END
+                                          ) * 0.4
+                ) * LN (1 + res.negative_c) s_num,
+        <include refid="riskGroup" />
+        from
+            (
+                select
+                    c1.brand_code,
+                    c1.label_type,
+                    c1.label_type_level_first,
+                    c1.label_type_level_second,
+                    c1.label_type_level_three,
+                    c1.label_type_level_four,
+                    c1.label_type_level_five,
+                    array_agg(c1.channel_id)[1] as  channel_id ,
+                    array_filter(x -> x != 'null',ARRAY_AGG(c1.new_id)) as new_id_array,
+                    array_join(array_filter(x -> x != 'null',ARRAY_AGG(c1.city_code)), ',') as city_code,
+                    array_join(array_filter(x -> x != 'null',ARRAY_AGG(If( c1.sentiment = '负面', c1.topic , null))),',') as keywords,
+                    array_join(array_filter(x -> x != 'null',
+                    array_distinct(ARRAY_AGG(c1.car_series_name))),
+                    ',') as car_series_name,
+            SUM(if( c1.sentiment = '负面', 1 , 0)) as negative_c,
+            SUM(if( c1.sentiment = '正面', 1 , 0)) as positive_c,
+            SUM(if( c1.intention_type = '投诉', 1 , 0)) as complain_c ,
+            SUM(if( c1.sentiment = '负面', 1 , 0)) as voiceNum,
+            count(DISTINCT c1.channel_id) as channelNum,
+            <include refid="riskCol" />
+            MIN(c1.publish_time) as publish_time
+            from
+        sta_model_processed_data c1
+        where
+          label_type is not NULL
+          and label_type in ("PROD","SERVICE")
+          and brand_code is not NULL
+          and channel_id is not NULL
+          and c1.publish_time &gt;=#{beginTime}
+          and c1.publish_time &lt; #{endTime} and  c1.label_type=#{tagType}
+        <if test="brandCode !=null and brandCode!=''">
+            and c1.brand_code =#{brandCode}
+        </if>
+        <if test="labelTypeLevelFourDisableList !=null and labelTypeLevelFourDisableList.size() >0">
+            and  label_type_level_four_code not in
+            <foreach item="item" index="index" collection="labelTypeLevelFourDisableList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        group by
+            c1.brand_code,
+            c1.label_type,
+            c1.label_type_level_first,
+            c1.label_type_level_second,
+            c1.label_type_level_three,
+            c1.label_type_level_four,
+            c1.label_type_level_five,
+            <include refid="riskGroup" />) as res
+
+    </select>
+
+
+    <select id="qualityRisk" resultType="com.voc.service.analysis.model.AnalysisQualityRiskModel" >
+        select
+           #{statisticType} as statistic_type,
+            c1.brand_code as brandName,
+            MIN(c1.fault_level) as faultLevel,
+            c1.label_type,
+            c1.label_type_level_first,
+            c1.label_type_level_second,
+            c1.label_type_level_three,
+            c1.label_type_level_four,
+            c1.label_type_level_five,
+            array_agg(c1.channel_id)[1] as  channel_id ,
+            array_filter(x -> x != 'null',ARRAY_AGG(c1.new_id)) as new_id_array,
+            array_join(array_filter(x -> x != 'null',ARRAY_AGG(c1.city_code)), ',') as city_code,
+            array_join(array_filter(x -> x != 'null',ARRAY_AGG(If( c1.sentiment = '负面', c1.topic , null))),',') as keywords,
+            array_join(array_filter(x -> x != 'null',
+                                    array_distinct(ARRAY_AGG(c1.car_series_name))),
+                       ',') as carSeriesName,
+            SUM(if( c1.sentiment = '负面', 1 , 0)) as totalNum,
+            SUM(if( c1.sentiment = '正面', 1 , 0)) as positiveNum,
+            SUM(if( c1.sentiment = '负面', 1 , 0)) as voiceNum,
+            count(DISTINCT c1.channel_id) as channelNum,
+            <include refid="riskCol" />
+            MIN(c1.publish_time) as publish_date
+        from
+        sta_model_processed_data c1
+        where
+        label_type is not NULL and label_type in ("QY") and brand_code is not NULL
+        and channel_id is not NULL
+        and c1.publish_time &gt;=#{beginTime}
+        and c1.publish_time &lt; #{endTime} and  c1.label_type=#{tagType}
+        <if test="brandCode !=null and brandCode!=''">
+            and c1.brand_code =#{brandCode}
+        </if>
+        <if test="labelTypeLevelFourDisableList !=null and labelTypeLevelFourDisableList.size() >0">
+            and  label_type_level_four_code not in
+            <foreach item="item" index="index" collection="labelTypeLevelFourDisableList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        group by
+            c1.brand_code,
+            c1.label_type,
+            c1.label_type_level_first,
+            c1.label_type_level_second,
+            c1.label_type_level_three,
+            c1.label_type_level_four,
+            c1.label_type_level_five,
+          <include refid="riskGroup" />
+    </select>
+
+    <select id="userRisk" resultType="com.voc.service.analysis.model.AnalysisUserRiskModel" >
+        select
+        f.*,
+        ROUND( (
+        if(f.negativeNum = 0 , 0, f.negativeNum / MAX(f.negativeNum) OVER ( PARTITION BY  <include refid="riskGroup"/> ) * 0.05 )  +
+        if(f.complainNum = 0 , 0, f.complainNum / MAX(f.complainNum) OVER ( PARTITION BY  <include refid="riskGroup"/>  ) * 0.85 )  +
+        if(f.channelNum = 0 , 0, f.channelNum / MAX(f.channelNum) OVER ( PARTITION BY  <include refid="riskGroup"/>)  * 0.05) +
+        if(emotionNum = 0 , 0,  emotionNum / MIN(emotionNum) OVER ( PARTITION BY  <include refid="riskGroup"/>)  * 0.05  )
+        ) * 100
+        , 2) as riskIndex
+        from
+        (
+        select
+        #{statisticType} as statistic_type,
+        brandName,
+        publish_date,
+        user_name,
+        negativeNum,
+        positiveNum,
+        complainNum,
+        channelNum,
+        originalNum,
+        channel_id,
+        label_type,
+        label_type_level_first,
+        label_type_level_second,
+        label_type_level_three,
+        label_type_level_four,
+        label_type_level_five,
+        ifnull((ifnull((ifnull(positiveNum, 0)+ ifnull(neutralNum, 0) - (ifnull(negativeNum, 0))), 0) / tagC) * 100, 0) as emotionNum, /*净情感值*/
+        keywords,
+        city_code,
+        new_id_array,
+        carSeriesName,
+        <include refid="riskGroup" />
+        from
+            (
+                select
+                    c1.brand_code as brandName,
+                    SUM(if( c1. sentiment = '负面', 1 , 0)) as negativeNum,
+                    SUM(if( c1.sentiment = '正面', 1 , 0)) as positiveNum,
+                    SUM(if( c1.sentiment = '中性', 1 , 0)) as neutralNum,
+                    SUM(if( c1.intention_type = '投诉', 1 , 0)) as complainNum,
+                    array_agg(c1.channel_id)[1] as  channel_id ,
+                    c1.one_id,
+                    count(c1.one_id) as originalNum,
+                    count(DISTINCT c1.channel_id) as channelNum,
+                    count(c1.topic is not null) as tagC,
+                    array_agg(c1.customer_name)[1]  as user_name,
+                    array_filter(x -> x != 'null',ARRAY_AGG(c1.new_id)) as new_id_array,
+                    array_join(array_filter(x -> x != 'null',ARRAY_AGG(c1.label_type)), ',') as label_type,
+                    array_join(array_filter(x -> x != 'null',ARRAY_AGG(c1.city_code)), ',') as city_code,
+                    array_join(array_filter(x -> x != 'null',ARRAY_AGG(c1.label_type_level_first)), ',')  as label_type_level_first,
+                    array_join(array_filter(x -> x !='null',ARRAY_AGG(c1.label_type_level_second)), ',') as label_type_level_second,
+                    array_join(array_filter(x -> x != 'null',ARRAY_AGG(c1.label_type_level_three)), ',') as label_type_level_three,
+                    array_join(array_filter(x -> x != 'null',ARRAY_AGG(c1.label_type_level_four)), ',') as label_type_level_four,
+                    array_join(array_filter(x -> x != 'null',ARRAY_AGG(c1.label_type_level_five)),',') as label_type_level_five,
+                    array_join(array_filter(x -> x != 'null',ARRAY_AGG(If( c1.sentiment = '负面', c1.topic , null))), ',') as keywords,
+                    array_join(array_filter(x -> x != 'null',
+                    array_distinct(ARRAY_AGG(c1.car_series_name))),',') as carSeriesName,
+                    <include refid="riskCol" />
+                    MIN(c1.publish_time) as publish_date
+                from
+                   sta_model_processed_data c1
+                where
+                    c1.customer_name is not null
+                    and c1.brand_code is not null
+                    and c1.publish_time &gt;=#{beginTime}
+                    and c1.publish_time &lt; #{endTime}
+                    <if test="brandCode !=null and brandCode!=''">
+                        and c1.brand_code =#{brandCode}
+                    </if>
+                    <if test="labelTypeLevelFourDisableList !=null and labelTypeLevelFourDisableList.size() >0">
+                        and  label_type_level_four_code not in
+                        <foreach item="item" index="index" collection="labelTypeLevelFourDisableList" open="(" separator="," close=")">
+                            #{item}
+                        </foreach>
+                    </if>
+                    group by
+                    c1.brand_code,
+                    c1.one_id,
+                 <include refid="riskGroup" />)R
+         WHERE  negativeNum> 0
+        )f
+    </select>
+
+
+
+    <select id="getSentenceList" resultType="java.lang.String" >
+        select
+        original_text_scene
+        from
+        sta_model_processed_data
+        where
+        publish_time >= #{startTime}
+        and publish_time &lt;= #{endTime}
+        and brand_code= #{brandName}
+        <if test="labelTypeLevelFourDisableList !=null and labelTypeLevelFourDisableList.size() >0">
+            and  label_type_level_four_code not in
+            <foreach item="item" index="index" collection="labelTypeLevelFourDisableList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        and  label_type is not NULL and label_type =#{tagType}  and label_type_level_four = #{tagName}
+    </select>
+
+
+    <sql id="riskGroup">
+        <choose>
+            <when test="statisticType !=null and statisticType eq 'w'.toString()">
+                date_week,
+                date_year
+            </when>
+            <when test="statisticType !=null and statisticType eq 'm'.toString()">
+                date_month,
+                date_year
+            </when>
+            <when test="statisticType !=null and statisticType eq 'q'.toString()">
+               date_quarter,
+                date_year
+            </when>
+            <when test="statisticType !=null and statisticType eq 'y'.toString()">
+               date_year
+            </when>
+            <otherwise>
+                date_day
+            </otherwise>
+        </choose>
+    </sql>
+
+    <sql id="riskCol">
+        <choose>
+            <when test="statisticType !=null and statisticType eq 'w'.toString()">
+                week (c1.publish_time) as date_week,
+                year(c1.publish_time) as date_year,
+            </when>
+            <when test="statisticType !=null and statisticType eq 'm'.toString()">
+                month (c1.publish_time) as date_month,
+                year(c1.publish_time) as date_year,
+            </when>
+            <when test="statisticType !=null and statisticType eq 'q'.toString()">
+                quarter (c1.publish_time) as date_quarter,
+                year(c1.publish_time) as date_year,
+            </when>
+            <when test="statisticType !=null and statisticType eq 'y'.toString()">
+                year(c1.publish_time) as date_year,
+            </when>
+            <otherwise>
+                date(c1.publish_time) as date_day,
+            </otherwise>
+        </choose>
+    </sql>
+
+</mapper>

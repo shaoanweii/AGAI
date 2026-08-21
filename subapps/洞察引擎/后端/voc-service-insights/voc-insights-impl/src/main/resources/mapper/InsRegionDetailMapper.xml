@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.insights.engine.mapper.InsRegionDetailMapper">
+    <resultMap id="BaseResultMap" type="com.voc.service.insights.engine.entity.InsRegionDetailEntity" >
+        <result column="id" property="id" />
+        <result column="parent_id" property="parentId" />
+        <result column="name" property="name" />
+        <result column="name_en" property="nameEn" />
+        <result column="status" property="status" />
+        <result column="region" property="region" typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
+        <result column="create_time" property="createTime" />
+        <result column="create_user" property="createUser" />
+        <result column="update_time" property="updateTime" />
+        <result column="update_user" property="updateUser" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,
+                parent_id,
+                name,
+                name_en,
+                status,
+                region,
+                create_time,
+                create_user,
+                update_time,
+                update_user
+    </sql>
+
+    <update id="updateRegion">
+        UPDATE ins_region_detail
+        <set>
+            parent_id = #{regionDetailEntity.parentId},
+            name = #{regionDetailEntity.name},
+            name_en = #{regionDetailEntity.nameEn},
+            status = #{regionDetailEntity.status},
+--             region =  JSON_SET(region,'$',json_array(#{regionDetailEntity.region,typeHandler=com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler})),
+            region =  #{regionDetailEntity.regions},
+            update_time = #{regionDetailEntity.updateTime},
+            update_user = #{regionDetailEntity.updateUser}
+        </set>
+        WHERE id = #{regionDetailEntity.id}
+    </update>
+
+    <select id="findRegionDetailByRegionId" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from ins_region_detail
+        where parent_id = #{regionId}
+    </select>
+
+    <delete id="deleteRegionCategory">
+        delete from ins_region_detail where id = #{regionCategoryId}
+    </delete>
+
+    <select id="findRegionList" resultType="com.voc.service.insights.engine.entity.InsProvinceAreaInfoEntity">
+<!--        select <include refid="Base_Column_List"/>-->
+<!--        from ins_region_detail-->
+<!--        where 1=1-->
+<!--        <if test="regionConfigModel.parentId !=null and regionConfigModel.parentId !='' ">-->
+<!--           and  parent_id = #{regionConfigModel.parentId}-->
+<!--        </if>-->
+<!--        <if test="regionConfigModel.regionIds !=null and regionConfigModel.regionIds.size()>0">-->
+<!--            and id in-->
+<!--            <foreach item="item" index="index" collection="regionConfigModel.regionIds" open="(" separator="," close=")">-->
+<!--                #{item}-->
+<!--            </foreach>-->
+<!--        </if>-->
+<!--        order by create_time asc-->
+            select
+            big_area_code as bigAreaSaleCode,
+            big_area_sale as bigAreaSale,
+            small_area_code as smallAreaSaleCode,
+            samll_area_sale as smallAreaSale
+            from
+            sta_dealership_data_view
+            where
+            big_area_sale is not null
+            <if test="regionConfigModel.brandName != null and regionConfigModel.brandName !='' ">
+                and brand = #{regionConfigModel.brandName}
+            </if>
+            <if test="regionConfigModel.regionIds !=null and regionConfigModel.regionIds.size()>0">
+                and small_area_code in
+                <foreach item="item" index="index" collection="regionConfigModel.regionIds" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            group by  big_area_code, bigAreaSale, small_area_code, smallAreaSale
+        order by bigAreaSaleCode desc
+    </select>
+    <select id="findRegionChildCountByRegionIds" resultType="java.lang.Integer">
+        select count(1) from ins_region_detail
+        where parent_id in
+        <foreach item="item" index="index" collection="regionIds" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="findRegionByName" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from ins_region_detail
+        where name = #{name}
+    </select>
+
+    <select id="findRegionListByProvinceCode"
+            resultType="com.voc.service.insights.engine.entity.InsProvinceAreaInfoEntity">
+
+        select
+        big_area_code as bigAreaSaleCode,
+        big_area_sale as bigAreaSale,
+        small_area_code as smallAreaSaleCode,
+        samll_area_sale as smallAreaSale
+        from
+        sta_dealership_data_view
+        where 1=1
+        <if test="regionConfigModel.brandName != null and regionConfigModel.brandName !='' ">
+            and brand = #{regionConfigModel.brandName}
+        </if>
+        <if test="regionConfigModel.regionIds !=null and regionConfigModel.regionIds.size()>0">
+            and small_area_code in
+            <foreach item="item" index="index" collection="regionConfigModel.regionIds" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        group by
+        big_area_code,
+        big_area_sale,
+        small_area_code,samll_area_sale
+        order by bigAreaSaleCode desc
+    </select>
+    <select id="findRegionListByProvinceCode1"
+            resultType="com.voc.service.insights.engine.entity.InsProvinceAreaInfoEntity">
+        select
+        big_area_code as bigAreaSaleCode,
+        big_area_sale as bigAreaSale,
+        small_area_code as smallAreaSaleCode,
+        samll_area_sale as smallAreaSale,
+        dealership_name as dealershipName
+        from
+        sta_dealership_data_view2
+        where 1=1
+        <if test="regionConfigModel.brandName != null and regionConfigModel.brandName !='' ">
+            and brand = #{regionConfigModel.brandName}
+        </if>
+        <if test="regionConfigModel.regionIds !=null and regionConfigModel.regionIds.size()>0">
+            and small_area_code in
+            <foreach item="item" index="index" collection="regionConfigModel.regionIds" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        group by
+        big_area_code,
+        big_area_sale,
+        small_area_code,samll_area_sale,dealership_name
+        order by bigAreaSaleCode desc
+    </select>
+</mapper>

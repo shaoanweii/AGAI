@@ -1,0 +1,29 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: voc-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      TZ: Asia/Shanghai
+    ports:
+      - "3306:3306"
+    command:
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --default-time-zone=+08:00
+      --sql-mode=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION
+    volumes:
+      - voc_mysql_data:/var/lib/mysql
+
+  redis:
+    image: redis:7
+    container_name: voc-redis
+    command: ["redis-server", "--requirepass", "root"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - voc_redis_data:/data
+
+volumes:
+  voc_mysql_data:
+  voc_redis_data:

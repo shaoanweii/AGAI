@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.insights.engine.mapper.InsLabelCorrectionInfoMapper">
+
+    <insert id="batchInsert">
+        INSERT INTO report_label_correction_info
+        (
+        id,
+        data_id,
+        correction_record_id,
+        channel_id,
+        topic,
+        intention_type,
+        sentiment,
+        publish_time,
+        one_id,
+        work_id,
+        scenario,
+        client_id,
+        content_type,
+        sample_data_type,
+        original_id,
+        input_data_id,
+        original_text_scene,
+        brand_code,
+        car_series_code,
+        label_type,
+        opinion,
+        subject,
+        fault_level,
+        description,
+        sentiment_score,
+        keywords,
+        model_type,
+        raw_data,
+        ext_fields,
+        biz_ext_attrs,
+        biz_ext_attrs2,
+        biz_ext_attrs3,
+        cust_ext_attrs,
+        vhl_ext_attrs,
+        dealer_ext_attrs,
+        prd_ext_attrs,
+        tags_ext_attrs,
+        create_time,
+        update_time,
+        abandon,
+        done
+        )
+        SELECT
+        id,  -- 对应目标表id
+        data_id,  -- 对应目标表data_id
+        #{id} as correction_record_id,  -- 对应目标表correction_record_id
+        channel_code,  -- 对应目标表channel_id
+        topic,  -- 对应目标表topic
+        intention as intention_type,  -- 对应目标表intention_type
+        sentiment,  -- 对应目标表sentiment
+        publish_time,  -- 对应目标表publish_time
+        one_id,  -- 对应目标表one_id
+        "" as work_id,  -- 对应目标表work_id
+        "" as scenario,  -- 对应目标表scenario
+        "" as client_id,  -- 对应目标表client_id
+        content_type,  -- 对应目标表content_type
+        "" as sample_data_type,  -- 对应目标表sample_data_type
+        "" as original_id,  -- 对应目标表original_id
+        "" as input_data_id,  -- 对应目标表input_data_id
+        original_text_scene,  -- 对应目标表original_text_scene
+        brand_code,  -- 对应目标表brand_code
+        car_series_code,  -- 对应目标表car_series_code
+        "" as label_type,  -- 对应目标表label_type
+        opinion,  -- 对应目标表opinion
+        "" as subject,  -- 对应目标表subject
+        "" as fault_level,  -- 对应目标表fault_level
+        "" as description,  -- 对应目标表description
+        "" as sentiment_score,  -- 对应目标表sentiment_score
+        "" as keywords,  -- 对应目标表keywords
+        "" as model_type,  -- 对应目标表model_type
+        "" as raw_data,  -- 对应目标表raw_data
+        "" as ext_fields,  -- 对应目标表ext_fields
+        "" as biz_ext_attrs,  -- 对应目标表biz_ext_attrs
+        "" as biz_ext_attrs2,  -- 对应目标表biz_ext_attrs2
+        "" as biz_ext_attrs3,  -- 对应目标表biz_ext_attrs3
+        "" as cust_ext_attrs,  -- 对应目标表cust_ext_attrs
+        "" as vhl_ext_attrs,  -- 对应目标表vhl_ext_attrs
+        "" as dealer_ext_attrs,  -- 对应目标表dealer_ext_attrs
+        "" as prd_ext_attrs,  -- 对应目标表prd_ext_attrs
+        "" as tags_ext_attrs,  -- 对应目标表tags_ext_attrs
+        create_time,  -- 对应目标表create_time
+        update_time,  -- 对应目标表update_time
+        "" as abandon,  -- 对应目标表abandon
+        "" as done  -- 对应目标表done
+        FROM  voc_anal_flow_model_tags_result_data_full_ext
+        where  1=1
+        <if test="newIdList != null and newIdList.size()!=0">
+            and id in
+            <foreach item="item" index="index" collection="newIdList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+
+    </insert>
+
+</mapper>

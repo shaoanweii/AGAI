@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.analysis.core.v2.mapper.SentimentRuleKeywordsMapper">
+
+    <!-- 根据主情感和规则类型查询规则关键词 -->
+    <select id="selectByPrimarySentimentAndRuleType" resultType="com.voc.service.analysis.core.v2.entity.SentimentRuleKeywordsEntity">
+        SELECT 
+            primary_sentiment as primarySentiment,
+            rule_type as ruleType,
+            rule_keywords as ruleKeywords,
+            secondary_sentiment as secondarySentiment
+        FROM voc_ins_sentiment_rule_keywords_mv 
+        WHERE primary_sentiment = #{primarySentiment} 
+        AND rule_type = #{ruleType}
+    </select>
+
+</mapper>

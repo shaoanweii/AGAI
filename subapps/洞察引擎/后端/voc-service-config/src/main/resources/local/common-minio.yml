@@ -1,0 +1,19 @@
+#minio:
+#  endpoint: http://172.16.80.16:30125/files
+#  accessKey: voc-cloud
+#  secretKey: PBE(vyAVZUUOdaWLcPuyZ6hXGghuK72aWGPef9pD/TGSo89+szPGNwkL/8YqCOjil6N/)
+#  secure: false
+
+minio:
+  oss:
+    accessKeyId: voc-cloud
+    #accessKeyId: WUDchOzohKBvvzr6YDE7
+    accessKeySecret: PBE(vyAVZUUOdaWLcPuyZ6hXGghuK72aWGPef9pD/TGSo89+szPGNwkL/8YqCOjil6N/)
+    #accessKeySecret: YB7Z5IsRppmGUSSL19FSkJOHD8fmtp77oautGAqk
+    endpoint: http://172.16.80.16:30125
+    # 可以公网访问的域名，将minio返回的 ip 和端口直接替换就可以访问了
+    web_endpoint: http://172.16.80.16:32305/files
+    resourceEndpoint: https://172.16.80.16:32183
+    bucketName: voc-cloud
+    # km 最大支持 5g
+    maxSize:  1

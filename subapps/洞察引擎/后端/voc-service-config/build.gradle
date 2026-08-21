@@ -1,0 +1,18 @@
+apply plugin: 'java-library'
+
+group = 'voc-service-ops-api'
+version = "1.0.0-SNAPSHOT"
+
+dependencies {
+    api project(':voc-service-common')
+
+    api 'com.github.ulisesbocchio:jasypt-spring-boot'
+    // 使用更通用的依赖版本
+//    api 'com.alibaba.nacos:nacos-client:2.2.0'
+
+    // 添加缺失的依赖项
+    implementation 'io.prometheus:simpleclient_common'
+    implementation 'org.jspecify:jspecify'
+    // 使用更通用的版本
+//    implementation 'org.springframework.cloud:spring-cloud-starter-loadbalancer:4.1.0'
+}

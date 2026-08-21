@@ -1,0 +1,39 @@
+{
+  "extends": "@vue/tsconfig/tsconfig.dom.json",
+  "include": [
+    "src/**/*",
+    "src/**/*.vue",
+    "src/**/*.tsx",
+    "src/**/*.ts",
+    "src/**/*.jsx",
+    "src/**/*.test.ts",
+    "src/**/*.spec.ts",
+    "src/types/index.d.ts",
+    "src/types/global-components.d.ts",
+    "src/vite-env.d.ts"
+  ],
+  "exclude": ["src/**/__tests__/*"],
+  "files": ["src/components/appDialog.ts"],
+  "compilerOptions": {
+    "composite": true,
+    "baseUrl": ".",
+    "types": ["vite/client", "element-plus/global"],
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "paths": {
+      "@/*": ["./src/*"],
+      "@assets/*": ["./src/assets/*"],
+      "@components/*": ["./src/components/*"],
+      "@views/*": ["./src/views/*"],
+      "@store/*": ["./src/store/*"],
+      "@api/*": ["./src/api/*"],
+      "@hooks/*": ["./src/hooks/*"],
+      "@utils/*": ["./src/utils/*"],
+      "@types/*": ["./src/types/*"],
+      "@constants/*": ["./src/constants/*"],
+      "@styles/*": ["./src/styles/*"],
+      "@layout/*": ["./src/layout/*"],
+      "@h5/*": ["./src/views/H5/*"]
+    }
+  }
+}

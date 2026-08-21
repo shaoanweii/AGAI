@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.insights.engine.data.mapper.InsSIDataSourceMapper">
+
+    <select id="findAllAttrMapping" resultType="com.voc.service.insights.engine.vo.AttrMappingVo">
+        SELECT
+            attr,name
+        FROM
+            ays_ext_attrs_mapping_values
+    </select>
+
+    <select id="findDataSourceResult" resultType="java.lang.Integer">
+        select sum(a.cont) from (
+            SELECT
+                count(1) as cont
+            FROM
+                dwd_voc2_processing_data_record
+            WHERE
+                (create_time BETWEEN date(#{insDataSourceRequestModel.date}) AND date(date_add(date(#{insDataSourceRequestModel.date}),INTERVAL 1 DAY)))
+            <if test="insDataSourceRequestModel.status !=null and insDataSourceRequestModel.status !='' ">
+                and status = #{insDataSourceRequestModel.status}
+            </if>
+        GROUP BY data_id
+        ) a
+    </select>
+</mapper>

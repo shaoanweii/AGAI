@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.insights.engine.data.mapper.InsDataSourceTemplateMapper">
+    <resultMap id="BaseResultMap" type="com.voc.service.insights.engine.data.entity.InsDataSourceTemplateEntity" >
+        <result column="new_id" property="newId" />
+        <result column="id" property="id" />
+        <result column="channel_id" property="channelId" />
+        <result column="title" property="title" />
+        <result column="content" property="content" />
+        <result column="publish_time" property="publishTime" />
+        <result column="user_Id" property="userId" />
+        <result column="user_name" property="userName" />
+        <result column="URL" property="URL" />
+        <result column="reading_count" property="readingCount" />
+        <result column="focus_count" property="focusCount" />
+        <result column="comments_count" property="commentsCount" />
+        <result column="favor_count" property="favorCount" />
+        <result column="redirection_count" property="redirectionCount" />
+        <result column="batch_id" property="batchId" />
+        <result column="total_num" property="totalNum" />
+        <result column="success_num" property="successNum" />
+        <result column="fail_num" property="failNum" />
+        <result column="create_time" property="createTime" />
+        <result column="create_user" property="createUser" />
+        <result column="data_validity" property="dataValidity" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        new_id,
+                id,
+                channel_id,
+                title,
+                content,
+                publish_time,
+                user_Id,
+                user_name,
+                URL,
+                reading_count,
+                focus_count,
+                comments_count,
+                favor_count,
+                redirection_count,
+                batch_id,
+                total_num,
+                success_num,
+                fail_num,
+                create_time,
+                create_user,
+                data_validity
+    </sql>
+
+    <update id="updateBatchDataSource">
+        update
+            ins_date_source_template
+        set total_num = #{dataSourceTemplateEntity.totalNum},
+            success_num=#{dataSourceTemplateEntity.successNum},
+            fail_num = #{dataSourceTemplateEntity.failNum},
+            create_user = #{dataSourceTemplateEntity.createUser}
+        where
+            batch_id = #{dataSourceTemplateEntity.batchId}
+    </update>
+
+    <select id="findByBatchId" resultMap="BaseResultMap">
+        select
+            <include refid="Base_Column_List" />
+        from
+            ins_date_source_template
+        where
+            batch_id = #{insDataSourceModel.batchId}
+    </select>
+
+    <delete id="deleteDataSourceTemplate">
+        delete from ins_date_source_template where create_time &lt; #{insDataSourceModel.startTime} and create_user = #{insDataSourceModel.createUser}
+    </delete>
+
+    <insert id="insertBatchDataSource">
+        insert into ins_date_source_template
+        (
+        new_id,
+        id,
+        channel_id,
+        title,
+        content,
+        publish_time,
+        user_Id,
+        user_name,
+        URL,
+        reading_count,
+        focus_count,
+        comments_count,
+        favor_count,
+        redirection_count,
+        collections_count,
+        batch_id,
+        total_num,
+        success_num,
+        fail_num,
+        create_time,
+        create_user,
+        data_validity
+        )
+        values
+        <foreach collection="dataSourceTemplateEntities" item="item" separator=",">
+            (
+                #{item.newId},
+                #{item.id},
+                #{item.channelId},
+                #{item.title},
+                #{item.content},
+                #{item.publishTime},
+                #{item.userId},
+                #{item.userName},
+                #{item.URL},
+                #{item.readingCount},
+                #{item.focusCount},
+                #{item.commentsCount},
+                #{item.favorCount},
+                #{item.collectionsCount},
+                #{item.redirectionCount},
+                #{item.batchId},
+                #{item.totalNum},
+                #{item.successNum},
+                #{item.failNum},
+                #{item.createTime},
+                #{item.createUser},
+                #{item.dataValidity}
+            )
+        </foreach>
+    </insert>
+</mapper>

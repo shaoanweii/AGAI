@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.insights.engine.data.mapper.AysMetaDataAnalysisMapper">
+
+
+    <select id="pageMetaDataAnalysisList"  >
+        SELECT
+        new_id,
+        id,
+        work_id,
+        client_id,
+        channel_id,
+        content_type,
+        title,
+        content,
+        user_name,
+        `data`,
+        done,
+        data_status,
+        publish_time,
+        create_time,
+        ext_fields,
+        biz_ext_attrs,
+        biz_ext_attrs2,
+        biz_ext_attrs3
+        FROM
+        ays_meta_data_analysis
+        where
+        client_id = #{clientId}
+        <if test="workIdList != null and workIdList.size()!=0 ">
+            and work_id in
+            <foreach item="item" index="index" collection="workIdList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="dataStatus != null and dataStatus.size()!=0 ">
+            and data_status in
+            <foreach item="item" index="index" collection="dataStatus" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="startTime != null and startTime !=''">
+            and date(publish_time) BETWEEN DATE(#{startTime}) and DATE(#{endTime})
+        </if>
+        <if test="channelIdList != null and channelIdList.size() !=0 ">
+            and channel_id in
+            <foreach item="item" index="index" collection="channelIdList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="showType != null and showType !=''">
+            and ext_fields -> '$.showType' = #{showType}
+        </if>
+        <if test="keywords != null and keywords !='' ">
+            and (
+            trim(biz_ext_attrs -> '$.category_1') like concat('%',#{keywords},'%')
+            or trim(biz_ext_attrs -> '$.category_2') like concat('%',#{keywords},'%')
+            or trim(biz_ext_attrs -> '$.category_3') like concat('%',#{keywords},'%')
+            or trim(biz_ext_attrs -> '$.category_4') like concat('%',#{keywords},'%')
+            or trim(biz_ext_attrs -> '$.category_5') like concat('%',#{keywords},'%')
+            or trim(biz_ext_attrs -> '$.abstract') like concat('%',#{keywords},'%')
+            or content like concat('%',#{keywords},'%')
+            )
+        </if>
+        order by new_id desc
+        limit #{pageNum},#{pageSize}
+    </select>
+
+
+	<select id="pageMetaDataAnalysisListCount"  >
+        SELECT
+			count(1)
+        FROM
+        ays_meta_data_analysis
+        where
+        client_id = #{clientId}
+        <if test="workIdList != null and workIdList.size()!=0 ">
+            and work_id in
+            <foreach item="item" index="index" collection="workIdList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="dataStatus != null and dataStatus.size()!=0 ">
+            and data_status in
+            <foreach item="item" index="index" collection="dataStatus" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="startTime != null and startTime !=''">
+            and date(publish_time) BETWEEN DATE(#{startTime}) and DATE(#{endTime})
+        </if>
+        <if test="channelIdList != null and channelIdList.size() !=0 ">
+            and channel_id in
+            <foreach item="item" index="index" collection="channelIdList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="showType != null and showType !=''">
+            and ext_fields -> '$.showType' = #{showType}
+        </if>
+        <if test="keywords != null and keywords !='' ">
+            and (
+            trim(biz_ext_attrs -> '$.category_1') like concat('%',#{keywords},'%')
+            or trim(biz_ext_attrs -> '$.category_2') like concat('%',#{keywords},'%')
+            or trim(biz_ext_attrs -> '$.category_3') like concat('%',#{keywords},'%')
+            or trim(biz_ext_attrs -> '$.category_4') like concat('%',#{keywords},'%')
+            or trim(biz_ext_attrs -> '$.category_5') like concat('%',#{keywords},'%')
+            or trim(biz_ext_attrs -> '$.abstract') like concat('%',#{keywords},'%')
+            or content like concat('%',#{keywords},'%')
+            )
+        </if>
+    </select>
+
+
+
+    <select id="projectMetaDataAnalysisList"  >
+
+        select
+        ANY_VALUE(new_id) as new_id,
+        ARRAY_AGG(car_series_name) as carSeriesName,
+        ANY_VALUE(biz_ext_attrs) as bizExtAttrs,
+        ANY_VALUE(publish_time) as publishTime,
+        ARRAY_AGG(mention_car_series) as mentionCarSeries
+        from
+        ins_ays_post_process_data
+        where
+        client_id = #{clientId} and showType ="2"
+<!--        <if test="workIdList != null and workIdList.size() !=0 and dateType != null and dateType !=''">-->
+<!--            and (work_id in-->
+<!--            <foreach item="item" index="index" collection="workIdList" open="(" separator="," close=")">-->
+<!--                #{item}-->
+<!--            </foreach>-->
+<!--            or showType ="2")-->
+<!--        </if>-->
+
+<!--        <if test="workIdList == null  and dateType != null and dateType !=''">-->
+<!--            and showType ="2"-->
+<!--        </if>-->
+
+<!--        <if test="workIdList != null and workIdList.size() !=0 and dateType == null and dateType ==''">-->
+<!--            and work_id in-->
+<!--            <foreach item="item" index="index" collection="workIdList" open="(" separator="," close=")">-->
+<!--                #{item}-->
+<!--            </foreach>-->
+<!--        </if>-->
+        <if test="startTime != null and startTime !=''">
+            and date(publish_time) BETWEEN DATE(#{startTime}) and DATE(#{endTime})
+        </if>
+        <if test="channelIdList != null and channelIdList.size() !=0 ">
+            and channel_id in
+            <foreach item="item" index="index" collection="channelIdList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="labelTypeList != null and labelTypeList.size!=0">
+            and label_type in
+            <foreach item="item" index="index" collection="labelTypeList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="labelTypeLevelFourDisableList !=null and labelTypeLevelFourDisableList.size() >0">
+            and  label_type_level_four_code not in
+            <foreach item="item" index="index" collection="labelTypeLevelFourDisableList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="cityCodeList != null and cityCodeList.size!=0">
+            and small_area_code in
+            <foreach item="item" index="index" collection="cityCodeList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="ownCarSeries != null and ownCarSeries.size() !=0 ">
+            and car_series_name in
+            <foreach item="item" index="index" collection="ownCarSeries" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="competitorsCarSeries != null and competitorsCarSeries.size() !=0 ">
+            and car_series_name in
+            <foreach item="item" index="index" collection="competitorsCarSeries" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="brandCode != null and brandCode.size()!=0 ">
+            and brand_code_name in
+            <foreach item="item" index="index" collection="brandCode" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="mentionCarSeriesString != null and mentionCarSeriesString !='' ">
+            and mention_car_series IS  not null and mention_car_series!="[]"
+            and array_length(array_intersect(split(mention_car_series ,',') ,split(#{mentionCarSeriesString} ,','))) > 0
+        </if>
+        <if test="keywords != null and keywords !='' ">
+            and (category_1 like concat('%',#{keywords},'%')
+            or category_2 like concat('%',#{keywords},'%')
+            or category_3 like concat('%',#{keywords},'%')
+            or category_4 like concat('%',#{keywords},'%')
+            or category_5 like concat('%',#{keywords},'%')
+            or abstract like concat('%',#{keywords},'%')
+            or original_text_scene like concat('%',#{keywords},'%')
+            )
+        </if>
+        group by original_id order by publishTime desc,original_id desc
+        limit #{pageNum},#{pageSize}
+    </select>
+
+
+
+
+
+    <select id="projectMetaDataAnalysisListCount" resultType="java.lang.Long" >
+        select
+        count(DISTINCT original_id)
+        from
+        ins_ays_post_process_data
+        where
+        client_id = #{clientId} and showType="2"
+<!--        <if test="workIdList != null and workIdList.size() !=0 and dateType != null and dateType !=''">-->
+<!--            and (work_id in-->
+<!--            <foreach item="item" index="index" collection="workIdList" open="(" separator="," close=")">-->
+<!--                #{item}-->
+<!--            </foreach>-->
+<!--            or showType="2")-->
+<!--        </if>-->
+
+<!--        <if test="workIdList == null and dateType != null and dateType !=''">-->
+<!--            and showType="2"-->
+<!--        </if>-->
+
+<!--        <if test="workIdList != null and workIdList.size() !=0 and dateType == null and dateType ==''">-->
+<!--            and work_id in-->
+<!--            <foreach item="item" index="index" collection="workIdList" open="(" separator="," close=")">-->
+<!--                #{item}-->
+<!--            </foreach>-->
+<!--        </if>-->
+        <if test="channelIdList != null and channelIdList.size() !=0 ">
+            and channel_id in
+            <foreach item="item" index="index" collection="channelIdList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="labelTypeList != null and labelTypeList.size!=0">
+            and label_type in
+            <foreach item="item" index="index" collection="labelTypeList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="labelTypeLevelFourDisableList !=null and labelTypeLevelFourDisableList.size() >0">
+            and  label_type_level_four_code not in
+            <foreach item="item" index="index" collection="labelTypeLevelFourDisableList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="cityCodeList != null and cityCodeList.size!=0">
+            and small_area_code in
+            <foreach item="item" index="index" collection="cityCodeList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="ownCarSeries != null and ownCarSeries.size() !=0 ">
+            and car_series_name in
+            <foreach item="item" index="index" collection="ownCarSeries" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="competitorsCarSeries != null and competitorsCarSeries.size() !=0 ">
+            and car_series_name in
+            <foreach item="item" index="index" collection="competitorsCarSeries" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="brandCode != null and brandCode.size()!=0 ">
+            and brand_code_name in
+            <foreach item="item" index="index" collection="brandCode" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="mentionCarSeriesString != null and mentionCarSeriesString !='' ">
+            and mention_car_series IS  not null and mention_car_series!="[]"
+            and array_length(array_intersect(split(mention_car_series ,',') ,split(#{mentionCarSeriesString} ,','))) > 0
+        </if>
+        <if test="startTime != null and startTime !=''">
+            and date(publish_time) BETWEEN DATE(#{startTime}) and DATE(#{endTime})
+        </if>
+        <if test="keywords != null and keywords !='' ">
+            and (category_1 like concat('%',#{keywords},'%')
+            or category_2 like concat('%',#{keywords},'%')
+            or category_3 like concat('%',#{keywords},'%')
+            or category_4 like concat('%',#{keywords},'%')
+            or category_5 like concat('%',#{keywords},'%')
+            or abstract like concat('%',#{keywords},'%')
+            or original_text_scene like concat('%',#{keywords},'%')
+            )
+        </if>
+    </select>
+</mapper>

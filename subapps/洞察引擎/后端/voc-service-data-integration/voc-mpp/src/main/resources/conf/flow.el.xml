@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow>
+    <!-- 接收数据-保存原始数据 -->
+    <chain name="mpp_input_channel_order_type_flow">
+        THEN(
+            getChannelDatasetNode,                                  <!-- 获取渠道数据集-->
+            validateChannelDatasetNode,                             <!-- 校验数据有效性，分出有效数据和无效数据-->
+            CATCH(                                                   <!-- 异步执行 -->
+                THEN(
+                    pushToAnalysisSerivceNode,                      <!-- 推送数据到数据清洗服务 -->
+                    saveSuccessedChannelDatasetStatusNode         <!-- 更新数据状态为成功 -->
+                )
+            ),
+            recordfailureChannelDatasetNode                         <!-- 记录失败数据， （上面表达式不管有没有抛出异常,最终总会执行次节点） -->
+        );
+    </chain>
+
+    <chain name="mpp_input_channel_order_type_retry_flow">
+        THEN(
+            getChannelDatasetNode,                                  <!-- 获取渠道数据集-->
+            validateChannelDatasetNode,                             <!-- 校验数据有效性，分出有效数据和无效数据-->
+            CATCH(                                                   <!-- 异步执行 -->
+                THEN(
+                    pushToAnalysisSerivceNode,                      <!-- 推送数据到数据清洗服务 -->
+                    saveSuccessedChannelDatasetStatusNode         <!-- 更新数据状态为成功 -->
+                )
+            ),
+            recordfailureChannelDatasetNode                         <!-- 记录失败数据， （上面表达式不管有没有抛出异常,最终总会执行次节点） -->
+        );
+    </chain>
+
+    <chain name="mpp_input_channel_load_flow">
+        THEN(
+            IF(isUnprocessedDataCountNode, THEN(                   <!-- 判断未处理量(50000)-->
+                ITERATOR(loadChannelDatasetNode).DO(        <!-- 根据渠道类型加载不同数据集-->
+                    THEN(
+                        sendToChannelDatasetTopicNode
+                    )
+                 )
+            ))
+        );
+    </chain>
+
+    <chain name="mpp_input_channel_load_retry_flow">
+        ITERATOR(loadRetryChannelDatasetNode).DO(        <!-- 根据渠道类型加载不同数据集-->
+            THEN(
+                sendToChannelDatasetTopicNode
+            )
+        );
+    </chain>
+
+    <!-- 处理数据中的公域数据数据-->
+    <chain name="mpp_input_public_domain_data_flow">
+        ITERATOR(getPublicDomainDatasetNode).DO(        <!-- 根据渠道类型加载不同数据集-->
+            THEN(
+                CATCH(                                                   <!-- 异步执行 -->
+                    THEN(
+                        loadPublicDomainDatasetNode,
+                        validatePublicDomainDatasetNode,
+                        pubDomainPrimitiveTypesDataParsedEventNode,
+                        postCmtChannelMatchedEventNode,
+                        postCmtBrandMatchedEventNode,
+                        complaintChannelMatchedEventNode,
+                        complaintBrandMatchedEventNode,
+                        opinionChannelMatchedEventNode,
+                        opinionBrandMatchedEventNode,
+                        sendSuccessedPublicDomainDataSaveNode,
+                        sendSuccessedPublicDomainDataExecRecordNode
+                    )
+                ),
+                recordfailurePublicDomainDatasetNode
+            )
+        );
+    </chain>
+
+    <chain name="mpp_input_public_domain_data_opinion_flow">
+        THEN(
+            CATCH(                                                   <!-- 异步执行 -->
+                THEN(
+                    opinionWOMChannelMatchedEventNode,
+                    opinionBrandMatchedEventNode,
+                    sendSuccessedPublicDomainDataSaveNode
+                )
+            ),
+            recordfailurePublicDomainDatasetNode
+        )
+    </chain>
+</flow>

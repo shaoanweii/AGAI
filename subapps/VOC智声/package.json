@@ -1,0 +1,96 @@
+{
+  "name": "voc-voice-demo",
+  "private": true,
+  "version": "0.0.0",
+  "description": "VOC智声离线客户体验洞察与事件闭环演示产品",
+  "author": "VOC智声产品团队",
+  "type": "module",
+  "scripts": {
+    "dev": "node local-demo/dev.mjs",
+    "dev:remote": "vite --mode development",
+    "build": "vue-tsc -b && vite build",
+    "build:dev": "vue-tsc -b && vite build --mode development",
+    "build:prod": "vue-tsc -b && vite build --mode production",
+    "build:test": "vue-tsc -b && vite build --mode test",
+    "build:rc": "vue-tsc -b && vite build --mode production",
+    "build:local": "vue-tsc -b && vite build --mode local-demo",
+    "build:portal": "vue-tsc -b && vite build --mode local-demo --base=/apps/voc/ --outDir='../../public/apps/voc' --emptyOutDir",
+    "local:server": "node local-demo/server.mjs",
+    "verify:neutral": "node scripts/check-neutralization.mjs dist",
+    "preview": "vite preview",
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix",
+    "format": "prettier --write \"src/**/*.{vue,ts,js,json,scss}\""
+  },
+  "dependencies": {
+    "@element-plus/icons-vue": "^2.3.1",
+    "@zumer/snapdom": "^2.12.2",
+    "amfe-flexible": "^2.2.1",
+    "axios": "^1.18.1",
+    "crypto-js": "^4.2.0",
+    "dayjs": "^1.11.13",
+    "echarts": "^6.1.0",
+    "echarts-wordcloud": "file:vendor/echarts-wordcloud",
+    "element-plus": "^2.13.6",
+    "jspdf": "^4.2.1",
+    "lodash-es": "^4.18.1",
+    "pinia": "^3.0.2",
+    "pinia-plugin-persistedstate": "^4.7.1",
+    "qrcode": "^1.5.4",
+    "remixicon": "^4.6.0",
+    "vant": "^4.9.21",
+    "vconsole": "^3.15.1",
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.1",
+    "vuedraggable": "^4.1.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.22.0",
+    "@types/crypto-js": "^4.2.2",
+    "@types/lodash-es": "^4.17.12",
+    "@types/node": "^22.15.18",
+    "@types/qrcode": "^1.5.6",
+    "@vitejs/plugin-vue": "^5.2.3",
+    "@vitejs/plugin-vue-jsx": "^4.1.2",
+    "@vue/tsconfig": "^0.7.0",
+    "eslint": "^9.22.0",
+    "eslint-config-prettier": "^10.1.1",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-vue": "^10.0.0",
+    "fast-glob": "^3.3.3",
+    "globals": "^16.0.0",
+    "postcss": "^8.5.25",
+    "postcss-pxtorem": "^6.1.0",
+    "prettier": "^3.5.3",
+    "sass": "1.71.0",
+    "typescript": "~5.8.3",
+    "typescript-eslint": "^8.26.1",
+    "vite": "^6.4.3",
+    "vue-tsc": "^2.2.8"
+  },
+  "overrides": {
+    "defu": "6.1.5",
+    "form-data": "4.0.6",
+    "rollup": "4.62.2",
+    "svgo": "3.3.4",
+    "immutable": "4.3.9",
+    "@eslint/config-array": {
+      "minimatch": "3.1.5"
+    },
+    "@eslint/eslintrc": {
+      "minimatch": "3.1.5"
+    },
+    "eslint": {
+      "minimatch": "3.1.5"
+    },
+    "eslint-plugin-jsx-a11y": {
+      "minimatch": "3.1.5"
+    },
+    "@typescript-eslint/typescript-estree": {
+      "minimatch": "9.0.9"
+    },
+    "@vue/language-core": {
+      "minimatch": "9.0.9"
+    }
+  }
+}

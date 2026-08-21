@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.insights.engine.data.mapper.InsValidateRuleMapper">
+    <resultMap id="BaseResultMap" type="com.voc.service.insights.engine.data.entity.InsValidateRuleEntity" >
+        <result column="id" property="id" />
+        <result column="regulation_id" property="regulationId" />
+        <result column="work_id" property="workId" />
+        <result column="single_or_full_type" property="singleOrFullType" />
+        <result column="single_validate_status" property="singleValidateStatus" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="operator" property="operator" />
+        <result column="full_validate_status" property="fullValidateStatus" />
+        <result column="content_type" property="contentType"/>
+        <result column="channel" property="channel" typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,
+        regulation_id,
+        work_id,
+        single_or_full_type,
+        single_validate_status,
+        create_time,
+        update_time,
+        operator,
+        full_validate_status,
+        content_type,
+        channel
+    </sql>
+
+    <update id="updateValidateStatusByWordId">
+        update ins_validate_rule
+        set
+            update_time = #{validateRuleInfoModel.endTime},
+        <if test="validateRuleInfoModel.ruleType == 1">
+            full_validate_status = #{validateRuleInfoModel.validateStatus}
+        </if>
+        <if test="validateRuleInfoModel.ruleType == 0">
+            single_validate_status = #{validateRuleInfoModel.validateStatus}
+        </if>
+        where
+            work_id = #{validateRuleInfoModel.workId}
+    </update>
+
+    <select id="findValidateRuleInfo" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from ins_validate_rule
+        where
+            regulation_id = #{validateRuleInfoModel.rulesId}
+        and single_or_full_type = #{validateRuleInfoModel.dataType}
+        order by create_time desc,update_time desc
+    </select>
+
+    <select id="findNewestValidateRuleInfo" resultMap="BaseResultMap">
+        select
+            ivr.id,
+            ivr.regulation_id,
+            ivr.work_id,
+            ivr.single_or_full_type
+        from ins_validate_rule ivr
+        right join (
+            select
+                max(update_time) as maxUpTime,
+                max(create_time) as maxCreateTime,
+                regulation_id,
+                single_or_full_type,
+                count(regulation_id)
+            from
+                ins_validate_rule
+            where
+                1=1
+            group by regulation_id, single_or_full_type
+        ) as ir on ir.regulation_id = ivr.regulation_id and ir.single_or_full_type = ivr.single_or_full_type
+        where if(ir.maxUpTime is not null , ir.maxUpTime = ivr.update_time, ir.maxCreateTime = ivr.create_time)
+    </select>
+
+    <select id="findValidateInfoList" resultMap="BaseResultMap">
+        select
+            id,
+            regulation_id,
+            work_id,
+            single_or_full_type,
+            if(single_validate_status is null,'-1',single_validate_status) as single_validate_status,
+            create_time,
+            update_time,
+            operator,
+            if(full_validate_status is null ,'-1',full_validate_status) as full_validate_status
+        from
+            ins_validate_rule
+        where regulation_id = #{regulationId}
+        order by create_time desc,update_time desc
+    </select>
+
+    <select id="findValidateTypeByWorkId" resultType="java.lang.String">
+        select single_or_full_type from ins_validate_rule where work_id = #{workId}
+    </select>
+
+    <select id="findValidateInfoListByIds" resultMap="BaseResultMap">
+        select
+            id,
+            regulation_id,
+            work_id,
+            single_or_full_type,
+            if(single_validate_status is null,'-1',single_validate_status) as single_validate_status,
+            create_time,
+            update_time,
+            operator,
+            if(full_validate_status is null ,'-1',full_validate_status) as full_validate_status
+        from
+            ins_validate_rule
+        where regulation_id in
+            <foreach collection="regulationIds" item="regulationId" separator="," open="(" close=")">
+                #{regulationId}
+            </foreach>
+        order by create_time desc,update_time desc
+    </select>
+</mapper>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.insights.engine.mapper.InsAttributeLabelMapper">
+    <resultMap id="BaseResultMap" type="com.voc.service.insights.engine.entity.InsAttributeLabelEntity">
+        <result column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="status" property="status"/>
+        <result column="statusName" property="statusName"/>
+        <result column="create_user" property="createUser"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <sql id="AttributeLabelListSql">
+        select
+            ial.id,
+            ial.name,
+            ial.status,
+            sd1.item_text as statusName,
+            ial.create_user,
+            if(su.firstname is null, su.employee_id, concat(su.firstname, '-', su.employee_id)) as update_user,
+            ial.create_time,
+            ial.update_time
+        from ins_property_tag ial
+        left join (
+            select sdi.item_text, sdi.item_value
+            from voc_ms_be.ins_dict sd
+            left join voc_ms_be.ins_dict_item sdi on sdi.dict_id = sd.id
+            where sd.dict_code = 'enable_type'
+        ) sd1 on sd1.item_value = ial.status
+        left join voc_ms_be.sys_users su on su.id = ial.update_user
+        where 1 = 1
+        <if test="model.name != null and model.name != ''">
+            and ial.name like concat('%', #{model.name}, '%')
+        </if>
+        <if test="model.status != null and model.status != ''">
+            and ial.status = #{model.status}
+        </if>
+        <if test="model.order != null and model.order != ''">
+            order by ial.${model.order}
+        </if>
+        <if test="model.order == null or model.order == ''">
+            order by ial.create_time desc, ial.id asc
+        </if>
+    </sql>
+
+    <select id="findAttributeLabelList" resultMap="BaseResultMap">
+        <include refid="AttributeLabelListSql"/>
+    </select>
+
+    <select id="findAllAttributeLabelList" resultMap="BaseResultMap">
+        <include refid="AttributeLabelListSql"/>
+    </select>
+</mapper>

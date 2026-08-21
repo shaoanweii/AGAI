@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data>
+  <object-set>
+    <table path="VDP_RS_TD.ods_channel_meta_data">
+      <table path="VDP_RS_TD.ays_meta_data_analysis" from="data_id" to="id"/>
+    </table>
+    <table path="dev_dndc.ays_meta_data_analysis">
+      <table path="dev_dndc.ays_post_process_data" from="id" to="input_data_id"/>
+    </table>
+    <table path="dev_dndc.ays_post_process_data">
+      <table path="dev_dndc.dm_labeled_result_data" from="input_data_id" to="data_id"/>
+    </table>
+    <table path="dev_dndc.ods_channel_meta_data">
+      <table path="dev_dndc.ays_meta_data_analysis" from="data_id" to="id"/>
+    </table>
+  </object-set>
+</data>

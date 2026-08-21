@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.insights.engine.alert.mapper.AltTaskConfigDataMapper">
+    <resultMap type="com.voc.service.insights.engine.alert.entity.AltTaskConfigDataEntity" id="AltTaskConfigDataMap">
+        <result property="id" column="id" jdbcType="VARCHAR"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="channelId" column="channel_id" jdbcType="VARCHAR"/>
+        <result property="clientId" column="client_id" jdbcType="VARCHAR"/>
+        <result property="dataType" column="data_type" jdbcType="VARCHAR"/>
+        <result property="scheduledTime" column="scheduled_time" jdbcType="INTEGER"/>
+        <result property="period" column="period" jdbcType="VARCHAR"/>
+        <result property="periodNumber" column="period_number" jdbcType="VARCHAR"/>
+        <result property="alarmId" column="alarm_id" jdbcType="VARCHAR"/>
+        <result property="alarmLevel" column="alarm_level" jdbcType="VARCHAR"/>
+        <result property="alarmRulel" column="alarm_rulel" jdbcType="VARCHAR"/>
+        <result property="alarmOmpare" column="alarm_ompare" jdbcType="VARCHAR"/>
+        <result property="ompareRise" column="ompare_rise" jdbcType="VARCHAR"/>
+        <result property="ompareReduce" column="ompare_reduce" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="enableTime" column="enable_time" jdbcType="TIMESTAMP"/>
+        <result property="disableTime" column="disable_time" jdbcType="TIMESTAMP"/>
+        <result property="timeliness" column="timeliness" jdbcType="TIMESTAMP"/>
+    </resultMap>
+</mapper>
+

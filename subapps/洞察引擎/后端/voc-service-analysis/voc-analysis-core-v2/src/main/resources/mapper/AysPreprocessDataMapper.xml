@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.analysis.core.v2.mapper.AysPreprocessDataMapper">
+
+
+    <select id="findByDistinctByAttr" resultType="java.lang.Long">
+        select count(*) from voc_anal_flow_pre_rules_result_data_full
+        WHERE
+            data->&apos;${attr}&apos; = #{value}
+          and
+            to_date(publish_time )  BETWEEN to_date(#{startTime}) and to_date(now())
+    </select>
+
+    <select id="readUnprocessedData" resultType="com.voc.service.analysis.core.v2.entity.AysPreprocessDataEntity">
+
+        with comm_data as (
+            select
+                work_id,
+                client_id,
+                channel_id,
+                content_type
+            from
+                voc_anal_flow_pre_rules_result_data_full where done = '0' and abandon = '0'
+            group by
+                work_id,
+                client_id,
+                channel_id,
+                content_type
+            limit 1 )
+        select
+            new_id, id, f.work_id, f.client_id,f.channel_id,f.content_type, `data`, data_md5, create_time, abandon, done
+        from
+            voc_anal_flow_pre_rules_result_data_full f,
+            comm_data c
+        where
+            done = '0' and abandon = '0'
+          and f.work_id = c.work_id
+          and f.client_id = c.client_id
+          and f.channel_id = c.channel_id
+          and f.content_type = c.content_type
+          and CAST(retry AS SIGNED) &lt; 3
+        order by
+            create_time
+        limit #{size}
+
+    </select>
+    <select id="findIincompleteData"
+            resultType="java.lang.String">
+        with find_1 as (
+            select id, work_id
+            from voc_anal_flow_pre_rules_result_data_full
+            where done = '0' and abandon ='0'
+            group by id,work_id
+            limit 1
+            )
+        select new_id
+        from voc_anal_flow_pre_rules_result_data_full as f, find_1 as c
+        where c.work_id = f.work_id and f.done = '0' and f.abandon ='0'
+            limit 4
+    </select>
+
+
+    <select id="findWorkId"
+            resultType="java.lang.String">
+        select work_id
+        from voc_anal_flow_pre_rules_result_data_full
+        where done = '0' and abandon ='0'
+        group by id,work_id
+            limit 1
+    </select>
+
+    <update id="retryingRecords">
+        UPDATE voc_anal_flow_pre_rules_result_data_full SET retry = CAST(retry AS SIGNED) + 1
+        where CAST(retry AS SIGNED) &lt; 3 and  new_id in
+        <foreach item="item" index="index" collection="ids" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
+
+    <delete id="removeHistoryData">
+        delete from voc_anal_flow_pre_rules_result_data_full
+        where to_date(publish_time)  &lt;= to_date(DATE_SUB(now(), INTERVAL ${days} day))
+    </delete>
+</mapper>

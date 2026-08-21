@@ -1,0 +1,105 @@
+pluginManagement {
+    plugins {
+        id 'org.jetbrains.kotlin.jvm' version '1.9.25'
+        id 'org.gradle.toolchains.foojay-resolver-convention' version '0.8.0'
+    }
+    repositories {
+        maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
+        gradlePluginPortal()  // 保留官方源
+    }
+
+}
+rootProject.name = "voc-project"
+
+
+//include 'voc-app:voc-app-all'
+include 'voc-app:voc-app-analysis'
+include 'voc-app:voc-app-auth'
+//include 'voc-app:voc-app-stats'
+//include 'voc-app:voc-app-logs'
+include 'voc-app:voc-app-insights'
+include 'voc-app:voc-app-risk'
+//include 'voc-app:voc-app-template'
+//include 'voc-app:voc-app-model'
+//include 'voc-app:voc-app-msg'
+//include 'voc-app:voc-app-ai-workflow'
+//include 'voc-app:voc-app-onnx'
+include 'voc-app:projects:qcca:voc-app-data-integration'
+include 'voc-app:voc-app-data-integration'
+//include 'voc-app:voc-app-analysis-risk'
+//include 'voc-app:voc-app-model-training'
+
+include 'voc-service-components:springbootadmin'
+include 'voc-service-components:voc-cmps-kafka'
+include 'voc-service-components:voc-cmps-redis'
+include 'voc-service-components:voc-cmps-milvus'
+include 'voc-service-components:voc-cmps-onnxruntime'
+include 'voc-service-components:voc-cmps-xxljob'
+include 'voc-service-components:voc-cmps-mybatis'
+include 'voc-service-components:voc-cmps-elasticsearch'
+include 'voc-service-components:voc-cmps-swagger'
+include 'voc-service-components:voc-cmps-minio'
+include 'voc-service-components:voc-cmps-sms'
+include 'voc-service-components:voc-cmps-sentinel'
+include 'voc-service-config'
+
+//include 'voc-tools'
+include 'voc-service-common'
+//include 'voc-service-model:voc-model-api'
+//include 'voc-service-model:voc-model-training-impl'
+include 'voc-service-risk'
+include 'voc-service-risk:voc-risk-api'
+include 'voc-service-risk:voc-risk-impl'
+
+include 'voc-service-bizlogs:voc-bizlogs-api'
+include 'voc-service-bizlogs:voc-bizlogs-impl'
+
+include 'voc-service-data-integration:voc-data-integration-api'
+include 'voc-service-data-integration:voc-mpp'
+
+include 'voc-service-security:voc-security-api'
+include 'voc-service-security:voc-security-server'
+include 'voc-service-security:voc-security-client'
+//include 'voc-service-security:voc-security-auth-formbase'
+//include 'voc-service-security:voc-security-auth-sms'
+//include 'voc-service-security:voc-security-auth-phone'
+
+
+include 'voc-service-insights:voc-insights-api'
+include 'voc-service-insights:voc-insights-data-impl'
+include 'voc-service-insights:voc-insights-model-impl'
+include 'voc-service-insights:voc-insights-impl'
+include 'voc-service-insights:voc-insights-alert-impl'
+include 'voc-service-insights:voc-insights-common'
+include 'voc-service-insights:voc-insights-risk'
+
+include 'voc-service-analysis:voc-analysis-api'
+include 'voc-service-analysis:voc-analysis-impl'
+//include 'voc-service-analysis:voc-analysis-core'
+include 'voc-service-analysis:voc-analysis-core-v2'
+
+
+//include 'voc-service-ai-workflow:voc-workflow-api'
+//include 'voc-service-ai-workflow:voc-workflow-impl'
+//include 'voc-service-ai-workflow:voc-workflow-onnx'
+//
+//include 'voc-service-model:voc-model-api'
+//include 'voc-service-model:voc-model-impl'
+//include 'voc-service-model:voc-model-analysis'
+//include 'voc-service-model:voc-model-basic'
+//include 'voc-service-model:voc-model-tools'
+
+
+include 'voc-service-third:voc-trhird-impl'
+include 'voc-service-third:voc-trhird-api'
+include 'voc-service-third:voc-trhird-template-impl'
+include 'voc-service-third:voc-trhird-feishu-impl'
+include 'voc-service-third:voc-trhird-huoshan-impl'
+include 'voc-service-third:voc-trhird-util'
+include 'voc-service-third:voc-trhird-zhipuai-impl'
+include 'voc-service-third:voc-third-ktm-impl'
+findProject(':voc-service-third:voc-third-ktm-impl')?.name = 'voc-third-ktm-impl'
+include 'voc-service-third:voc-trhird-ktm-impl'
+findProject(':voc-service-third:voc-trhird-ktm-impl')?.name = 'voc-trhird-ktm-impl'
+include 'voc-service-third:voc-trhird-canswer-impl'
+findProject(':voc-service-third:voc-trhird-canswer-impl')?.name = 'voc-trhird-canswer-impl'

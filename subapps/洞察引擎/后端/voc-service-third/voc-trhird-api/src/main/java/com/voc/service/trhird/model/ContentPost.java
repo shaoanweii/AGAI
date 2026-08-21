@@ -1,0 +1,17 @@
+package com.voc.service.trhird.model;
+
+
+import lombok.*;
+
+import java.io.Serializable;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
+public class ContentPost implements Serializable {
+    @Builder.Default
+    private ContentZhCn contentZhCn = new ContentZhCn();
+
+}

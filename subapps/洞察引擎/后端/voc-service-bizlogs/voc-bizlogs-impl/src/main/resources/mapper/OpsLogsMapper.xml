@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.logs.impl.mapper.OpsLogsMapper">
+
+	<!-- 清空所有日志记录 -->
+	<delete id="removeAll">
+		DELETE FROM ops_record_logs
+	</delete>
+
+	<!-- 获取访问总数 -->
+	<select id="findTotalVisitCount" resultType="long">
+        select count(1) from ops_record_logs where log_type = 1
+    </select>
+
+	<!-- 获取今日访问总数 -->
+    <select id="findTodayVisitCount" resultType="long">
+        select count(1) from ops_record_logs where log_type = 1 and create_time &gt;= #{dayStart} and create_time &lt; #{dayEnd}
+    </select>
+
+	<!-- 获取今日访问总IP数 -->
+    <select id="findTodayIp" resultType="long">
+        select count(distinct(ip)) from ops_record_logs where log_type = 1 and create_time &gt;= #{dayStart} and create_time &lt; #{dayEnd}
+    </select>
+
+   	<!-- 首页访问统计 -->
+    <select id="findVisitCount" resultType="java.util.HashMap">
+       <if test="dbType == 'MYSQL'">
+         select count(*) as visit
+        	   ,count(distinct(ip)) as ip
+        	   ,DATE_FORMAT(create_time, '%Y-%m-%d') as tian
+        	   ,DATE_FORMAT(create_time, '%m-%d') as type
+        	   from ops_record_logs
+         where log_type = 1 and create_time &gt;= #{dayStart} and create_time &lt; #{dayEnd}
+         group by tian,type
+         order by tian asc
+       </if>
+       <if test="dbType == 'ORACLE'">
+        select count(*) as visit
+        	   ,count(distinct(ip)) as ip
+        	  ,to_char(create_time, 'yyyy-mm-dd') as tian
+        	   ,to_char(create_time, 'mm-dd') as type
+         from ops_record_logs
+         where log_type = 1 and create_time &gt;= #{dayStart} and create_time &lt; #{dayEnd}
+         group by to_char(create_time, 'yyyy-mm-dd'),to_char(create_time, 'mm-dd')
+         order by to_char(create_time, 'yyyy-mm-dd') asc
+       </if>
+      <if test="dbType == 'POSTGRESQL'">
+       select count(*) as visit
+        	   ,count(distinct(ip)) as ip
+        	  ,to_char(create_time, 'yyyy-mm-dd') as tian
+        	   ,to_char(create_time, 'mm-dd') as type
+         from ops_record_logs
+         where log_type = 1 and create_time &gt;= #{dayStart} and create_time &lt; #{dayEnd}
+         group by tian,type
+         order by tian asc
+     </if>
+     <if test="dbType == 'SQLSERVER'">
+        select count(*) as visit
+        	   ,count(distinct(ip)) as ip
+             ,CONVERT(varchar(100), create_time, 23) as tian
+        	   ,RIGHT(CONVERT(varchar(100), create_time, 23),5) as type
+         from ops_record_logs
+         where log_type = 1 and create_time &gt;= #{dayStart} and create_time &lt; #{dayEnd}
+         group by CONVERT(varchar(100), create_time, 23),RIGHT(CONVERT(varchar(100), create_time, 23),5)
+         order by CONVERT(varchar(100), create_time, 23) asc
+     </if>
+    </select>
+
+
+    <select id="queryPageList" resultType="com.voc.service.logs.impl.entity.OpsRecordLogEntity">
+
+        select
+        sl.create_time,
+        concat(concat(ur.username,'\/'),ur.firstname) as username,
+<!--        sl.username,-->
+        sl.log_content as logContent,
+        sl.ip
+<!--        ur.username as reviewerUserNo,-->
+<!--        ur.realname as reviewerUserName,-->
+<!--        sd.depart_name as reviewerDepartName,-->
+<!--        sud.dep_id as reviewerDepartId-->
+        from
+        ins_record_logs sl
+        left join sys_users ur on
+        sl.userid = ur.id
+<!--        left join sys_user_depart sud on sl.userid =sud.user_id left join sys_depart sd on sud.dep_id =sd.id-->
+        where sl.username !='gwm-admin'
+        <if test="syslog.appId !=null and syslog.appId !='' ">
+            and sl.app_id=#{syslog.appId}
+        </if>
+        <if test="syslog.startDate !=null and syslog.startDate != ''and
+                  syslog.endDate !=null and syslog.endDate != ''">
+            and sl.create_time>=#{syslog.startDate}
+            AND date_add(#{syslog.endDate}, interval 1 day)>=sl.create_time
+        </if>
+        <if test="syslog.userid !=null and syslog.userid != ''">
+            and sl.userid=#{syslog.userid}
+        </if>
+        <if test="syslog.userIds !=null and syslog.userIds.size() >0">
+            and sl.userid in
+            <foreach item="item" index="index" collection="syslog.userIds" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+
+        <if test="syslog.departid !=null and syslog.departid != ''">
+            and sud.dep_id =#{syslog.departid}
+        </if>
+        <if test="syslog.searchKeyword != null and syslog.searchKeyword != ''">
+            AND
+<!--            (-->
+<!--            ur.realname LIKE CONCAT('%', #{syslog.searchKeyword} ,'%')  OR-->
+<!--            sd.DEPART_NAME_ABBR LIKE CONCAT('%', #{syslog.searchKeyword} ,'%')  OR-->
+<!--            sl.log_content LIKE CONCAT('%', #{syslog.searchKeyword} ,'%')  OR-->
+<!--            sd.DEPART_NAME LIKE CONCAT('%', #{syslog.searchKeyword} ,'%')-->
+<!--            )-->
+            (
+            sl.log_content LIKE CONCAT('%', #{syslog.searchKeyword}, '%') or sl.username LIKE CONCAT('%',
+            #{syslog.searchKeyword}, '%')
+            )
+        </if>
+        order by create_time desc
+        limit #{pageNum}, #{pageSize}
+    </select>
+
+	<select id="queryPageCount" resultType="java.lang.Integer">
+        select
+        count(1)
+        from
+        ins_record_logs sl
+        left join sys_users ur on
+        sl.userid = ur.id
+        <!--        left join sys_user_depart sud on sl.userid =sud.user_id left join sys_depart sd on sud.dep_id =sd.id-->
+        where sl.username !='gwm-admin'
+        <if test="syslog.appId !=null and syslog.appId !='' ">
+            and sl.app_id=#{syslog.appId}
+        </if>
+        <if test="syslog.startDate !=null and syslog.startDate != ''and
+                  syslog.endDate !=null and syslog.endDate != ''">
+            and sl.create_time>=#{syslog.startDate}
+            AND date_add(#{syslog.endDate}, interval 1 day)>=sl.create_time
+        </if>
+        <if test="syslog.userid !=null and syslog.userid != ''">
+            and sl.userid=#{syslog.userid}
+        </if>
+        <if test="syslog.departid !=null and syslog.departid != ''">
+            and sud.dep_id =#{syslog.departid}
+        </if>
+        <if test="syslog.searchKeyword != null and syslog.searchKeyword != ''">
+            AND
+<!--            (-->
+<!--            ur.realname LIKE CONCAT('%', #{syslog.searchKeyword} ,'%')  OR-->
+<!--            sd.DEPART_NAME_ABBR LIKE CONCAT('%', #{syslog.searchKeyword} ,'%')  OR-->
+<!--            sl.log_content LIKE CONCAT('%', #{syslog.searchKeyword} ,'%')  OR-->
+<!--            sd.DEPART_NAME LIKE CONCAT('%', #{syslog.searchKeyword} ,'%')-->
+<!--            )-->
+               (
+                sl.log_content LIKE CONCAT('%', #{syslog.searchKeyword}, '%') or sl.username LIKE CONCAT('%', #{syslog.searchKeyword}, '%')
+            )
+        </if>
+        order by sl.create_time desc
+    </select>
+</mapper>

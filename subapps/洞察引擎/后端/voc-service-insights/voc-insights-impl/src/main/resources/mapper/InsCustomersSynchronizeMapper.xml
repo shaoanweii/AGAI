@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.insights.engine.mapper.InsCustomersSynchronizeMapper">
+
+
+    <insert id="saveRole">
+        INSERT INTO ins_role(id, role_name, role_type, enabled, create_time)
+        VALUES (SUBSTRING(REPLACE(UUID(), '-', ''), 1, 32), '超级管理员', '1', '1', now())
+    </insert>
+
+    <insert id="saveRoleRelationPermission">
+        INSERT INTO ins_role_relation_permission (id, role_id, permission_id, button_permission, permission_type,
+                                                  create_time)
+        select SUBSTRING(REPLACE(UUID(), '-', ''), 1, 32)                                         as id,
+               (select id from ins_role ir where ir.role_name = '超级管理员' and role_type = '1') as role_id,
+               permission_id,
+               button_permission,
+               permission_type,
+               now()
+        from voc.ins_customer_permission
+        where client_id = #{clientId}
+    </insert>
+
+
+    <insert id="saveSysUser">
+        insert into voc.sys_users (id,
+                                   username,
+                                   phone,
+                                   firstname,
+                                   lastname,
+                                   email,
+                                   operator,
+                                   labelstud_token,
+                                   non_locked,
+                                   enabled,
+                                   expire_date,
+                                   start_expire_date,
+                                   client_id,
+                                   employee_id,
+                                   create_time,
+                                   update_time)
+        values (SUBSTRING(REPLACE(UUID(), '-', ''), 1, 32),
+                CONCAT((select code from voc.ins_customer_info ici where id = #{clientId}), '_', 'admin'),
+                null,
+                CONCAT((select code from voc.ins_customer_info ici where id = #{clientId}), '_', 'admin'),
+                CONCAT((select code from voc.ins_customer_info ici where id = #{clientId}), '_', 'admin'),
+                null,
+                'admin',
+                null,
+                1,
+                1,
+                '2099-12-30 00:00:00',
+                '2024-07-05 14:18:27',
+                #{clientId},
+                null,
+                '2024-07-05 14:18:27',
+                '2024-07-05 14:18:27');
+
+
+    </insert>
+
+
+    <insert id="saveSysCredentials">
+        insert into voc.sys_credentials (id,
+                                         user_id,
+                                         credential,
+                                         app_id,
+                                         identifier,
+                                         identity_type,
+                                         create_time,
+                                         update_time,
+                                         operator,
+                                         non_locked,
+                                         enabled,
+                                         expire_date,
+                                         start_expire_date,
+                                         non_expired,
+                                         admin)
+        values (SUBSTRING(REPLACE(UUID(), '-', ''), 1, 32),
+                (select id
+                 from voc.sys_users
+                 where username =
+                       CONCAT((select code from voc.ins_customer_info ici where id = #{clientId}), '_', 'admin')
+                   and client_id = #{clientId}),
+                #{pwd},
+                'insights',
+                CONCAT((select code from voc.ins_customer_info ici where id = #{clientId}), '_', 'admin'),
+                'base',
+                '2024-02-23 10:46:42',
+                '2024-02-23 10:46:42',
+                'admin',
+                1,
+                1,
+                '2099-12-30 00:00:00',
+                '2024-02-23 10:46:42',
+                1,
+                0);
+
+    </insert>
+
+
+    <insert id="saveUserRole">
+        INSERT INTO ins_user_role (id, user_id, role_id, create_time)
+        VALUES (SUBSTRING(REPLACE(UUID(), '-', ''), 1, 32),
+                (select id
+                 from voc.sys_users
+                 where username =
+                       CONCAT((select code from voc.ins_customer_info ici where id = #{clientId}), '_', 'admin')
+                   and client_id = #{clientId}),
+                (select id from ins_role ir where ir.role_name = '超级管理员' and role_type = '1'),
+                now());
+    </insert>
+
+
+    <insert id="saveBatchButtonPermission">
+        INSERT INTO ins_button_permission (id, parent_id, name, button_code, sort_no, icon, last_level, app_id, api_url,
+                                           create_time, permission_key)
+        WITH RECURSIVE tree (id, parent_id, name, html_uri, button_code, sort_no, icon, last_level, app_id, api_url,
+                             create_time, permissionType, permissionKey) AS
+                           (select d.*
+                            from (SELECT id,
+                                         parent_id,
+                                         name,
+                                         null           as html_uri,
+                                         button_code,
+                                         sort_no,
+                                         icon,
+                                         last_level,
+                                         app_id,
+                                         api_url,
+                                         create_time,
+                                         1              as permissionType,
+                                         permission_key as permissionKey
+                                  FROM voc.ins_button_permission
+                                  union all
+                                  SELECT id,
+                                         parent_id,
+                                         name,
+                                         html_uri,
+                                         null           as button_code,
+                                         sort_no,
+                                         icon,
+                                         last_level,
+                                         app_id,
+                                         api_url,
+                                         create_time,
+                                         2              as permissionType,
+                                         permission_key as permissionKey
+                                  FROM voc.ins_menu_permission
+                                  where del_flag = 0 and filter_status=0) d
+                            where d.id in (select permission_id
+                                           from ins_role_relation_permission
+                                           where role_id = (select id
+                                                            from ins_role ir
+                                                            where ir.role_name = '超级管理员' and role_type = '1')
+                                             and permission_type = 1)
+                            union all
+                            select f.*
+                            from (SELECT id,
+                                         parent_id,
+                                         name,
+                                         null           as html_uri,
+                                         button_code,
+                                         sort_no,
+                                         icon,
+                                         last_level,
+                                         app_id,
+                                         api_url,
+                                         create_time,
+                                         1              as permissionType,
+                                         permission_key as permissionKey
+                                  FROM voc.ins_button_permission
+                                  union all
+                                  SELECT id,
+                                         parent_id,
+                                         name,
+                                         html_uri,
+                                         null           as button_code,
+                                         sort_no,
+                                         icon,
+                                         last_level,
+                                         app_id,
+                                         api_url,
+                                         create_time,
+                                         2              as permissionType,
+                                         permission_key as permissionKey
+                                  FROM voc.ins_menu_permission
+                                  where del_flag = 0 and filter_status=0) f
+                                     INNER JOIN tree t ON t.parent_id = f.id)
+        SELECT id,
+               parent_id,
+               name,
+               button_code,
+               sort_no,
+               icon,
+               last_level,
+               app_id,
+               api_url,
+               now(),
+               permissionKey
+        FROM tree
+        where permissionType = 1
+        group by id;
+
+    </insert>
+
+    <insert id="saveBatchMenuPermission">
+        INSERT INTO ins_menu_permission (id, parent_id, name, html_uri, api_url, sort_no, icon, last_level, app_id,
+                                         create_time, permission_key, del_flag)
+        WITH RECURSIVE tree (id, parent_id, name, html_uri, button_code, sort_no, icon, last_level, app_id, api_url,
+                             create_time, permissionType, permissionKey) AS
+                           (select d.*
+                            from (SELECT id,
+                                         parent_id,
+                                         name,
+                                         null           as html_uri,
+                                         button_code,
+                                         sort_no,
+                                         icon,
+                                         last_level,
+                                         app_id,
+                                         api_url,
+                                         create_time,
+                                         1              as permissionType,
+                                         permission_key as permissionKey
+                                  FROM voc.ins_button_permission
+                                  union all
+                                  SELECT id,
+                                         parent_id,
+                                         name,
+                                         html_uri,
+                                         null           as button_code,
+                                         sort_no,
+                                         icon,
+                                         last_level,
+                                         app_id,
+                                         api_url,
+                                         create_time,
+                                         2              as permissionType,
+                                         permission_key as permissionKey
+                                  FROM voc.ins_menu_permission
+                                  where del_flag = 0 and filter_status=0) d
+                            where d.id in (select permission_id
+                                           from ins_role_relation_permission
+                                           where role_id = (select id
+                                                            from ins_role ir
+                                                            where ir.role_name = '超级管理员' and role_type = '1')
+                                             and permission_type = 1)
+                            union all
+                            select f.*
+                            from (SELECT id,
+                                         parent_id,
+                                         name,
+                                         null           as html_uri,
+                                         button_code,
+                                         sort_no,
+                                         icon,
+                                         last_level,
+                                         app_id,
+                                         api_url,
+                                         create_time,
+                                         1              as permissionType,
+                                         permission_key as permissionKey
+                                  FROM voc.ins_button_permission
+                                  union all
+                                  SELECT id,
+                                         parent_id,
+                                         name,
+                                         html_uri,
+                                         null           as button_code,
+                                         sort_no,
+                                         icon,
+                                         last_level,
+                                         app_id,
+                                         api_url,
+                                         create_time,
+                                         2              as permissionType,
+                                         permission_key as permissionKey
+                                  FROM voc.ins_menu_permission
+                                  where del_flag = 0 and filter_status=0) f
+                                     INNER JOIN tree t ON t.parent_id = f.id)
+        SELECT id,
+               parent_id,
+               name,
+               html_uri,
+               api_url,
+               sort_no,
+               icon,
+               last_level,
+               app_id,
+               now(),
+               permissionKey,
+               0 as del_flag
+        FROM tree
+        where permissionType = 2
+        group by id;
+    </insert>
+
+
+</mapper>

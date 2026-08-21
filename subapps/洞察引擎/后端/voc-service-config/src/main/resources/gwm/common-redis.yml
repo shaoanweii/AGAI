@@ -1,0 +1,26 @@
+spring:
+  data:
+    redis:
+      host: r-2zejx2f6isw7shd7ih.redis.rds.aliyuncs.com
+      port: 6379
+      password: PBE(7p4kmhnM117o0+JTupExxTLgJP1EA/mnxHAcKulUmE8TS8lC7F8GsFtZNQiL3dqPIMP8WoqUqHC0iPM0p0X4Fw==)
+      database: 1
+      #cluster:
+      #  nodes:
+      #  - 172.16.80.23:31961
+      #  - 172.16.80.23:32498
+      #sentinel:
+      #  master: mymaster
+      #  nodes:
+      #  - 172.16.80.22:30345
+      #  - 172.16.80.22:30147
+      lettuce:
+        pool:
+          # 最小空闲连接
+          min-idle: 1
+          # 最大空闲连接
+          max-idle: 5
+          # 最大连接数
+          max-active: 100
+          # 连接分配应该阻塞的最大时间
+          max-wait: 2000

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.insights.engine.mapper.InsBatchRuleHisMapper">
+
+    <!-- 基础结果映射 -->
+    <resultMap id="BaseResultMap" type="com.voc.service.insights.engine.entity.InsBatchRuleHisEntity">
+        <id column="his_id" property="hisId" />
+        <result column="rule_id" property="ruleId" />
+        <result column="rule_name" property="ruleName" />
+        <result column="category_id" property="categoryId" />
+        <result column="brand_code" property="brandCode" />
+        <result column="brand_name" property="brandName" />
+        <result column="alert_type" property="alertType" />
+        <result column="alert_frequency" property="alertFrequency" />
+        <result column="alert_time" property="alertTime" />
+        <result column="alert_cron" property="alertCron" />
+        <result column="dimension_config" property="dimensionConfig" />
+        <result column="indicator_config" property="indicatorConfig" />
+        <result column="process_priority" property="processPriority" />
+        <result column="auditor" property="auditor" />
+        <result column="audit_method" property="auditMethod" />
+        <result column="main_responder" property="mainResponder" />
+        <result column="cc_personnel" property="ccPersonnel" />
+        <result column="is_enabled" property="isEnabled" />
+        <result column="version" property="version" />
+        <result column="edit_user" property="editUser" />
+        <result column="edit_time" property="editTime" />
+    </resultMap>
+
+    <!-- 批量插入历史记录 -->
+    <insert id="insertBatch">
+        INSERT INTO ins_batch_rule_his
+        (
+            his_id,
+            rule_id,
+            rule_name,
+            category_id,
+            brand_code,
+            brand_name,
+            alert_type,
+            alert_frequency,
+            alert_time,
+            alert_cron,
+            dimension_config,
+            indicator_config,
+            process_priority,
+            auditor,
+            audit_method,
+            main_responder,
+            cc_personnel,
+            is_enabled,
+            version,
+            edit_user,
+            edit_time
+        )
+        VALUES
+        <foreach collection="hisEntities" item="item" separator=",">
+            (
+                #{item.hisId},
+                #{item.ruleId},
+                #{item.ruleName},
+                #{item.categoryId},
+                #{item.brandCode},
+                #{item.brandName},
+                #{item.alertType},
+                #{item.alertFrequency},
+                #{item.alertTime},
+                #{item.alertCron},
+                #{item.dimensionConfig},
+                #{item.indicatorConfig},
+                #{item.processPriority},
+                #{item.auditor},
+                #{item.auditMethod},
+                #{item.mainResponder},
+                #{item.ccPersonnel},
+                #{item.isEnabled},
+                #{item.version},
+                #{item.editUser},
+                #{item.editTime}
+            )
+        </foreach>
+    </insert>
+
+    <!-- 根据规则ID查询历史记录列表 -->
+    <select id="selectListByRuleId" resultMap="BaseResultMap">
+        SELECT
+            his_id,
+            rule_id,
+            rule_name,
+            category_id,
+            brand_code,
+            brand_name,
+            alert_type,
+            alert_frequency,
+            alert_time,
+            alert_cron,
+            dimension_config,
+            indicator_config,
+            process_priority,
+            auditor,
+            audit_method,
+            main_responder,
+            cc_personnel,
+            is_enabled,
+            version,
+            edit_user,
+            edit_time
+        FROM
+            ins_batch_rule_his
+        WHERE
+            rule_id = #{ruleId}
+        ORDER BY
+            edit_time DESC
+    </select>
+
+    <!-- 根据历史记录ID查询历史详情 -->
+    <select id="selectByHisId" resultMap="BaseResultMap">
+        SELECT
+            his_id,
+            rule_id,
+            rule_name,
+            category_id,
+            brand_code,
+            brand_name,
+            alert_type,
+            alert_frequency,
+            alert_time,
+            alert_cron,
+            dimension_config,
+            indicator_config,
+            process_priority,
+            auditor,
+            audit_method,
+            main_responder,
+            cc_personnel,
+            is_enabled,
+            version,
+            edit_user,
+            edit_time
+        FROM
+            ins_batch_rule_his
+        WHERE
+            his_id = #{hisId}
+    </select>
+
+</mapper>

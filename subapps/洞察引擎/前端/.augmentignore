@@ -1,0 +1,22 @@
+# 匹配目录
+node_modules
+/node_modules
+# 匹配目录及文件
+build/
+dist/**
+coverage/
+# 匹配文件类型
+*.log
+*.txt
+log*.json
+# 匹配具体文件
+.env
+# IDE配置
+.idea
+.vscode
+# 其他
+.DS_Store
+.npmrc
+.yarnrc
+
+docs/exampleCode/meicloud-changan-voc-main_v3/public/libs/

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.insights.engine.data.mapper.InsDataExpectDescMapper">
+    <resultMap type="com.voc.service.insights.engine.data.entity.InsDataExpectDescEntity" id="InsDataExpectDescMap">
+        <result property="id" column="id" jdbcType="VARCHAR"/>
+        <result property="expectId" column="expect_id" jdbcType="VARCHAR"/>
+        <result property="content" column="content" jdbcType="VARCHAR"/>
+        <result property="business" column="business" jdbcType="VARCHAR"/>
+        <result property="quality" column="quality" jdbcType="VARCHAR"/>
+        <result property="scene" column="scene" jdbcType="VARCHAR"/>
+        <result property="emotion" column="emotion" jdbcType="VARCHAR"/>
+        <result property="intention" column="intention" jdbcType="VARCHAR"/>
+        <result property="viewpoint" column="viewpoint" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+        <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into ins_data_expect_desc(expect_id, content, business, quality, scene, emotion, intention, viewpoint,
+        update_time, create_time, update_by, create_by)
+        values
+        <foreach collection="model" item="entity" separator=",">
+            (#{entity.expectId}, #{entity.content}, #{entity.business}, #{entity.quality}, #{entity.scene},
+            #{entity.emotion}, #{entity.intention}, #{entity.viewpoint}, #{entity.updateTime}, #{entity.createTime},
+            #{entity.updateBy}, #{entity.createBy})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into ins_data_expect_desc(expect_id, content, business, quality, scene, emotion, intention, viewpoint,
+        update_time, create_time, update_by, create_by)
+        values
+        <foreach collection="model" item="entity" separator=",">
+            (#{entity.expectId}, #{entity.content}, #{entity.business}, #{entity.quality}, #{entity.scene},
+            #{entity.emotion}, #{entity.intention}, #{entity.viewpoint}, #{entity.updateTime}, #{entity.createTime},
+            #{entity.updateBy}, #{entity.createBy})
+        </foreach>
+        on duplicate key update
+        expect_id = values(expect_id) ,
+        content = values(content) ,
+        business = values(business) ,
+        quality = values(quality) ,
+        scene = values(scene) ,
+        emotion = values(emotion) ,
+        intention = values(intention) ,
+        viewpoint = values(viewpoint) ,
+        update_time = values(update_time) ,
+        create_time = values(create_time) ,
+        update_by = values(update_by) ,
+        create_by = values(create_by)
+    </insert>
+</mapper>
+

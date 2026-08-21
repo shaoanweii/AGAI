@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.insights.engine.mapper.InsReportRuleTestDataMapper">
+
+
+    <select id="getCategoryRuleList" resultType="com.voc.service.insights.engine.vo.InsCategoryRuleVo">
+        select rule_name,rule_id,name as categoryName,id as categoryId FROM voc_ms_be.ins_closed_rule cr left join
+        ins_data_resource
+        dr on cr.category_type =dr.id
+    </select>
+
+
+
+    <select id="getRuleTestData" resultType="com.voc.service.insights.engine.entity.InsReportRuleTestDataEntity">
+        SELECT
+        id,
+        rule_id,
+        batch_id,
+        rule_test_info,
+        rule_type,
+        create_user,
+        rule_count,
+        sample_count,
+        finish_time,
+        test_status,
+        create_time,
+        update_time
+        FROM
+        report_rule_test_data where id=#{id}
+    </select>
+
+
+    <update id="updateTaskStatus" >
+        UPDATE report_rule_test_data set test_status=1,finish_time=now() where id=#{id}
+    </update>
+
+
+    <select id="selectPageList"
+            resultType="com.voc.service.insights.engine.entity.InsReportRuleTestDataEntity">
+        select
+        id,
+        rule_id,
+        rule_test_info,
+        rule_type,
+        create_user,
+        rule_count,
+        sample_count,
+        finish_time,
+        test_status,
+        if(test_status = 1,
+        '已完成',
+        if(test_status = 2,'已失败', "未开始")) as testStatusText,
+        create_time,
+        update_time
+        from
+        report_rule_test_data
+        where 1=1
+        <if test="createUserName != null and createUserName.size()!=0 ">
+            and create_user in
+            <foreach item="item" index="index" collection="createUserName" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="ruleTestInfo != null and ruleTestInfo != ''">
+            AND rule_test_info LIKE CONCAT('%', #{ruleTestInfo}, '%')
+        </if>
+        <if test="testStatus != null and testStatus != ''">
+            AND test_status = #{testStatus}
+        </if>
+        <if test="ruleType != null and ruleType != ''">
+            AND rule_type = #{ruleType}
+        </if>
+        order by create_time desc
+    </select>
+
+</mapper>

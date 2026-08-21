@@ -1,0 +1,169 @@
+# ${APP_NAME}-deployment.yaml
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${APP_NAME}
+  namespace: ${SOURCE_NAMESPACE}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ${APP_NAME}
+  template:
+    metadata:
+      labels:
+        app: ${APP_NAME}
+    spec:
+      initContainers:
+        - name: copy-jar
+          image: ${IMAGE}
+          command:
+            - cp
+            - /tmp/${APP_NAME}.jar
+            - /voc-app/${APP_NAME}.jar
+          volumeMounts:
+            - name: host-time
+              readOnly: true
+              mountPath: /etc/localtime
+            - mountPath: /voc-app
+              name: volume-voc-app
+          imagePullPolicy: IfNotPresent
+      containers:
+        - name: ${APP_NAME}
+          env:
+            - name: JAVA_OPTS
+              value: |
+                -Dlogging.config=/conf/logback-spring.xml
+                -Dspring.profiles.active=dev
+                -Dserver.port=8080
+                -Dfile.encoding=UTF-8
+                -server 
+                -Xmx2048M
+                -Xms1024M
+                -Xmn512m
+                -Xss512k
+                -XX:NewRatio=4
+                -XX:SurvivorRatio=8
+                -XX:MaxTenuringThreshold=15
+                -XX:MaxDirectMemorySize=1G
+                -XX:+DisableExplicitGC
+                --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED --add-opens=java.prefs/java.util.prefs=ALL-UNNAMED --add-opens=java.base/java.nio.charset=ALL-UNNAMED --add-opens=java.base/java.net=ALL-UNNAMED --add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED
+            - name: SKYWALKING_OPTS
+              value: >-
+                -javaagent:/skywalking-agent/skywalking-agent.jar 
+                -Dskywalking.agent.service_name=nissan-dndc-dev::${APP_NAME} 
+                -Dskywalking.collector.backend_service=skywalking-oap.middleware-dev.svc.cluster.local:11800
+                -Dskywalking.trace.ignore_path=SwRunnableWrapper/**/org.springframework./**,SpringScheduled/**,/actuator,/actuator/**,Lettuce/**,Gson/**,Mysql/**,/nacos/**,springfox.**,GuavaCache/**,Druid/**,GET:/actuator/**,/instances,/xxl-job-admin/**,/log/**,/announcement/countNotRead,Thread/**,Redisson/**
+            - name: APP_NAME
+              value: ${APP_NAME}
+          image: 172.16.80.21:30002/library/openjdk:jdk17-sw-ag-9.1.0
+          ###启动检查探针
+          startupProbe:
+            failureThreshold: 10
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 45
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 6
+          ###存活检查探针
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 60
+            periodSeconds: 6
+            timeoutSeconds: 1
+          ##就绪检查探针
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 60
+            periodSeconds: 6
+            successThreshold: 1
+            timeoutSeconds: 1
+          #command:
+          #  - /bin/sh
+          #  - '-c'
+          #  - 'java -jar \${JAVA_OPTS} \${APP_NAME}.jar \${SKYWALKING_OPTS}'
+          ports:
+            - containerPort: ${APP_PORT}
+          volumeMounts:
+            - name: host-time
+              readOnly: true
+              mountPath: /etc/localtime
+            - mountPath: /voc-app
+              name: volume-voc-app
+            - mountPath: /conf
+              name: volume-voc-configmap
+              readOnly: true
+            - name: volume-voc-data
+              mountPath: /voc-data
+          #- name: nfs-sc
+          #mountPath: /opt
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "4096Mi"
+              cpu: "2"
+      #volumes:
+      #- name: nfs-sc
+      #persistentVolumeClaim:
+      #claimName: ${APP_NAME}-pvc
+      restartPolicy: Always
+      volumes:
+        - name: host-time
+          hostPath:
+            path: /etc/localtime
+            type: ""
+        - emptyDir: {}
+          name: volume-voc-app
+        - configMap:
+            items: []
+            name: voc-logback-logstash-configmap
+          name: volume-voc-configmap
+        - name: volume-voc-data
+          persistentVolumeClaim:
+            claimName: volume-voc-data
+---
+# ${APP_NAME}-service.yaml
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: ${APP_NAME}
+  namespace: ${SOURCE_NAMESPACE}
+spec:
+  selector:
+    app: ${APP_NAME}
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: ${APP_PORT}
+      nodePort: 30310
+  type: NodePort
+
+---
+# ${APP_NAME}-pvc.yaml
+
+#apiVersion: v1
+#kind: PersistentVolumeClaim
+#metadata:
+#  name: ${APP_NAME}-pvc
+#spec:
+#  accessModes:
+#    - ReadWriteMany
+#  storageClassName: nfs-sc
+#  resources:
+#    requests:
+#      storage: 10Gi

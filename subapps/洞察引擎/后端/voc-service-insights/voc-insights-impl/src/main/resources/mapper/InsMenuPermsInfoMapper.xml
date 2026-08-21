@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.insights.engine.mapper.InsMenuPermsInfoMapper">
+    <resultMap id="BaseResultMap" type="com.voc.service.insights.engine.entity.InsMenuPermsInfoEntity">
+        <result column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="menu_id" property="menuId"/>
+        <result column="user_perms" property="userPerms"/>
+        <result column="operator" property="operator"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="del_flag" property="delFlag"/>
+        <result column="app_id" property="appId"/>
+        <result column="enabled" property="enabled"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,
+                user_id,
+                menu_id,
+                user_perms,
+                operator,
+                create_time,
+                update_time,
+                del_flag,
+                app_id,
+                enabled
+    </sql>
+
+    <select id="findMenuPermsInfoByUserId" resultMap="BaseResultMap">
+        select imp.*,
+               im.name as menuName
+        from ins_menu_perms imp
+                 left join ins_menu im on im.id = imp.menu_id
+        where imp.enabled = 1
+          and imp.del_flag = 0
+          and imp.user_id = #{userId}
+        group by imp.user_id, imp.menu_id
+    </select>
+
+    <update id="deleteMenuPerms">
+        update ins_menu_perms
+        set enabled  = 0,
+            del_flag = 1
+        where user_id = #{userId}
+    </update>
+</mapper>

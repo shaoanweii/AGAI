@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.analysis.risk.mapper.RpAllTypesRiskDataMapper">
+
+    <select id="pageRiskDataList" resultType="com.voc.service.analysis.risk.entity.AllTypesRiskDataEntity" >
+       select * from rp_all_types_risk_data where  project_id = #{projectId}
+        <if test="riskType != null and riskType !='' and riskType !='CM'">
+             and risk_type in ("1","2") and label_type = #{riskType}
+        </if>
+        <if test="riskType != null and riskType !='' and riskType =='CM'">
+            and risk_type = "3"
+        </if>
+        <if test="startTime != null and startTime !=''">
+            and date(create_time) BETWEEN DATE(#{startTime}) and DATE(#{endTime})
+        </if>
+        <if test="brandCode !=null and brandCode.size()!=0 ">
+            and brand_code_name in
+            <foreach item="item" index="index" collection="brandCode" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="statisticType !=null and statisticType.size()!=0 ">
+            and statistic_type in
+            <foreach item="item" index="index" collection="statisticType" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="riskLevel !=null and riskLevel.size()!=0 ">
+            and risk_level in
+            <foreach item="item" index="index" collection="riskLevel" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="keywords != null and keywords !='' ">
+            and (id like concat('%',#{keywords},'%')
+            or risk_name like concat('%',#{keywords},'%')
+            or focus_name like concat('%',#{keywords},'%')
+            )
+        </if>
+        <if test="order !=null and order!='' ">
+            order by ${order}
+        </if>
+        <if test="order ==null or order=='' ">
+            order by create_time desc
+        </if>
+    </select>
+
+</mapper>

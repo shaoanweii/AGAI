@@ -1,0 +1,47 @@
+service.msg.store.redis.enabled: true
+service.msg.store.rocketmq.enabled: false
+service.msg.store.kafka.enabled: false
+
+
+messagepattern:
+   rules:
+     - type: "voc"
+       sync: 1
+       adapters:
+          - {name: "wechat",validator: "wechatValidator"}
+          - {name: "sms",validator: "smsValidator"}
+     - type: "voc"
+       sync: 0
+       adapters:
+         - { name: "wechat",validator: "wechatValidator" }
+         - { name: "sms",validator: "smsValidator" }
+     - type: "common"
+       sync: 0
+       adapters:
+         - {name: "wechat", validator: "wechatValidator"}
+         - {name: "sms", validator: "smsValidator"}
+     - type: "ai"
+       sync: 1
+       adapters:
+         - {name: "wechat", validator: "wechatValidator" }
+     - type: "c"
+       sync: 0
+       adapters:
+         - {name: "sms", validator: "smsValidator" }
+
+
+
+retry:
+  strategy:
+    - type: "sms"
+      number: 1
+      interval: 1000
+      sync: 1
+    - type: "sms"
+      number: 3
+      interval: 1000
+      sync: 0
+
+
+logging.level:
+  com.voc: debug

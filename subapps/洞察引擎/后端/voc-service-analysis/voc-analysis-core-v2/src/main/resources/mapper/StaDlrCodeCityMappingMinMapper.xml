@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.analysis.core.v2.mapper.StaDlrCodeCityMappingMinMapper">
+
+
+
+    <select id="getCityCodeList" resultType="com.voc.service.analysis.model.CityCodeModel">
+        select
+            dealership_code as dealershipCode,
+            city_code as cityCode,
+            city_name as cityName,
+            province_code as provinceCode,
+            province_name as provinceName,
+            big_area_code as bigAreaCode,
+            big_area_sale as bigAreaSale,
+            small_area_code as smallAreaCode,
+            samll_area_sale as samllAreaSale
+        from
+            sta_dealership_data_view
+        where
+            dealership_code is not null
+        group by
+            dealership_code,
+            city_code,
+            province_code,
+            city_name,
+            province_name,
+            big_area_code,
+            big_area_sale,
+            small_area_code,
+            samll_area_sale
+
+    </select>
+
+</mapper>

@@ -1,0 +1,8 @@
+apply plugin: 'java-library'
+
+group = 'voc-trhird-ktm-impl'
+
+dependencies {
+    api project(':voc-service-common')
+    api project(':voc-service-third:voc-trhird-api')
+}

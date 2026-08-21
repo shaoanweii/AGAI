@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.insights.engine.alert.mapper.AltTaskExecutionRecordMapper">
+
+    <select id="executedTasks" resultType="com.voc.service.insights.engine.alert.entity.AlertTaskExecutionRecordEntity">
+        with now_task_b as (
+            select *  from (
+                   select
+                       hours_add( date_format(now(), '%Y-%m-%d'), unnest) as start_time ,
+                       hours_add( date_format(now(), '%Y-%m-%d'), unnest+1) as stop_time ,
+                       #{now} as now_time
+                   from (
+                            select
+                                array_generate(0, 23, 1) as index_
+                        )f, unnest(index_) as unnest
+               )c1
+            where now_time BETWEEN start_time and  stop_time
+        )
+        select
+            tc.id,
+            tc.task_id,
+            tc.channel_id,
+            tc.client_id,
+            tc.data_type,
+            tc.status,
+            tc.start_time,
+            tc.stop_time,
+            tc.tid
+        from alt_task_execution_record tc , now_task_b b
+        where tc.stop_time BETWEEN b.start_time and b.stop_time
+            and status = '1'
+    </select>
+
+</mapper>
+

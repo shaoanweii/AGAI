@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.insights.engine.mapper.InsProjectDetailsMapper">
+    <resultMap id="BaseResultMap" type="com.voc.service.insights.engine.entity.InsProjectDetailsEntity" >
+        <result column="id" property="id" />
+        <result column="project_id" property="projectId" />
+        <result column="brand_name" property="brandName" />
+        <result column="brand_code" property="brandCode" />
+        <result column="tags" property="tags" typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
+        <result column="data_source" property="dataSource" typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
+        <result column="channel" property="channel" typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
+        <result column="region" property="region" typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
+        <result column="car_series" property="carSeries" typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
+        <result column="competitive_product" property="competitiveProduct" typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
+        <result column="risk_early_warning" property="riskEarlyWarning" typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,
+                project_id,
+                brand_code,
+                brand_name,
+                tags,
+                data_source,
+                channel,
+                region,
+                car_series,
+                competitive_product,
+                risk_early_warning
+    </sql>
+
+    <select id="findProjectInfo" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM ins_project_details
+        WHERE 1=1
+        <if test="projectId !=null and projectId !='' ">
+            and  project_id = #{projectId}
+        </if>
+    </select>
+</mapper>

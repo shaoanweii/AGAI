@@ -1,0 +1,34 @@
+
+security:
+  ignoring:
+    urls:
+      - /auth/register
+      - /**/login
+      - /auth/randomImage/**
+      - /v2/api-docs
+      - /v3/api-docs
+      - /v3/api-docs/**
+      - /actuator/**
+      - /swagger-resources
+      - /swagger-resources/**
+      - /configuration/ui
+      - /configuration/security
+      - /randomImage/**
+      - /instances
+      - /instances/*
+      - /actuator
+      - /actuator/**
+      - /swagger-ui/**
+      - /webjars/**
+      - /swagger-ui.html
+      - /error
+      - /favicon.ico
+      - /doc.html
+      - /druid/**
+      - /msg/event/push
+      - /tools/config/pbe
+      - /exportRawDataResult
+      - /model/**
+      - /sync/syncCustomersInfo
+      - /dndc/sso
+      - /ssoLogin

@@ -1,0 +1,12 @@
+listening_ai_result_interval: 10000
+push_normalizer_flow_dataset_size: 20
+push_analysis_service_mq_dataset_size: 1000
+opinion_score_threshold: 0.80F
+scenario_score_threshold: 0.78F
+milvus:
+  opinion_collectionName: opinion_v1_1
+  opinion_vectorFieldName: embedding
+  opinion_fieldNames: id, opinion
+  scenario_collectionName: scenarios
+  scenario_vectorFieldName: embedding
+  scenario_fieldNames: id, L4

@@ -1,0 +1,25 @@
+spring.application.name: voc-insights-model-impl
+server.port: 8003
+
+
+spring:
+  cloud.nacos:
+    config:
+      enabled: false
+    discovery:
+      enabled: false
+  config:
+    location: classpath:${spring.profiles.active}/common.yml,classpath:${spring.profiles.active}/common-security-client.yml,classpath:${spring.profiles.active}/common-mysql.yml,classpath:${spring.profiles.active}/common-redis.yml,classpath:${spring.profiles.active}/common-swagger.yml,classpath:${spring.profiles.active}/common-security-client.yml,classpath:${spring.profiles.active}/voc-insights-service.yml
+
+
+# SofaOptions.java  -> SofaBootRpcProperties.java
+# 用于测试阶段制定调用服务（RPC）的服务地址 - 与rpc服务端 rpc_tr_port 配置端口对应
+#dev.rpc.sofa.router-path:
+#  - { url: 172.16.80.23:30923 ,path: com.voc.service.security.** }
+#  - { url: 172.16.80.23:32198 ,path: com.voc.service.logs.** }
+#  - { url: 172.16.80.23:30694 ,path: com.voc.service.ops.** }
+
+
+
+
+

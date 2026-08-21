@@ -1,0 +1,7 @@
+
+template.analysis.ai.api: http://172.16.80.16:30305
+template.user.times: 10
+
+
+logging.level:
+  com.voc: debug

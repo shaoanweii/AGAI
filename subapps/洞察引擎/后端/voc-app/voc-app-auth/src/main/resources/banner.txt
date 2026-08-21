@@ -1,0 +1,11 @@
+${AnsiColor.BRIGHT_GREEN}
+${AnsiColor.BRIGHT_GREEN} ██      ██   ███████     ██████  ${AnsiColor.BRIGHT_CYAN}   ████      ████
+${AnsiColor.BRIGHT_GREEN}░██     ░██  ██░░░░░██   ██░░░░██ ${AnsiColor.BRIGHT_CYAN}  █░░░ █    █░░░██
+${AnsiColor.BRIGHT_GREEN}░██     ░██ ██     ░░██ ██    ░░  ${AnsiColor.BRIGHT_CYAN} ░    ░█   ░█  █░█
+${AnsiColor.BRIGHT_GREEN}░░██    ██ ░██      ░██░██        ${AnsiColor.BRIGHT_CYAN}    ███    ░█ █ ░█
+${AnsiColor.BRIGHT_GREEN} ░░██  ██  ░██      ░██░██        ${AnsiColor.BRIGHT_CYAN}   █░░     ░██  ░█
+${AnsiColor.BRIGHT_GREEN}  ░░████   ░░██     ██ ░░██    ██ ${AnsiColor.BRIGHT_CYAN}  █      ██░█   ░█
+${AnsiColor.BRIGHT_GREEN}   ░░██     ░░███████   ░░██████  ${AnsiColor.BRIGHT_CYAN} ░██████░██░ ████
+${AnsiColor.BRIGHT_GREEN}    ░░       ░░░░░░░     ░░░░░░   ${AnsiColor.BRIGHT_CYAN} ░░░░░░ ░░  ░░░░
+${AnsiColor.BRIGHT_GREEN}
+${AnsiColor.BRIGHT_GREEN} :: Spring Boot ::                (v3.1.5)

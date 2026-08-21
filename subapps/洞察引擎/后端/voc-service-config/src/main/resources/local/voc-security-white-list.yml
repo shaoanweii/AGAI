@@ -1,0 +1,58 @@
+security:
+  ignoring:
+    urls:
+      - /auth/register
+      - /**/login
+      - /auth/randomImage/**
+      - /v2/api-docs
+      - /v3/api-docs
+      - /v3/api-docs/**
+      - /actuator/**
+      - /swagger-resources
+      - /swagger-resources/**
+      - /configuration/ui
+      - /configuration/security
+      - /randomImage/**
+      - /instances
+      - /instances/*
+      - /actuator
+      - /swagger-ui/**
+      - /webjars/**
+      - /swagger-ui.html
+      - /error
+      - /favicon.ico
+      - /doc.html
+      - /druid/**
+      - /druid
+      - /msg/event/push
+      - /tools/config/pbe
+      - /model/**
+      - /sync/syncCustomersInfo
+      - /auth/login
+      - /auth/logout
+      - /login
+      - /free/login
+      - /logout
+      - /sso
+      - /logs/saveLoginLogs
+      - /user/userinfo
+      - /user/valiedatePassword
+      - /actuator
+      - /swagger-ui/**
+      - /webjars/**
+      - /swagger-ui.html
+      - /error
+      - /favicon.ico
+      - /doc.html
+      - /druid/**
+      - /tools/config/**
+      - /logs/abc
+      - /push/**
+      - /dndc/sso
+      - /label/**
+    tokens:
+      #  - eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiMSIsImlkZW50aXR5X3R5cGUiOiJiYXNlIiwiYXBwX2lkIjoiYW5hbHlzaXMiLCJ1c2VybmFtZSI6IkV2NjFsa1hvdktyWjVXZmVhd3ExODdaMUV6c3o1N20wblR6Smc1QWxpbzF2WTBkMWRDSXltbnErby9aYlQzaU0iLCJzdWIiOiIxIiwiaWF0IjoxNzEwNDExMzg0LCJleHAiOjQwNzU2MTEzODR9.cH4p0nn6NfFYLZipGO8y7aakLrBicotPDjcGkQuOi_g
+      - eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiYW5hbHlzaXNfYXBpIiwiaWRlbnRpdHlfdHlwZSI6ImJhc2UiLCJhcHBfaWQiOiJhbmFseXNpcyIsInVzZXJuYW1lIjoiY1Fkb094bmg2eVEwMW5lc2ZLTlhVNjFKQmx5RFg3dHc4YXhod0JjNVl4aXl1MC9CYjdDQWZwQjJ5QTFxYjQ4QiIsInN1YiI6ImFuYWx5c2lzX2FwaSIsImlhdCI6MTcxMDQxMTQyMSwiZXhwIjo0MDc1NjExNDIxfQ.G1kAeqwp0udBimnDdIAqL1nSIcgV0u6YrU0bb5OchJ0
+      - eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoicmVwb3J0X2RuZGNfYXBpIiwiaWRlbnRpdHlfdHlwZSI6ImJhc2UiLCJhcHBfaWQiOiJyZXBvcnQtbmlzc2FuLWRuZGMiLCJ1c2VybmFtZSI6IjlKSUE3WVdtdDQ1ZG40bCtvcFN3UStMRTlZNThnTXA2QXZ5RGp2QVU5YlVLaEJUTzFWLzBaSHRHdmVmTkY0QlMiLCJzdWIiOiJyZXBvcnRfZG5kY19hcGkiLCJpYXQiOjE3MzI1MzA4MzIsImV4cCI6NDA5NzczMDgzMn0.636s6eDFS4veI1CIErCfVO3__ZObOuV81-pYL2P_47g
+
+

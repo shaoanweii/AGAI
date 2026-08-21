@@ -1,0 +1,15 @@
+spring.application.name: voc-insights-data-impl
+server.port: 8000
+
+
+spring:
+  cloud.nacos:
+    config:
+      enabled: false
+    discovery:
+      enabled: false
+  config:
+    location: classpath:${spring.profiles.active}/common.yml,classpath:${spring.profiles.active}/common-security-client.yml,classpath:${spring.profiles.active}/common-mysql.yml,classpath:${spring.profiles.active}/common-redis.yml,classpath:${spring.profiles.active}/common-swagger.yml,classpath:${spring.profiles.active}/voc-insights-service.yml
+
+
+

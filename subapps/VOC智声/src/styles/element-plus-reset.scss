@@ -1,0 +1,338 @@
+// Element Plus 样式重置文件
+
+// ==================== 基础组件重置 ====================
+
+// 输入框组件
+// .el-input {
+//   .el-input__wrapper {
+//     border-radius: var(--el-border-radius-base);
+//     transition: all 0.2s;
+
+//     &:hover {
+//       border-color: var(--el-color-primary);
+//     }
+
+//     &.is-focus {
+//       border-color: var(--el-color-primary);
+//       box-shadow: 0 0 0 1px var(--el-color-primary) inset;
+//     }
+//   }
+// }
+
+// 选择器组件
+// .el-select {
+//   .el-input__wrapper {
+//     &:hover {
+//       border-color: var(--el-color-primary);
+//     }
+
+//     &.is-focus {
+//       border-color: var(--el-color-primary);
+//     }
+//   }
+// }
+
+// 日期选择器
+// .el-date-editor {
+//   &.el-input {
+//     .el-input__wrapper {
+//       &:hover {
+//         border-color: var(--el-color-primary);
+//       }
+
+//       &.is-focus {
+//         border-color: var(--el-color-primary);
+//       }
+//     }
+//   }
+// }
+:root {
+  // 覆盖 Element Plus 主题色，使用项目品牌色
+  --el-color-primary: #{$brand-primary};
+}
+
+// 用户详情弹窗：移除 header 额外留白，内容区占满高度
+.user-details-dialog-header {
+  padding-bottom: 0 !important;
+}
+
+.user-details-dialog-body {
+  height: 100%;
+}
+
+// 表格组件
+.el-table,
+.el-table-v2 {
+  --el-table-border-color: var(--el-border-color);
+  --el-table-bg-color: var(--el-bg-color);
+  --el-table-tr-bg-color: var(--el-bg-color);
+  --el-table-expanded-cell-bg-color: var(--el-bg-color);
+
+  .el-table__header,
+  .el-table-v2__header {
+    th,
+    .el-table-v2__header-cell {
+      // background-color: var(--el-fill-color-lighter) !important;
+      background-color: #f5f7fa !important;
+      color: var(--el-text-color-primary);
+      font-weight: 500;
+    }
+  }
+
+  .el-table__body {
+    tr:hover > td {
+      background-color: var(--el-fill-color-light);
+    }
+  }
+}
+
+// 清除elemnt-plus表格的边框
+.clear-table-border {
+  .el-table__cell {
+    &.is-leaf {
+      border-bottom-color: transparent !important;
+    }
+
+    border-bottom-color: transparent !important;
+  }
+  .el-table__inner-wrapper {
+    &::before {
+      height: 0 !important;
+    }
+  }
+}
+
+// 充值select的圆角
+.select-round-8.el-select {
+  .el-select__wrapper {
+    border-radius: 8px !important;
+  }
+}
+
+.cascader-round-8.el-cascader {
+  .el-input__wrapper {
+    border-radius: 8px !important;
+  }
+}
+
+.input-round-8.el-input {
+  .el-input__wrapper {
+    border-radius: 8px !important;
+  }
+}
+
+.selectV2PopClass {
+  width: 500px !important;
+  .el-select-dropdown {
+    // width: 600px !important;
+    width: 100% !important;
+
+    .el-vl__wrapper {
+      // width: 600px !important;
+      width: 100% !important;
+    }
+    .el-select-dropdown__list {
+      width: 100% !important;
+    }
+  }
+}
+
+// 文字类 Tooltip 的浅绿色样式，按需通过 popper-class="text-tooltip-light" 启用
+.text-tooltip-light.el-popper,
+.text-tooltip-light.el-tooltip__popper {
+  color: rgba(0, 0, 0, 0.85);
+  background: rgba(234, 248, 236, 1);
+  border: 1px solid #d9d9d9;
+  // border-radius: 8px;
+  // box-shadow: 0 8px 24px rgba(31, 35, 41, 0.12);
+  // padding: 8px 12px;
+  font-size: 14px;
+  line-height: 20px;
+  // max-width: min(520px, calc(100vw - 32px));
+  // white-space: normal;
+  // word-break: break-word;
+  // overflow-wrap: anywhere;
+}
+
+.text-tooltip-light.el-popper > .el-popper__arrow::before,
+.text-tooltip-light.el-tooltip__popper .el-popper__arrow::before {
+  background: rgba(234, 248, 236, 1);
+  border: 1px solid #d9d9d9;
+}
+
+// 卡片组件
+// .el-card {
+//   border: 1px solid var(--el-border-color);
+//   border-radius: var(--el-border-radius-base);
+
+//   .el-card__header {
+//     background-color: var(--el-bg-color);
+//     border-bottom: 1px solid var(--el-border-color);
+//     padding: 16px 20px;
+//   }
+
+//   .el-card__body {
+//     padding: 20px;
+//   }
+// }
+
+// 分页组件
+// .el-pagination {
+//   .el-pager li {
+//     &.is-active {
+//       background-color: var(--el-color-primary);
+//       color: var(--el-color-white);
+//     }
+
+//     &:hover {
+//       color: var(--el-color-primary);
+//     }
+//   }
+
+//   .btn-prev,
+//   .btn-next {
+//     &:hover {
+//       color: var(--el-color-primary);
+//     }
+//   }
+// }
+
+// 抽屉组件
+// .el-drawer {
+//   .el-drawer__header {
+//     border-bottom: 1px solid var(--el-border-color);
+//     padding: 16px 20px;
+//     margin-bottom: 0;
+//   }
+
+//   .el-drawer__body {
+//     padding: 20px;
+//   }
+// }
+
+// 标签页组件
+// .el-tabs {
+//   .el-tabs__nav-wrap::after {
+//     background-color: var(--el-border-color);
+//   }
+
+//   .el-tabs__item {
+//     color: var(--el-text-color-secondary);
+
+//     &:hover {
+//       color: var(--el-color-primary);
+//     }
+
+//     &.is-active {
+//       color: var(--el-color-primary);
+//     }
+//   }
+
+//   .el-tabs__active-bar {
+//     background-color: var(--el-color-primary);
+//   }
+// }
+
+// 提示框组件
+// .el-tooltip__popper {
+//   .el-tooltip__arrow::before {
+//     border-color: var(--el-color-info-dark-2);
+//   }
+// }
+
+// 下拉菜单
+// .el-dropdown-menu {
+//   border: 1px solid var(--el-border-color);
+//   border-radius: var(--el-border-radius-base);
+
+//   .el-dropdown-menu__item {
+//     &:hover {
+//       background-color: var(--el-color-primary-light-9);
+//       color: var(--el-color-primary);
+//     }
+//   }
+// }
+
+// 消息组件
+// .el-message {
+//   border-radius: var(--el-border-radius-base);
+
+//   &.el-message--success {
+//     background-color: var(--el-color-success-light-9);
+//     border-color: var(--el-color-success-light-5);
+//   }
+
+//   &.el-message--warning {
+//     background-color: var(--el-color-warning-light-9);
+//     border-color: var(--el-color-warning-light-5);
+//   }
+
+//   &.el-message--error {
+//     background-color: var(--el-color-error-light-9);
+//     border-color: var(--el-color-error-light-5);
+//   }
+
+//   &.el-message--info {
+//     background-color: var(--el-color-info-light-9);
+//     border-color: var(--el-color-info-light-5);
+//   }
+// }
+
+// ==================== 响应式布局重置 ====================
+
+// 栅格系统
+// .el-row {
+//   margin-left: 0 !important;
+//   margin-right: 0 !important;
+// }
+
+// .el-col {
+//   padding-left: 0;
+//   padding-right: 0;
+// }
+
+// Loading 白色文字/图标样式，用于深色背景遮罩场景
+.loading-white-text.el-loading-mask {
+  .el-loading-spinner {
+    .el-loading-text {
+      color: #fff !important;
+    }
+
+    .path {
+      stroke: #fff !important;
+    }
+
+    svg {
+      color: #fff !important;
+    }
+  }
+}
+
+// PDF 导出时，截图工具对 Element Plus Empty 默认 SVG 中的 CSS 变量和渐变引用兼容性不稳定。
+// 这里仅在导出根节点内使用明确色值兜底，避免空状态图在导出的 PDF 中渲染成黑块。
+[data-page-export-root] {
+  .el-empty__image svg {
+    color: #dcdfe6 !important;
+  }
+
+  .el-empty__image svg path[fill^='var('] {
+    fill: #f7f8fc !important;
+  }
+
+  .el-empty__image svg polygon[fill^='var('] {
+    fill: #e5e7e9 !important;
+  }
+
+  .el-empty__image svg rect[fill^='var('],
+  .el-empty__image svg rect[fill^='url('] {
+    fill: #edeef2 !important;
+  }
+
+  .el-empty__image svg use[fill^='var('] {
+    fill: #e0e3e9 !important;
+  }
+
+  .el-empty__image svg stop[stop-color^='var('] {
+    stop-color: #e9ebef !important;
+  }
+}

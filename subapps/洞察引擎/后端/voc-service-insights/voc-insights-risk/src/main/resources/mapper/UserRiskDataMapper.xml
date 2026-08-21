@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.analysis.risk.mapper.UserRiskDataMapper">
+
+    <select id="riskUserFilter" resultType="com.voc.service.analysis.model.UserRiskDataModel" >
+        select * from rp_user_risk_data where 1=1
+        <if test="beginTime !=null and beginTime!='' ">
+            and publish_date &gt;=#{beginTime}
+            and publish_date &lt;= #{endTime}
+        </if>
+        <if test="beginTime ==null or beginTime=='' ">
+            and date(publish_date) &gt;=date(DATE_SUB(NOW(), INTERVAL 1 DAY))
+            and date(publish_date) &lt;= date(DATE_SUB(NOW(), INTERVAL 1 DAY))
+        </if>
+        <if test="vo.brandName !=null and vo.brandName!='' ">
+            and brand_name = #{vo.brandName}
+        </if>
+        <if test="model.periodType !=null and model.periodType!='' ">
+            and statistic_type = #{model.periodType}
+        </if>
+        <if test="model.negative !=null and model.negative!='' ">
+            and negative_num >= #{model.negative}
+        </if>
+        <if test="model.complaint !=null and model.complaint!='' ">
+            and complain_num >= #{model.complaint}
+        </if>
+        <if test="model.channelNum !=null and model.channelNum!='' ">
+            and channel_num >= #{model.channelNum}
+        </if>
+        <if test="model.affective !=null and model.affective!='' ">
+            and emotion_num &lt;= #{model.affective}
+        </if>
+    </select>
+
+</mapper>

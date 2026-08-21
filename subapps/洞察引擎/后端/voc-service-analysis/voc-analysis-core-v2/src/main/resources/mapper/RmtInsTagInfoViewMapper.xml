@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.analysis.core.v2.mapper.RmtInsTagInfoViewMapper">
+
+
+    <select id="getTagList" resultType="java.util.HashMap">
+        SELECT name AS `key`, `type` AS value`
+        FROM dev_dndc.rmt_ins_tag_info_view;
+    </select>
+
+    <select id="getUserJourneyList" resultType="java.lang.String">
+        SELECT trim(val->#{tagName}) from sta_tag_user_journey_mapping_view
+    </select>
+
+</mapper>

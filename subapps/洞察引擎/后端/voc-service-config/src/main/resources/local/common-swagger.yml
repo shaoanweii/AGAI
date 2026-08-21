@@ -1,0 +1,34 @@
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    version: 2.0
+  api-docs:
+    path: /v3/api-docs
+  group-configs:
+    - group: 'default'
+      paths-to-match: '/**'
+      packages-to-scan: com.voc
+  default-flat-param-object: true
+
+
+knife4j: #Knife4jAutoConfiguration.java
+  enable: true
+  setting: #Knife4jSetting.java
+    #enableHost: true
+    #enableHostText: http://172.16.80.16:30305/api/insights
+    language: zh_cn
+    swagger-model-name: 实体类列表
+    enable-dynamic-parameter: true
+    #enable-host-text: http://127.0.0.2:8080
+#  documents:
+#    - name: 标题1
+#      locations: classpath:markdown/*
+#      group: default
+#    - name: 标题2
+#      locations: classpath:markdown1/*
+#      group: 用户模块
+#  basic:
+#    enable: false
+#    username: abc
+#    password: 123

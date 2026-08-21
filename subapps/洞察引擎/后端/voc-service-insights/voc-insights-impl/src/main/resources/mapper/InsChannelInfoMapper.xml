@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.insights.engine.mapper.InsChannelInfoMapper">
+
+
+    <resultMap id="BaseResultMap" type="com.voc.service.insights.engine.entity.InsChannelInfoEntity">
+        <result column="id" property="id"/>
+        <result column="code" property="code"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="name" property="name"/>
+        <result column="type" property="type"/>
+        <result column="status" property="status"/>
+        <result column="name_en" property="nameEn"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,
+        code,
+                parent_id,
+                name,
+                type,
+                status,
+                name_en,
+        create_time,
+        update_time
+    </sql>
+
+
+    <!--    <select id="findAllChannel" resultType="com.voc.service.insights.engine.entity.InsChannelInfoEntity">-->
+    <!--        select <include refid="Base_Column_List"/> from ins_channel_distribution-->
+    <!--    </select>-->
+
+    <select id="findChannel" resultMap="BaseResultMap">
+        select
+            id,
+            code,
+            parent_id,
+            name,
+            type,
+            case
+                when status is not null then status
+            else '1'
+            end as status,
+            name_en,
+            create_time,
+            update_time
+        from
+        ins_channel
+        where 1=1
+        <if test="insChannelInfoModel.type != null and insChannelInfoModel.type != ''">
+            and type = #{insChannelInfoModel.type}
+        </if>
+        <if test="insChannelInfoModel.status != null and insChannelInfoModel.status != ''">
+            and status = #{insChannelInfoModel.status}
+        </if>
+        <if test="insChannelInfoModel.levels !=null and insChannelInfoModel.levels.size()>0">
+            and level in
+            <foreach item="item" index="index" collection="insChannelInfoModel.levels" open="(" separator="," close=")">
+                 #{item}
+            </foreach>
+        </if>
+        order by create_time asc
+    </select>
+
+    <select id="findChannelByParentId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        ins_channel
+        where
+        type = #{insChannelInfoModel.type}
+        and
+        parent_id = #{insChannelInfoModel.parentId}
+        order by create_time asc
+    </select>
+
+    <select id="findDownChannelInfoByParentId" resultMap="BaseResultMap">
+        WITH RECURSIVE CTE AS (
+        SELECT * FROM ins_channel WHERE id = #{insChannelInfoModel.id}
+        UNION ALL
+        SELECT t.* FROM ins_channel t INNER JOIN CTE ON t.parent_id = CTE.id
+        )
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM CTE where type = #{insChannelInfoModel.type}
+    </select>
+
+    <select id="UpwardFindChannelHierarchical" resultMap="BaseResultMap">
+        WITH RECURSIVE CTE AS (
+        SELECT * FROM ins_channel
+        <where>
+            <if test = "channelIds != null and channelIds.size > 0">
+            id in
+            <foreach item="item" index="index" collection="channelIds" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+            </if>
+            <if test = "channelCodes != null and channelCodes.size > 0">
+                code in
+                <foreach item="item" index="index" collection="channelCodes" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+        UNION ALL
+        SELECT t.*
+        FROM ins_channel t INNER JOIN CTE ON t.id = CTE.parent_id
+        )
+        SELECT
+        id,
+        code,
+        parent_id,
+        name,
+        type,
+        case
+        when status is not null then status
+        else '1'
+        end as status,
+        name_en,
+        create_time,
+        update_time
+        FROM CTE group by id ORDER BY id;
+    </select>
+
+    <select id="findAllChannelInfo" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        ins_channel
+        where
+        type = #{insChannelInfoModel.type}
+        order by create_time asc
+    </select>
+
+    <select id="findChannelInfoByName" resultMap="BaseResultMap">
+        select
+            <include refid="Base_Column_List"/>
+        from
+            ins_channel
+        where
+            name = #{channelName}
+    </select>
+
+    <select id="upwardFindChannelHierarchicalTree" resultMap="BaseResultMap">
+        WITH RECURSIVE CTE AS (
+        SELECT * FROM ins_channel
+        <where>
+            <if test = "channelIds != null and channelIds.size > 0">
+                id in
+                <foreach item="item" index="index" collection="channelIds" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+        UNION ALL
+        SELECT t.*
+        FROM ins_channel t INNER JOIN CTE ON t.id = CTE.parent_id
+        )
+        SELECT
+        id,
+        code,
+        parent_id,
+        name,
+        type,
+        case
+        when status is not null then status
+        else '1'
+        end as status,
+        name_en,
+        create_time,
+        update_time
+        FROM CTE group by id ORDER BY id;
+    </select>
+
+    <select id="findChannelIdsByChannelCode" resultType="java.lang.String">
+        select id from ins_channel where code in
+            <foreach item="item" index="index" collection="channelCode" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+    </select>
+
+    <select id="findChannelByChannelCode" resultMap="BaseResultMap">
+        select
+            <include refid="Base_Column_List"/>
+        from ins_channel where code = #{channelCode}
+        limit 1
+    </select>
+
+    <select id="findDownChannelInfoByCode" resultMap="BaseResultMap">
+        WITH RECURSIVE CTE AS (
+        SELECT * FROM ins_channel WHERE code in
+        <foreach item="item" index="index" collection="insChannelInfoModel.channelCodes" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        UNION ALL
+        SELECT t.* FROM ins_channel t INNER JOIN CTE ON t.parent_id = CTE.id
+        )
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM CTE where type = #{insChannelInfoModel.type}
+    </select>
+    <select id="UpwardFindAllChannelHierarchical"
+            resultType="com.voc.service.insights.engine.entity.InsChannelInfoEntity">
+        WITH RECURSIVE LeafNodes AS (
+            -- 识别末级节点
+            SELECT id, name, code, level, parent_id
+            FROM ins_channel
+            WHERE id NOT IN (
+                SELECT DISTINCT parent_id
+                FROM ins_channel
+                WHERE parent_id IS NOT NULL
+            )
+        ),
+                       PathCTE AS (
+                           -- 从末级节点开始向上递归
+                           SELECT
+                               ln.id AS leaf_id,
+                               ln.name AS leaf_name,
+                               ln.code AS leaf_code,
+                               ic.id,
+                               ic.parent_id,
+                               ic.name,
+                               ic.code,
+                               ic.level,
+                               1 AS path_order
+                           FROM LeafNodes ln
+                                    JOIN ins_channel ic ON ln.id = ic.id
+
+                           UNION ALL
+
+                           SELECT
+                               pc.leaf_id,
+                               pc.leaf_name,
+                               pc.leaf_code,
+                               ic.id,
+                               ic.parent_id,
+                               ic.name,
+                               ic.code,
+                               ic.level,
+                               pc.path_order + 1
+                           FROM PathCTE pc
+                                    JOIN ins_channel ic ON ic.id = pc.parent_id
+                           WHERE ic.parent_id IS NOT NULL
+                       )
+        SELECT
+            leaf_name,
+            leaf_code,
+            -- 按层级聚合
+            GROUP_CONCAT(CASE WHEN level = 1 THEN name END) AS channelLevelOneName,
+            GROUP_CONCAT(CASE WHEN level = 1 THEN code END) AS channelLevelOneCode,
+            GROUP_CONCAT(CASE WHEN level = 2 THEN name END) AS channelLevelTwoName,
+            GROUP_CONCAT(CASE WHEN level = 2 THEN code END) AS channelLevelTwoCode,
+            GROUP_CONCAT(CASE WHEN level = 3 THEN name END) AS channelLevelThreeName,
+            GROUP_CONCAT(CASE WHEN level = 3 THEN code END) AS channelLevelThreeCode,
+            -- 完整路径
+            GROUP_CONCAT(name ORDER BY level SEPARATOR ' > ') AS full_hierarchy,
+            GROUP_CONCAT(code ORDER BY level SEPARATOR ' > ') AS full_code_hierarchy,
+            -- 路径深度
+            COUNT(*) AS path_depth
+        FROM PathCTE
+        GROUP BY leaf_id, leaf_name, leaf_code
+        ORDER BY leaf_name
+    </select>
+</mapper>

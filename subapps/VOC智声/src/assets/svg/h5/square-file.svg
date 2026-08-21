@@ -1,0 +1,16 @@
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="File type icon">
+<g id="Page">
+<path id="Page background" d="M1.59998 1.6C1.59998 0.716345 2.31632 0 3.19998 0H9.59998L14.4 4.8V14.4C14.4 15.2837 13.6836 16 12.8 16H3.19998C2.31632 16 1.59998 15.2837 1.59998 14.4V1.6Z" fill="#1677FF"/>
+<path id="Earmark" opacity="0.3" d="M9.59998 0L14.4 4.8H11.2C10.3163 4.8 9.59998 4.08366 9.59998 3.2V0Z" fill="white"/>
+</g>
+<g id="Icon wrap" clip-path="url(#clip0_258430_88521)">
+<path id="Icon" d="M5.12 8H10.88M5.12 9.28H10.88M5.12 10.56H10.88M5.12 11.84H9.6" stroke="white" stroke-width="0.6" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</g>
+<defs>
+<clipPath id="clip0_258430_88521">
+<rect width="6.4" height="6.4" fill="white" transform="translate(4.79999 6.40002)"/>
+</clipPath>
+</defs>
+</svg>

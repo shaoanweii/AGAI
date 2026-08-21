@@ -1,0 +1,306 @@
+@use 'sass:list';
+
+// @import './_variables.scss';
+
+/**
+ * 工具类 - Utilities
+ * 基于设计规范的常用 CSS 工具类
+ */
+
+// ==================== 文字工具类 ====================
+// 文字颜色映射
+// 用法: .text-primary, .text-secondary, .text-tertiary, .text-placeholder,
+//       .text-link, .text-danger, .text-warning, .text-success
+// 示例: <p class="text-primary">主要文字</p>
+//       <span class="text-danger">错误提示</span>
+$text-color-map: (
+  'primary': $text-primary,
+  // #1F2733 主要文字
+  'secondary': $text-secondary,
+  // #5F6A7A 次要文字
+  'tertiary': $text-tertiary,
+  // #929AA6 辅助文字
+  'placeholder': $text-placeholder,
+  // #C9CED6 预设文字
+  'link': $text-link,
+  // #1677FF 链接文字
+  'danger': $text-danger,
+  // #FF5959 危险文字
+  'warning': $text-warning,
+  // #FAB007 警示文字
+  'success': $text-success,
+  // #14CA64 成功文字
+  'brand': $brand-primary,
+  // 品牌色
+  'brand-secondary': $brand-secondary // #0B457F 品牌色
+);
+
+// 生成文字颜色类
+@each $name, $color in $text-color-map {
+  .text-#{$name} {
+    color: $color;
+  }
+}
+
+// ==================== 字体大小工具类 ====================
+// 字体大小映射
+// 用法: .text-h1, .text-h2, .text-h3, .text-h4, .text-body, .text-caption
+// 示例: <h1 class="text-h1">一级标题</h1>
+//       <p class="text-body">正文内容</p>
+//       <small class="text-caption">次要文字</small>
+$font-size-map: (
+  'h1': (
+    $font-size-h1,
+    // 32px 一级标题 - 强调指标
+    $line-height-h1 // 40px
+  ),
+  'h2': (
+    $font-size-h2,
+    // 24px 二级标题 - 文章标题/banner文字
+    $line-height-h2 // 32px
+  ),
+  'h3': (
+    $font-size-h3,
+    // 20px 三级标题 - 页面标题
+    $line-height-h3 // 28px
+  ),
+  'h4': (
+    $font-size-h4,
+    // 16px 四级标题 - 弹窗标题/抽屉标题/模块标题
+    $line-height-h4 // 24px
+  ),
+  'body': (
+    $font-size-body,
+    // 14px 正文内容 - 栏目标题/正文内容
+    $line-height-body // 22px
+  ),
+  'small': (
+    $font-size-caption,
+    // 12px 次要文字
+    $line-height-caption // 20px
+  )
+);
+
+// 生成字体大小类
+@each $name, $values in $font-size-map {
+  .text-#{$name} {
+    font-size: list.nth($values, 1);
+    line-height: list.nth($values, 2);
+  }
+}
+
+// ==================== 字重工具类 ====================
+// 字重映射
+// 用法: .font-200, .font-normal, .font-medium, .font-semibold
+// 示例: <h1 class="font-200">粗体标题</h1>
+//       <p class="font-400">常规文字</p>
+$font-weight-map: (
+  // 200 纤细体
+  '200': $font-weight-thin,
+  // 400 常规体
+  '400': $font-weight-normal,
+  // 500 中黑体
+  '500': $font-weight-medium,
+  // 600 中粗体
+  '600': $font-weight-semibold
+);
+
+// 生成字重类
+@each $name, $weight in $font-weight-map {
+  .font-#{$name} {
+    font-weight: $weight;
+  }
+}
+
+// ==================== 背景色工具类 ====================
+// 背景色映射
+// 用法: .bg-primary, .bg-secondary, .bg-error, .bg-warning, .bg-success, .bg-info,
+//       .bg-error-light, .bg-warning-light, .bg-success-light, .bg-info-light,
+//       .bg-regular, .bg-light
+// 示例: <div class="bg-primary">主色背景</div>
+//       <div class="bg-error-light">浅色错误背景</div>
+$background-color-map: (
+  'primary': $brand-primary,
+  // #1677FF 主色
+  'secondary': $brand-secondary,
+  // #0B457F 品牌色
+  'error': $color-error,
+  // #FF5959 失败提示
+  'warning': $color-warning,
+  // #FAB007 警告提示
+  'success': $color-success,
+  // #14CA64 成功提示
+  'info': $color-info,
+  // #1677FF 信息提示
+  'error-light': $color-error-light,
+  // #FFD1C9 失败提示/浅
+  'warning-light': $color-warning-light,
+  // #FEF2B4 警告提示/浅
+  'success-light': $color-success-light,
+  // #B3F2C6 成功提示/浅
+  'info-light': $color-info-light,
+  // #BDE2FF 信息提示/浅
+  'regular': $bg-regular,
+  // #F2F4F7 背景色/常规
+  'light': $bg-light // #F5F7FA 背景色/浅
+);
+
+// 生成背景色类
+@each $name, $color in $background-color-map {
+  .bg-#{$name} {
+    background-color: $color;
+  }
+}
+
+// ==================== 圆角工具类 ====================
+// 圆角映射
+// 用法: .rounded-s, .rounded-m, .rounded-l, .rounded-xl, .rounded-full
+// 示例: <div class="rounded-m">中等圆角</div>
+//       <img class="rounded-full">圆形头像</img>
+$border-radius-map: (
+  's': $border-radius-s,
+  // 2px 小圆角 - 小标签tag/小button
+  'm': $border-radius-m,
+  // 4px 中等圆角 - 常规button/条单/提示
+  'l': $border-radius-l,
+  // 6px 大圆角 - 卡片/页面模块/填充组件/气泡
+  'xl': $border-radius-xl,
+  // 8px 超大圆角 - 卡片/页面模块/填充组件/气泡
+  'full': $border-radius-c // 50% 全圆角 - 全圆角Button/头像/开关
+);
+
+// 生成圆角类
+@each $name, $radius in $border-radius-map {
+  .rounded-#{$name} {
+    border-radius: $radius;
+  }
+}
+
+// ==================== 边框工具类 ====================
+// 边框颜色映射
+// 用法: .border-dark, .border-regular, .border-primary, .border-error,
+//       .border-warning, .border-success, .border-info
+// 示例: <div class="border-regular">常规边框</div>
+//       <div class="border-error">错误状态边框</div>
+$border-color-map: (
+  'dark': $border-dark,
+  // #DFE2E8 分割线&描边/深
+  'regular': $border-regular,
+  // #EBEDF0 分割线/常规
+  'primary': $brand-primary,
+  // #1677FF 主色边框
+  'error': $color-error,
+  // #FF5959 错误边框
+  'warning': $color-warning,
+  // #FAB007 警告边框
+  'success': $color-success,
+  // #14CA64 成功边框
+  'info': $color-info // #1677FF 信息边框
+);
+
+// 生成边框类
+@each $name, $color in $border-color-map {
+  .border-#{$name} {
+    border: 1px solid $color;
+  }
+}
+
+// ==================== 间距工具类 ====================
+@for $i from 1 through 500 {
+  .mt-#{$i} {
+    margin-top: #{$i}px;
+  }
+  .mr-#{$i} {
+    margin-right: #{$i}px;
+  }
+  .mb-#{$i} {
+    margin-bottom: #{$i}px;
+  }
+  .ml-#{$i} {
+    margin-left: #{$i}px;
+  }
+  .m-#{$i} {
+    margin: #{$i}px;
+  }
+  .mx-#{$i} {
+    margin-top: #{$i}px;
+    margin-bottom: #{$i}px;
+  }
+
+  .pt-#{$i} {
+    padding-top: #{$i}px;
+    box-sizing: border-box;
+  }
+  .pr-#{$i} {
+    padding-right: #{$i}px;
+    box-sizing: border-box;
+  }
+  .pb-#{$i} {
+    padding-bottom: #{$i}px;
+    box-sizing: border-box;
+  }
+  .pl-#{$i} {
+    padding-left: #{$i}px;
+    box-sizing: border-box;
+  }
+  .p-#{$i} {
+    padding: #{$i}px;
+    box-sizing: border-box;
+  }
+
+  .px-#{$i} {
+    padding-left: #{$i}px;
+    padding-right: #{$i}px;
+  }
+
+  .t-#{$i} {
+    top: #{$i}px;
+  }
+  .l-#{$i} {
+    left: #{$i}px;
+  }
+  .b-#{$i} {
+    bottom: #{$i}px;
+  }
+  .r-#{$i} {
+    right: #{$i}px;
+  }
+
+  .lh-#{$i} {
+    line-height: #{$i}px;
+  }
+  .h-#{$i} {
+    height: #{$i}px;
+  }
+
+  .min-h-#{$i} {
+    min-height: #{$i}px;
+  }
+  .max-h-#{$i} {
+    max-height: #{$i}px;
+  }
+
+  .w-#{$i} {
+    width: #{$i}px;
+  }
+  .iw-#{$i} {
+    width: #{$i}px !important;
+  }
+  .fs-#{$i} {
+    font-size: #{$i}px;
+  }
+  .fw-#{$i} {
+    font-weight: #{$i};
+  }
+
+  .gap-#{$i} {
+    gap: #{$i}px;
+  }
+
+  // 查询项的行高
+  .search-form-label-lh-#{$i} {
+    .el-form-item__label {
+      line-height: #{$i}px;
+    }
+  }
+}

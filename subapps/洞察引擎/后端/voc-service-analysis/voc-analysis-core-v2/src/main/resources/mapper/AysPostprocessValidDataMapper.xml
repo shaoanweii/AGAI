@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.analysis.core.v2.mapper.AysPostprocessValidDataMapper">
+
+    <select id="queryProcessValidData" resultType="com.voc.service.analysis.model.AysProcessValidDataModel">
+        select
+        appd.original_text_scene as newOriginalTextScene,
+        appd.brand_code_name as newBrandCodeName,
+        appd.car_series_name as newCarSeriesName,
+        appd.label_type_level_first as newLabelTypeLevelFirst,
+        appd.label_type_level_second as newLabelTypeLevelSecond,
+        appd.label_type_level_three as newLabelTypeLevelThree,
+        appd.label_type_level_four as newLabelTypeLevelFour,
+        appd.scenario as newScenario,
+        appd.sentiment as newSentiment,
+        appd.intention_type as newIntentionType,
+        appd.opinion as newOpinion,
+        appd.topic as newTopicProportion,
+        appd.subject as newSubject,
+        appd.fault_level as newFaultLevel,
+        appd.description as newDescription,
+        appd.sentiment_score as newSentimentScore,
+        appd.keywords as newKeywords,
+        appd.hit_rules as newHitRules,
+        apdv.original_text_scene as oldOriginalTextScene,
+        apdv.brand_code_name as oldBrandCodeName,
+        apdv.car_series_name as oldCarSeriesName,
+        apdv.label_type_level_first as oldLabelTypeLevelFirst,
+        apdv.label_type_level_second as oldLabelTypeLevelSecond,
+        apdv.label_type_level_three as oldLabelTypeLevelThree,
+        apdv.label_type_level_four as oldLabelTypeLevelFour,
+        apdv.scenario as oldScenario,
+        apdv.sentiment as oldSentiment,
+        apdv.intention_type as oldIntentionType,
+        apdv.opinion as oldOpinion,
+        apdv.topic as oldTopicProportion,
+        apdv.subject as oldSubject,
+        apdv.fault_level as oldFaultLevel,
+        apdv.description as oldDescription,
+        apdv.sentiment_score as oldSentimentScore,
+        apdv.keywords as oldKeywords,
+        apdv.hit_rules as oldHitRules,
+        apdv.abandon as abandon,
+        apdv.channel_id as channelId,
+        aard.`data` as dataStr
+        from ays_post_process_data_valid apdv
+                 Right join (select id,
+                                    work_id,
+                                    client_id,
+                                    channel_id,
+                                    update_time
+                             from ays_post_process_data_valid apdv
+                             where apdv.work_id = #{workId}
+                               and apdv.client_id = #{clientId}
+                                and channel_id in
+                                <foreach item="item" index="index" collection="channelIdList" open="(" separator="," close=")">
+                                    #{item}
+                                </foreach>
+                             order by apdv.update_time desc limit 1) w on
+                apdv.work_id = w.work_id
+                and w.client_id = apdv.client_id
+                left join ays_api_reslt_data_analysis aarda  on
+                apdv.id = aarda.new_id
+                left join ays_api_reslt_data aard   on
+                aarda.id = aard.new_id
+                left join ays_post_process_data appd on
+                apdv.id = appd.new_id
+    </select>
+
+
+
+    <delete id="removeHistoryData">
+        delete from ays_post_process_data_valid
+        where to_date(create_time)  &lt;= to_date(DATE_SUB(now(), INTERVAL ${days} day))
+        <if test="workIds != null and workIds.size > 0">
+            and work_id not in
+            <foreach item="item" index="index" collection="workIds" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </delete>
+</mapper>

@@ -1,0 +1,68 @@
+druid.mysql.usePingMethod: false
+
+spring:
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    dynamic:
+      primary: starrock_voc
+      strict: false
+      datasource:
+        starrock_voc:
+          driverClassName: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://172.16.71.48:9030/VDP_RS_TD?characterEncoding=UTF-8&useUnicode=true&useSSL=false&tinyInt1isBit=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
+          username: root
+          password: PBE(45bOBrhUodh8cScuohr2wdutyeKM7697GZPXurUy7Ru2mxfG3ymxCuYe1cGhp1fU4CAu3bOinDaKPUwDxnkeHg==)
+          hikari:
+            # 连接池中允许的最小空闲连接数 - 默认值：10。
+            minimum-idle: 10
+            # 连接池中允许的最大连接数，包括闲置和使用中的连接 - 默认值：10
+            maximum-pool-size: 100
+            # 事务自动提交 - 默认值：true
+            auto-commit: true
+            # 连接测试查询 如果你的驱动程序支持JDBC4，强烈建议不要设置此属性。
+            #            connection-test-query: select 1
+            # 连接超时时间 - 默认值：30秒。
+            connection-timeout: 30000
+            # 连接池中允许闲置的最长时间 - 默认值：10分钟
+            idle-timeout: 600000
+            # 一个连接生命时长（毫秒），超时而没被使用则被释放 - 默认值：30分钟
+            max-lifetime: 1800000
+            # 连接被测试活动的最长时间 - 默认值：5秒。
+            validation-timeout: 5000
+            # 指定连接池的名称 - 默认自动生成
+            pool-name: HikaraPool-1
+        starrock_dndc:
+          driverClassName: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://172.16.71.48:9030/VDP_RS_TD?characterEncoding=UTF-8&useUnicode=true&useSSL=false&tinyInt1isBit=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
+          username: root
+          password: PBE(45bOBrhUodh8cScuohr2wdutyeKM7697GZPXurUy7Ru2mxfG3ymxCuYe1cGhp1fU4CAu3bOinDaKPUwDxnkeHg==)
+          hikari:
+            # 连接池中允许的最小空闲连接数 - 默认值：10。
+            minimum-idle: 10
+            # 连接池中允许的最大连接数，包括闲置和使用中的连接 - 默认值：10
+            maximum-pool-size: 100
+            # 事务自动提交 - 默认值：true
+            auto-commit: true
+            # 连接测试查询 如果你的驱动程序支持JDBC4，强烈建议不要设置此属性。
+            #            connection-test-query: select 1
+            # 连接超时时间 - 默认值：30秒。
+            connection-timeout: 30000
+            # 连接池中允许闲置的最长时间 - 默认值：10分钟
+            idle-timeout: 600000
+            # 一个连接生命时长（毫秒），超时而没被使用则被释放 - 默认值：30分钟
+            max-lifetime: 1800000
+            # 连接被测试活动的最长时间 - 默认值：5秒。
+            validation-timeout: 5000
+            # 指定连接池的名称 - 默认自动生成
+            pool-name: HikaraPool-1
+
+
+mybatis-plus:
+  configuration:
+    # 这个配置会将执行的sql打印出来，在开发或测试的时候可以用
+    log-impl: com.voc.service.components.mybatis.config.StdOutImpl
+    # 返回类型为Map,显示null对应的字段
+    call-setters-on-nulls: true
+    #开启mybatis的二级缓存
+    cache-enabled: true
+    default-fetch-size: 1000

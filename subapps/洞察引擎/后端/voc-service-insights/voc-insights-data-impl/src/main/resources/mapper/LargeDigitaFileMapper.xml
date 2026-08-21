@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.insights.engine.data.mapper.LargeDigitaFileMapper">
+
+    <resultMap id="BaseResultMap" type="com.voc.service.insights.engine.data.entity.LargeDigitaFilesEntity" >
+        <result column="id" property="id" />
+        <result column="task_id" property="taskId" />
+        <result column="user_id" property="userId" />
+        <result column="task_name" property="taskName" />
+        <result column="type" property="type" />
+        <result column="status" property="status" />
+        <result column="file_key" property="fileKey" />
+        <result column="create_time" property="createTime" />
+        <result column="parameters" property="parameters" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,
+        task_id,
+        user_id,
+        user_name,
+        task_name,
+        `type`,
+        status,
+        file_key,
+        create_time,
+        md5,
+        parameters
+    </sql>
+    <select id="getFileList" resultType="com.voc.service.insights.engine.data.entity.LargeDigitaFilesEntity">
+        select
+        <include refid="Base_Column_List"/>
+        from sta_attachment_download_record
+        where 1=1
+        <if test="model.userIds!=null and model.userIds.size()>0">
+            and user_id in
+            <foreach item="item" collection="model.userIds" separator="," open="(" close=")" index="">
+                #{item}
+            </foreach>
+        </if>
+        <if test="model.fileName !=null and model.fileName !=''">
+            and task_name like concat('%', #{model.fileName}, '%')
+        </if>
+        <if test="model.appId !=null and model.appId !=''">
+            and app_id = #{model.appId}
+        </if>
+        order by create_time desc
+    </select>
+    <select id="getFile" resultType="com.voc.service.insights.engine.data.entity.LargeDigitaFilesEntity">
+
+    </select>
+    <select id="findUserIds" resultType="java.lang.String">
+        select user_id from sta_attachment_download_record where app_id="insights" group by user_id
+    </select>
+
+    <select id="findVisibleUserList"
+            resultType="com.voc.service.insights.engine.vo.InsDownAccountInfoAuthVo">
+        select
+        user_id as userId,
+        username as accountName,
+        firstname as userName,
+        employee_id as employeeId
+        from
+        voc_ins_user_role_depart_v
+        where 1=1
+        <if test="userIds !=null and userIds !=''">
+            and user_id in
+            <foreach collection="userIds" item="userId" open="(" separator="," close=")">
+                #{userId}
+            </foreach>
+        </if>
+    </select>
+
+    <update id="updateAttachmentDownloadRecord" parameterType="com.voc.service.insights.engine.api.model.LargeDigitaFilesModel">
+        UPDATE voc_ms_td.sta_attachment_download_record
+        <set>
+            <!-- 动态更新字段，只更新传入非空的字段 -->
+            <if test="taskId != null">task_id = #{taskId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="taskName != null">task_name = #{taskName},</if>
+            <if test="type != null">`type` = #{type},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="fileKey != null">file_key = #{fileKey},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="parameters != null">parameters = #{parameters},</if>
+            <if test="userName != null">user_name = #{userName},</if>
+            <if test="appId != null">app_id = #{appId},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+</mapper>

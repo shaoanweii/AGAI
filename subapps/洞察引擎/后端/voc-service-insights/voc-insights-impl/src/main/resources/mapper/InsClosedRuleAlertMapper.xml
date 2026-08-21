@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.insights.engine.mapper.InsClosedRuleAlertMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.voc.service.insights.engine.entity.InsClosedRuleAlertEntity">
+        <id column="alert_push_id" property="alertPushId"/>
+        <result column="rule_id" property="ruleId"/>
+        <result column="alert_type" property="alertType"/>
+        <result column="alert_frequency" property="alertFrequency"/>
+        <result column="alert_time" property="alertTime"/>
+        <result column="alert_cron" property="alertCron"/>
+        <result column="alert_channel" property="alertChannel"
+                typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        alert_push_id, rule_id, alert_type, alert_frequency, alert_time, alert_cron, alert_channel
+    </sql>
+
+    <select id="queryRuleAlertById" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from ins_closed_rule_alert
+        where rule_id = #{ruleId}
+    </select>
+
+</mapper>

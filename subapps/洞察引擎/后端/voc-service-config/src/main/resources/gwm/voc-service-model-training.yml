@@ -1,0 +1,16 @@
+#语料标注登录
+model.training.labelstud: http://10.250.11.22:8005
+#AI模型接口地址
+model.training.ai.model.api: http://10.250.11.22:8005/ai
+#模型训练轮数
+model.training.num_epochs: 1
+#模型模型端口号
+model.training.port: 5007
+
+knife4j.setting.enableHost: true
+knife4j.setting.enableHostText: http://172.16.80.16:30705/api/model/training
+
+feign.client:
+  token_ignore_urls:
+  - /api/projects**
+

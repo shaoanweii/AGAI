@@ -1,0 +1,29 @@
+{
+  "files": [],
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    },
+    {
+      "path": "./tsconfig.app.json"
+    }
+  ],
+  "compilerOptions": {
+    // ...
+    "jsx": "preserve",
+    "jsxImportSource": "vue",
+    "skipLibCheck": true,
+    "types": [
+      "element-plus/global"
+    ],
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["src/*"]
+    },
+  },
+  "exclude": [
+    "node_modules",
+    "**/node_modules/*"
+  ] // 添加这一行以排除 node_modules 目录
+  // "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "src/router/index.ts"],
+}

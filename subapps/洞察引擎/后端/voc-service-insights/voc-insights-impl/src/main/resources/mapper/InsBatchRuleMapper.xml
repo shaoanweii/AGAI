@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.insights.engine.mapper.InsBatchRuleMapper">
+
+    <!-- 基础结果映射 -->
+    <resultMap id="BaseResultMap" type="com.voc.service.insights.engine.entity.InsBatchRuleEntity">
+        <id column="rule_id" property="ruleId" />
+        <result column="rule_name" property="ruleName" />
+        <result column="category_id" property="categoryId" />
+        <result column="brand_code" property="brandCode" />
+        <result column="brand_name" property="brandName" />
+        <result column="alert_type" property="alertType" />
+        <result column="alert_frequency" property="alertFrequency" />
+        <result column="alert_time" property="alertTime" />
+        <result column="alert_cron" property="alertCron" />
+        <result column="dimension_config" property="dimensionConfig" />
+        <result column="indicator_config" property="indicatorConfig" />
+        <result column="process_priority" property="processPriority" />
+        <result column="auditor" property="auditor" />
+        <result column="audit_method" property="auditMethod" />
+        <result column="main_responder" property="mainResponder" />
+        <result column="cc_personnel" property="ccPersonnel" />
+        <result column="is_enabled" property="isEnabled" />
+        <result column="version" property="version" />
+        <result column="creator" property="creator" />
+        <result column="updater" property="updater" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <!-- 分页查询规则列表 -->
+    <select id="queryRulePage" resultMap="BaseResultMap">
+        SELECT
+            rule_id,
+            rule_name,
+            category_id,
+            brand_code,
+            brand_name,
+            alert_type,
+            alert_frequency,
+            alert_time,
+            alert_cron,
+            dimension_config,
+            indicator_config,
+            process_priority,
+            auditor,
+            audit_method,
+            main_responder,
+            cc_personnel,
+            is_enabled,
+            version,
+            creator,
+            updater,
+            create_time,
+            update_time
+        FROM
+            ins_batch_rule
+        WHERE
+            1 = 1
+            <if test="ruleName != null and ruleName != ''">
+                AND rule_name LIKE CONCAT('%', #{ruleName}, '%')
+            </if>
+            <if test="categoryId != null and categoryId != ''">
+                AND category_id = #{categoryId}
+            </if>
+            <if test="brandCode != null and brandCode != ''">
+                AND brand_code = #{brandCode}
+            </if>
+            <if test="isEnabled != null and isEnabled != ''">
+                AND is_enabled = #{isEnabled}
+            </if>
+            <if test="alertType != null and alertType != ''">
+                AND alert_type = #{alertType}
+            </if>
+        ORDER BY
+            <if test="orderBy != null and orderBy != ''">
+                #{orderBy} ${orderDirection}
+            </if>
+            <if test="orderBy == null or orderBy == ''">
+                create_time DESC
+            </if>
+    </select>
+
+    <!-- 根据规则ID查询规则详情 -->
+    <select id="queryRuleById" resultMap="BaseResultMap">
+        SELECT
+            rule_id,
+            rule_name,
+            category_id,
+            brand_code,
+            brand_name,
+            alert_type,
+            alert_frequency,
+            alert_time,
+            alert_cron,
+            dimension_config,
+            indicator_config,
+            process_priority,
+            auditor,
+            audit_method,
+            main_responder,
+            cc_personnel,
+            is_enabled,
+            version,
+            creator,
+            updater,
+            create_time,
+            update_time
+        FROM
+            ins_batch_rule
+        WHERE
+            rule_id = #{ruleId}
+    </select>
+
+    <!-- 批量更新规则状态 -->
+    <update id="batchUpdateIsEnabled">
+        UPDATE
+            ins_batch_rule
+        SET
+            is_enabled = #{isEnabled},
+            updater = #{updater},
+            update_time = #{updateTime}
+        WHERE
+            rule_id IN
+            <foreach collection="idSet" item="id" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+    </update>
+
+    <!-- 根据分类ID列表统计规则数量 -->
+    <select id="countByCategoryIds" resultType="com.voc.service.insights.engine.vo.InsBatchRuleCountVo">
+        SELECT
+            category_id AS categoryId,
+            COUNT(*) AS count
+        FROM
+            ins_batch_rule
+        WHERE
+            category_id IN
+            <foreach collection="categoryIds" item="categoryId" open="(" close=")" separator=",">
+                #{categoryId}
+            </foreach>
+        GROUP BY
+            category_id
+    </select>
+
+    <!-- 根据分类ID查询规则数量 -->
+    <select id="countByCategoryId" resultType="java.lang.Integer">
+        SELECT
+            COUNT(*)
+        FROM
+            ins_batch_rule
+        WHERE
+            category_id = #{categoryId}
+    </select>
+
+    <!-- 查询已启用的规则数量 -->
+    <select id="countEnabledRules" resultType="java.lang.Integer">
+        SELECT
+            COUNT(*)
+        FROM
+            ins_batch_rule
+        WHERE
+            is_enabled = 'enabled'
+    </select>
+
+</mapper>

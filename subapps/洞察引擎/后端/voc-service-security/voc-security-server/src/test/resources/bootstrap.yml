@@ -1,0 +1,3 @@
+spring.application.name: voc-security-server
+system.appid: security
+spring.profiles.active: local

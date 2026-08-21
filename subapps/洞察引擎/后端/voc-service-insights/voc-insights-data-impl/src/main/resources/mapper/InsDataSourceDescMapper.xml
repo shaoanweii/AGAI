@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.insights.engine.data.mapper.InsDataSourceDescMapper">
+    <resultMap type="com.voc.service.insights.engine.data.entity.InsDataSourceDescEntity" id="BaseResultMap">
+        <result column="new_id" property="newId" />
+        <result column="id" property="id" />
+        <result column="channel_id" property="channelId" />
+        <result column="title" property="title" />
+        <result column="content" property="content" />
+        <result column="publish_time" property="publishTime" />
+        <result column="user_id" property="userId" />
+        <result column="user_name" property="userName" />
+        <result column="URL" property="URL" />
+        <result column="reading_count" property="readingCount" />
+        <result column="focus_count" property="focusCount" />
+        <result column="comments_count" property="commentsCount" />
+        <result column="favor_count" property="favorCount" />
+        <result column="redirection_count" property="redirectionCount" />
+        <result column="total_num" property="totalNum" />
+        <result column="success_num" property="successNum" />
+        <result column="fail_num" property="failNum" />
+        <result column="data_name" property="dataName" />
+        <result column="batch_Id" property="batchId" />
+        <result column="data_source_id" property="dataSourceId" />
+        <result column="status" property="status" />
+        <result column="create_time" property="createTime" />
+        <result column="work_id" property="workId" />
+        <result column="data_validity" property="dataValidity" />
+        <result column="province" property="province" />
+        <result column="city" property="city" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        new_id,
+                id,
+                channel_id,
+                title,
+                content,
+                publish_time,
+                user_id,
+                user_name,
+                URL,
+                reading_count,
+                focus_count,
+                comments_count,
+                favor_count,
+                redirection_count,
+                total_num,
+                success_num,
+                fail_num,
+                data_name,
+                batch_Id,
+                data_source_id,
+                status,
+                create_time,
+                work_id,
+                data_validity,
+                province,
+                city
+    </sql>
+
+
+    <select id="findDataSourceDetail" resultMap="BaseResultMap">
+        select  batch_Id, create_time
+        from (
+
+                 select  batch_Id,create_time
+                 from ins_data_source_desc
+                 where data_source_id = #{dataSourceId}
+                 order by create_time desc
+             )f
+        group by batch_Id
+        order by create_time desc
+    </select>
+
+    <delete id="deleteDataSourceDetail">
+        delete from ins_data_source_desc where batch_Id = #{batchId}
+    </delete>
+
+    <select id="findDataSourceDetailAll" resultMap="BaseResultMap">
+        select
+            <include refid="Base_Column_List"/>
+        from
+        ins_data_source_desc
+        where
+            data_source_id = #{dataSourceId}
+        <if test="status !=null and status !=''">
+            and status in
+            <foreach collection="status" item="state" open="(" separator="," close=")">
+                #{state}
+            </foreach>
+        </if>
+        <if test="batchId != null and batchId != ''">
+            and batch_Id = #{batchId}
+        </if>
+
+    </select>
+
+    <update id="updateDataSourceDetail">
+        update ins_data_source_desc set status = #{status} where batch_Id = #{batchId} and data_validity = '1'
+    </update>
+
+    <update id="updateDataSourceDetailStatusAndWorkId">
+        update ins_data_source_desc set status = #{status}, work_id = #{workId} where batch_Id = #{batchId}
+    </update>
+
+    <update id="batchUpdateDataSourceDetailStatus">
+        update ins_data_source_desc set status = #{status} where batch_Id = #{batchId} and data_validity = '1'
+        and new_id in
+        <foreach collection="newIds" item="newId" open="(" separator="," close=")">
+            #{newId}
+        </foreach>
+    </update>
+
+    <insert id="insertBatchDataSourceDetail">
+        insert into ins_data_source_desc (
+        new_id,
+        content,
+        total_num,
+        success_num,
+        fail_num,
+        data_name,
+        batch_Id,
+        data_source_id,
+        status,
+        create_time,
+        work_id,
+        data_validity
+        )
+        values
+        <foreach collection="dataSourceEntities" item="item" separator=",">
+            (
+            #{item.newId},
+            #{item.content},
+            #{item.totalNum},
+            #{item.successNum},
+            #{item.failNum},
+            #{item.dataName},
+            #{item.batchId},
+            #{item.dataSourceId},
+            #{item.status},
+            #{item.createTime},
+            #{item.workId},
+            #{item.dataValidity}
+            )
+        </foreach>
+    </insert>
+
+    <select id="findDataSourceDetails" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        ins_data_source_desc
+        where
+        data_source_id = #{dataSourceId}
+        <if test="status !=null and status !=''">
+            and status in
+            <foreach collection="status" item="state" open="(" separator="," close=")">
+                #{state}
+            </foreach>
+        </if>
+        <if test="batchIds != null and batchIds.size()>0">
+            and batch_Id in
+            <foreach collection="batchIds" item="batchId" open="(" separator="," close=")">
+                #{batchId}
+            </foreach>
+        </if>
+    </select>
+
+
+    <select id="findFailDataSourceDetails" resultType="com.voc.service.insights.engine.data.entity.InsDataSourceDescEntity">
+        select
+             batch_Id as batchId,
+             count(1) as failNum
+        from
+            ins_data_source_desc
+        where
+            data_source_id = #{dataSourceId}
+        and status in
+        <foreach collection="status" item="state" open="(" separator="," close=")">
+            #{state}
+        </foreach>
+        and batch_Id in
+        <foreach collection="batchIds" item="batchId" open="(" separator="," close=")">
+            #{batchId}
+        </foreach>
+        group by batch_Id
+    </select>
+
+    <select id="findDataSourceDetailMaxStatus" resultMap="BaseResultMap">
+        select
+        batch_Id,
+        max(status) as sumTotal
+        from
+        ins_data_source_desc
+        where
+        batch_Id in
+        <foreach collection="batchIds" item="batchId" open="(" separator="," close=")">
+            #{batchId}
+        </foreach>
+        group by batch_Id
+    </select>
+
+    <select id="findAllDataSourceDetail" resultMap="BaseResultMap">
+        select
+        work_id
+        from
+        ins_data_source_desc
+        where
+        work_id is not null
+        <if test="dataSourceIds !=null and dataSourceIds.size()>0">
+            and  data_source_id in
+            <foreach collection="dataSourceIds" item="dataSourceId" open="(" separator="," close=")">
+                #{dataSourceId}
+            </foreach>
+        </if>
+        group by work_id
+    </select>
+
+
+    <select id="findDataSourceWorkIds" resultType="java.lang.String">
+        select
+            work_id
+        from
+        ins_data_source_desc
+        where
+        data_source_id = #{dataSourceId}
+        <if test="status !=null and status !=''">
+            and status in
+            <foreach collection="status" item="state" open="(" separator="," close=")">
+                #{state}
+            </foreach>
+        </if>
+        <if test="batchId != null and batchId != ''">
+            and batch_Id = #{batchId}
+        </if>
+        group by work_id
+    </select>
+
+    <select id="findDataSourceDetailByBatchIds" resultMap="BaseResultMap">
+        select
+            batch_Id,
+            data_name,
+            create_time,
+            total_num,
+            success_num,
+            fail_num
+        from
+            ins_data_source_desc
+        where
+            data_source_id = #{dataSourceId}
+        <if test="batchIds != null and batchIds.size()>0">
+            and batch_Id in
+            <foreach collection="batchIds" item="batchId" open="(" separator="," close=")">
+                #{batchId}
+            </foreach>
+        </if>
+        group by batch_Id
+        order by create_time desc
+    </select>
+
+    <select id="findDataSourceName" resultType="java.lang.String">
+        select
+        data_name
+        from
+        ins_data_source_desc
+        where
+        data_source_id = #{dataSourceId}
+        and data_name = #{dataName}
+        limit 1
+    </select>
+
+    <select id="findDataProcessingTasks" resultType="com.voc.service.insights.engine.vo.DataProcessingTaskVo">
+        select *
+        from (
+            select
+                detail.batch_Id as batchId,
+                detail.data_source_id as dataSourceId,
+                coalesce(max(detail.data_name), detail.batch_Id) as taskName,
+                case when max(source.data_source_access_way) = 'upload' then 'local' else 'system' end as taskType,
+                max(source.data_source_name) as dataSourceName,
+                sum(case when detail.status = '2' then 1 else 0 end) as completedCount,
+                count(1) as totalCount,
+                max(source.create_user) as createUser,
+                min(detail.create_time) as createTime,
+                case
+                    when sum(case when detail.status = '1' then 1 else 0 end) &gt; 0 then '1'
+                    when sum(case when detail.status = '-1' then 1 else 0 end) &gt; 0 then '-1'
+                    when min(detail.status) = '2' then '2'
+                    else '0'
+                end as status
+            from ins_data_source_desc detail
+            left join ins_data_source source on source.id = detail.data_source_id
+            where detail.batch_Id is not null and detail.batch_Id != ''
+            group by detail.batch_Id, detail.data_source_id
+        ) task
+        <where>
+            <if test="query.taskName != null and query.taskName != ''">
+                and task.taskName like concat('%', #{query.taskName}, '%')
+            </if>
+            <if test="query.taskType != null and query.taskType != ''">
+                and task.taskType = #{query.taskType}
+            </if>
+            <if test="query.dataSourceName != null and query.dataSourceName != ''">
+                and task.dataSourceName like concat('%', #{query.dataSourceName}, '%')
+            </if>
+            <if test="query.status != null and query.status != ''">
+                and task.status = #{query.status}
+            </if>
+            <if test="query.createUser != null and query.createUser != ''">
+                and task.createUser like concat('%', #{query.createUser}, '%')
+            </if>
+        </where>
+        order by task.createTime desc
+    </select>
+</mapper>

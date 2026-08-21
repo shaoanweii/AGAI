@@ -1,0 +1,902 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.analysis.risk.mapper.BatchRuleDataMapper">
+
+
+    <select id="queryBatchRuleData" resultType="com.voc.service.risk.api.vo.BatchRuleDataVo">
+        select
+        rule_id,
+        rule_name,
+        brc.name as categoryName,
+        category_id,
+        brand_code,
+        brand_name,
+        alert_type,
+        alert_frequency,
+        alert_time,
+        alert_cron,
+        dimension_config,
+        indicator_config,
+        process_priority,
+        auditor,
+        audit_method,
+        main_responder,
+        cc_personnel,
+        is_enabled,
+        version,
+        creator,
+        updater
+        from
+        voc_ms_be.ins_batch_rule br left join voc_ms_be.ins_batch_rule_category brc on
+        br.category_id =brc.id
+        where
+        br.is_enabled = "enabled"
+        <if test="ruleId != null and ruleId != ''">
+            AND br.rule_id = #{ruleId}
+        </if>
+    </select>
+
+    <delete id="deleteJobIdList" >
+        delete from xxl_job.xxl_job_info where executor_handler="batchWarningTaskRun"
+    </delete>
+
+    <insert id="addJob">
+        INSERT INTO xxl_job.xxl_job_info (
+        job_group,
+        job_desc,
+        add_time,
+        update_time,
+        author,
+        alarm_email,
+        schedule_type,
+        schedule_conf,
+        misfire_strategy,
+        executor_route_strategy,
+        executor_handler,
+        executor_param,
+        executor_block_strategy,
+        executor_timeout,
+        executor_fail_retry_count,
+        glue_type,
+        glue_source,
+        glue_remark,
+        glue_updatetime,
+        child_jobid,
+        trigger_status,
+        trigger_last_time,
+        trigger_next_time
+        ) VALUES (
+        20,
+        CONCAT('批量预警',#{ruleId}),
+        '2025-11-14 15:27:50',
+        '2025-11-14 15:27:50',
+        'liuhb',
+        '',
+        'CRON',
+        #{cron},
+        'DO_NOTHING',
+        'FIRST',
+        'batchWarningTaskRun',
+        #{ruleId},
+        'SERIAL_EXECUTION',
+        0,
+        0,
+        'BEAN',
+        '',
+        'GLUE代码初始化',
+        '2025-11-14 15:27:50',
+        '',
+        1,
+        0,
+        0
+        );
+    </insert>
+
+
+    <select id="queryInsAccountLexicon" resultType="com.voc.service.risk.api.vo.AccountLexiconVo">
+        select
+        id,
+        resource_id,
+        account_name,
+        account_id,
+        channel,
+        status,
+        create_time,
+        update_time,
+        create_user,
+        update_user,
+        final_channel
+        from
+        voc_ms_be.ins_account_lexicon
+        where status="Enabled"
+    </select>
+
+    <select id="queryInsPropertyTag" resultType="java.lang.String">
+        select
+        name
+        from
+        voc_ms_td.ins_property_tag
+        where status ="1"
+        <if test="idList != null and idList.size > 0">
+            AND id IN
+            <foreach collection="idList" item="id" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </if>
+    </select>
+
+    <select id="queryBatchSoundsData" resultType="com.voc.service.risk.api.vo.BatchTaskResultVo">
+
+        WITH
+        <!--全局均值（动态时间）-->
+        global_avg AS (
+        SELECT
+        ROUND(COUNT(DISTINCT a.id) / DATEDIFF(CURDATE(), #{yearStartTime}), 2) AS year_total_avg,
+        ROUND(COUNT(DISTINCT CASE WHEN a.publish_time >= #{monthStartTime} THEN a.id END) / DATEDIFF(CURDATE(), #{monthStartTime}), 2) AS month_total_avg,
+
+        ROUND(COUNT(DISTINCT a.one_id) / DATEDIFF(CURDATE(), #{yearStartTime}), 2) AS year_user_avg,
+        ROUND(COUNT(DISTINCT CASE WHEN a.publish_time >= #{monthStartTime} THEN a.one_id END) / DATEDIFF(CURDATE(), #{monthStartTime}), 2) AS month_user_avg,
+
+        ROUND(
+        (SUM(CASE WHEN a.publish_time >= #{yearStartTime} AND a.sentiment = '负面' THEN 1 ELSE 0 END)
+        / NULLIF(SUM(CASE WHEN a.publish_time >= #{yearStartTime} THEN 1 ELSE 0 END), 0)) * 100, 2
+        ) AS year_neg_avg,
+
+        ROUND(
+        (SUM(CASE WHEN a.publish_time >= #{monthStartTime} AND a.sentiment = '负面' THEN 1 ELSE 0 END)
+        / NULLIF(SUM(CASE WHEN a.publish_time >= #{monthStartTime} THEN 1 ELSE 0 END), 0)) * 100, 2
+        ) AS month_neg_avg,
+
+        ROUND(COUNT(DISTINCT a.data_id) / DATEDIFF(CURDATE(), #{yearStartTime}), 2) AS year_voice_avg,
+        ROUND(COUNT(DISTINCT CASE WHEN a.publish_time >= #{monthStartTime} THEN a.data_id END) / DATEDIFF(CURDATE(), #{monthStartTime}), 2) AS month_voice_avg
+
+        FROM voc_sentiment_annotations_results_v a
+        <include refid="whereCommonText"/>
+        WHERE a.publish_time >= #{yearStartTime}
+        AND a.publish_time &lt;= CURDATE()
+        <include refid="whereCommonFilter"/>
+        ),
+
+        <!-- 有效ID-->
+        valid_ids AS (
+        SELECT DISTINCT a.id
+        FROM voc_sentiment_annotations_results_v a
+        <include refid="whereCommonText"/>
+        WHERE (
+        (publish_time >= #{startTime} AND publish_time &lt;= #{endTime})
+        OR (publish_time >= #{prevStartTime} AND publish_time &lt;= #{prevEndTime})
+        OR (publish_time >= #{prevPrevStartTime} AND publish_time &lt;= #{prevPrevEndTime})
+        OR (publish_time >= #{lastYearStartTime} AND publish_time &lt;= #{lastYearEndTime})
+        OR (publish_time >= #{lastLastYearStartTime} AND publish_time &lt;= #{lastLastYearEndTime})
+        )
+        <include refid="whereCommonFilter"/>
+        ),
+
+        <!-- 本期 TOP（动态维度）-->
+        <if test="topCurrentWhere != null and topCurrentWhere != ''">
+            curr_top AS (
+            SELECT array_agg(${groupField}) AS curr_top_list
+            FROM (
+            SELECT ${groupField},
+            COUNT(DISTINCT a.id) AS topic_count,
+            ROW_NUMBER() OVER (ORDER BY COUNT(DISTINCT a.id) DESC) AS topRank
+            FROM voc_sentiment_annotations_results_v a
+            <include refid="whereCommonText"/>
+            WHERE a.publish_time >= #{startTime} AND a.publish_time &lt;= #{endTime}
+            <include refid="whereCommonTopFilter"/>
+            GROUP BY ${groupField}
+            ) t
+            WHERE 1=1
+            <if test="topCurrentWhere != null and topCurrentWhere != ''">
+                AND ${topCurrentWhere}
+            </if>
+            ),
+        </if>
+
+        <!-- 上期 TOP（动态维度）-->
+        <if test="topPreviousWhere != null and topPreviousWhere != ''">
+            prev_top AS (
+            SELECT array_agg(${groupField}) AS prev_top_list
+            FROM (
+            SELECT ${groupField},
+            COUNT(DISTINCT a.id) AS topic_count,
+            ROW_NUMBER() OVER (ORDER BY COUNT(DISTINCT a.id) DESC) AS topRank
+            FROM voc_sentiment_annotations_results_v a
+            <include refid="whereCommonText"/>
+            WHERE a.publish_time >= #{prevStartTime} AND a.publish_time &lt;= #{prevEndTime}
+            <include refid="whereCommonTopFilter"/>
+            GROUP BY ${groupField}
+            ) t
+            WHERE 1=1
+            <if test="topPreviousWhere != null and topPreviousWhere != ''">
+                AND ${topPreviousWhere}
+            </if>
+            ),
+        </if>
+
+        <!-- 全周期统计（支持：车系 + 渠道 + 5个标签维度）-->
+        period_data AS (
+        <!-- 本期-->
+        SELECT
+        'curr' AS tag,
+        <if test="groupByCarSeries">car_series_name,</if>
+        <if test="groupByChannel">channel_code,</if>
+        <if test="groupField == 'dom_tag_first_code'">dom_tag_first_code,</if>
+        <if test="groupField == 'dom_tag_second_code'">dom_tag_second_code,</if>
+        <if test="groupField == 'dom_tag_three_code'">dom_tag_three_code,</if>
+        <if test="groupField == 'dom_tag_four_code'">dom_tag_four_code,</if>
+        <if test="groupField == 'topic'">topic,</if>
+        array_agg(id) as idList,
+        COUNT(DISTINCT id) AS total,
+        COUNT(DISTINCT data_id) AS voiceCount,
+        ROUND(IFNULL((SUM(sentiment = '负面') / COUNT(*)) * 100, 0), 2) AS negativeRate,
+        COUNT(DISTINCT one_id) AS usercount
+        FROM voc_sentiment_annotations_results_v
+        WHERE id IN (SELECT id FROM valid_ids)
+        AND publish_time >= #{startTime} AND publish_time &lt;= #{endTime}
+        GROUP BY <include refid="safeDynamicGroupBy"/>
+
+        UNION ALL
+        <!-- 上期-->
+        SELECT
+        'prev' AS tag,
+        <if test="groupByCarSeries">car_series_name,</if>
+        <if test="groupByChannel">channel_code,</if>
+        <if test="groupField == 'dom_tag_first_code'">dom_tag_first_code,</if>
+        <if test="groupField == 'dom_tag_second_code'">dom_tag_second_code,</if>
+        <if test="groupField == 'dom_tag_three_code'">dom_tag_three_code,</if>
+        <if test="groupField == 'dom_tag_four_code'">dom_tag_four_code,</if>
+        <if test="groupField == 'topic'">topic,</if>
+        array_agg(id) as idList,
+        COUNT(DISTINCT id) AS total,
+        COUNT(DISTINCT data_id) AS voiceCount,
+        ROUND(IFNULL((SUM(sentiment = '负面') / COUNT(*)) * 100, 0), 2) AS negativeRate,
+        COUNT(DISTINCT one_id) AS usercount
+        FROM voc_sentiment_annotations_results_v
+        WHERE id IN (SELECT id FROM valid_ids)
+        AND publish_time >= #{prevStartTime} AND publish_time &lt;= #{prevEndTime}
+        GROUP BY <include refid="safeDynamicGroupBy"/>
+
+        UNION ALL
+        <!-- 上上期-->
+        SELECT
+        'prev_prev' AS tag,
+        <if test="groupByCarSeries">car_series_name,</if>
+        <if test="groupByChannel">channel_code,</if>
+        <if test="groupField == 'dom_tag_first_code'">dom_tag_first_code,</if>
+        <if test="groupField == 'dom_tag_second_code'">dom_tag_second_code,</if>
+        <if test="groupField == 'dom_tag_three_code'">dom_tag_three_code,</if>
+        <if test="groupField == 'dom_tag_four_code'">dom_tag_four_code,</if>
+        <if test="groupField == 'topic'">topic,</if>
+        array_agg(id) as idList,
+        COUNT(DISTINCT id) AS total,
+        COUNT(DISTINCT data_id) AS voiceCount,
+        ROUND(IFNULL((SUM(sentiment = '负面') / COUNT(*)) * 100, 0), 2) AS negativeRate,
+        COUNT(DISTINCT one_id) AS usercount
+        FROM voc_sentiment_annotations_results_v
+        WHERE id IN (SELECT id FROM valid_ids)
+        AND publish_time >= #{prevPrevStartTime} AND publish_time &lt;= #{prevPrevEndTime}
+        GROUP BY <include refid="safeDynamicGroupBy"/>
+
+        UNION ALL
+        <!-- 去年同期-->
+        SELECT
+        'ly' AS tag,
+        <if test="groupByCarSeries">car_series_name,</if>
+        <if test="groupByChannel">channel_code,</if>
+        <if test="groupField == 'dom_tag_first_code'">dom_tag_first_code,</if>
+        <if test="groupField == 'dom_tag_second_code'">dom_tag_second_code,</if>
+        <if test="groupField == 'dom_tag_three_code'">dom_tag_three_code,</if>
+        <if test="groupField == 'dom_tag_four_code'">dom_tag_four_code,</if>
+        <if test="groupField == 'topic'">topic,</if>
+        array_agg(id) as idList,
+        COUNT(DISTINCT id) AS total,
+        COUNT(DISTINCT data_id) AS voiceCount,
+        ROUND(IFNULL((SUM(sentiment = '负面') / COUNT(*)) * 100, 0), 2) AS negativeRate,
+        COUNT(DISTINCT one_id) AS usercount
+        FROM voc_sentiment_annotations_results_v
+        WHERE id IN (SELECT id FROM valid_ids)
+        AND publish_time >= #{lastYearStartTime} AND publish_time &lt;= #{lastYearEndTime}
+        GROUP BY <include refid="safeDynamicGroupBy"/>
+
+        UNION ALL
+        <!-- 前年同期-->
+        SELECT
+        'ly_prev' AS tag,
+        <if test="groupByCarSeries">car_series_name,</if>
+        <if test="groupByChannel">channel_code,</if>
+        <if test="groupField == 'dom_tag_first_code'">dom_tag_first_code,</if>
+        <if test="groupField == 'dom_tag_second_code'">dom_tag_second_code,</if>
+        <if test="groupField == 'dom_tag_three_code'">dom_tag_three_code,</if>
+        <if test="groupField == 'dom_tag_four_code'">dom_tag_four_code,</if>
+        <if test="groupField == 'topic'">topic,</if>
+        array_agg(id) as idList,
+        COUNT(DISTINCT id) AS total,
+        COUNT(DISTINCT data_id) AS voiceCount,
+        ROUND(IFNULL((SUM(sentiment = '负面') / COUNT(*)) * 100, 0), 2) AS negativeRate,
+        COUNT(DISTINCT one_id) AS usercount
+        FROM voc_sentiment_annotations_results_v
+        WHERE id IN (SELECT id FROM valid_ids)
+        AND publish_time >= #{lastLastYearStartTime} AND publish_time &lt;= #{lastLastYearEndTime}
+        GROUP BY <include refid="safeDynamicGroupBy"/>
+        )
+
+        <!-- 最终输出-->
+        SELECT * FROM (
+        SELECT
+        <if test="groupByCarSeries">curr.car_series_name,</if>
+        <if test="groupByChannel">curr.channel_code,</if>
+        <if test="groupField == 'dom_tag_first_code'">curr.dom_tag_first_code,</if>
+        <if test="groupField == 'dom_tag_second_code'">curr.dom_tag_second_code,</if>
+        <if test="groupField == 'dom_tag_three_code'">curr.dom_tag_three_code,</if>
+        <if test="groupField == 'dom_tag_four_code'">curr.dom_tag_four_code,</if>
+        <if test="groupField == 'topic'">curr.topic,</if>
+
+        curr.total       AS curr_total,
+        curr.voiceCount  AS curr_voiceCount,
+        curr.negativeRate AS curr_negativeRate,
+        curr.usercount   AS curr_usercount,
+        curr.idList   AS curr_idList,
+
+        ROUND(curr.total       / CASE #{avgDayType} WHEN 'daily' THEN 1 WHEN 'weekly' THEN 7 WHEN 'monthly' THEN 30 ELSE 1 END, 2) AS curr_total_avg,
+        ROUND(curr.voiceCount  / CASE #{avgDayType} WHEN 'daily' THEN 1 WHEN 'weekly' THEN 7 WHEN 'monthly' THEN 30 ELSE 1 END, 2) AS curr_voiceCount_avg,
+        curr.negativeRate as curr_negativeRate_avg,
+        ROUND(curr.usercount   / CASE #{avgDayType} WHEN 'daily' THEN 1 WHEN 'weekly' THEN 7 WHEN 'monthly' THEN 30 ELSE 1 END, 2) AS curr_usercount_avg,
+
+        prev.total       AS prev_total,
+        prev.voiceCount  AS prev_voiceCount,
+        prev.negativeRate AS prev_negativeRate,
+        prev.usercount   AS prev_usercount,
+
+        prev_prev.total      AS prev_prev_total,
+        prev_prev.voiceCount AS prev_prev_voiceCount,
+        prev_prev.negativeRate AS prev_prev_negativeRate,
+        prev_prev.usercount  AS prev_prev_usercount,
+
+        ly.total         AS ly_total,
+        ly.voiceCount    AS ly_voiceCount,
+        ly.negativeRate  AS ly_negativeRate,
+        ly.usercount     AS ly_usercount,
+
+        ly_prev.total    AS ly_prev_total,
+        ly_prev.voiceCount AS ly_prev_voiceCount,
+        ly_prev.negativeRate AS ly_prev_negativeRate,
+        ly_prev.usercount AS ly_prev_usercount,
+
+        g.year_total_avg,
+        g.year_user_avg,
+        g.year_voice_avg,
+        g.year_neg_avg,
+
+        g.month_total_avg,
+        g.month_user_avg,
+        g.month_voice_avg,
+        g.month_neg_avg,
+
+        <if test="topCurrentWhere != null and topCurrentWhere != ''">
+            ct.curr_top_list,
+            CASE WHEN array_contains(ct.curr_top_list, curr.${groupField}) THEN '是' ELSE '否' END AS is_curr_top,
+        </if>
+
+        <if test="topPreviousWhere != null and topPreviousWhere != ''">
+            pt.prev_top_list,
+            CASE WHEN array_contains(pt.prev_top_list, curr.${groupField}) THEN '是' ELSE '否' END AS is_prev_top,
+        </if>
+
+        <!-- 环比-->
+        ROUND((curr.total-prev.total)/NULLIF(prev.total,0)*100,2) AS curr_total_mom,
+        ROUND((curr.voiceCount-prev.voiceCount)/NULLIF(prev.voiceCount,0)*100,2) AS curr_voice_mom,
+        ROUND(curr.negativeRate-prev.negativeRate,2) AS curr_neg_mom,
+        ROUND((curr.usercount-prev.usercount)/NULLIF(prev.usercount,0)*100,2) AS curr_user_mom,
+
+        <!-- 同比-->
+        ROUND((curr.total-ly.total)/NULLIF(ly.total,0)*100,2) AS curr_total_yoy,
+        ROUND((curr.voiceCount-ly.voiceCount)/NULLIF(ly.voiceCount,0)*100,2) AS curr_voice_yoy,
+        ROUND(curr.negativeRate-ly.negativeRate,2) AS curr_neg_yoy,
+        ROUND((curr.usercount-ly.usercount)/NULLIF(ly.usercount,0)*100,2) AS curr_user_yoy,
+
+        <!-- 上期环比-->
+        ROUND((prev.total-prev_prev.total)/NULLIF(prev_prev.total,0)*100,2) AS prev_total_mom,
+        ROUND((prev.voiceCount-prev_prev.voiceCount)/NULLIF(prev_prev.voiceCount,0)*100,2) AS prev_voice_mom,
+        ROUND(prev.negativeRate-prev_prev.negativeRate,2) AS prev_neg_mom,
+        ROUND((prev.usercount-prev_prev.usercount)/NULLIF(prev_prev.usercount,0)*100,2) AS prev_user_mom,
+
+        <!-- 上期同比-->
+       ROUND((prev.total-ly_prev.total)/NULLIF(ly_prev.total,0)*100,2) AS prev_total_yoy,
+       ROUND((prev.voiceCount-ly_prev.voiceCount)/NULLIF(ly_prev.voiceCount,0)*100,2) AS prev_voice_yoy,
+       ROUND(prev.negativeRate-ly_prev.negativeRate,2) AS prev_neg_yoy,
+       ROUND((prev.usercount-ly_prev.usercount)/NULLIF(ly_prev.usercount,0)*100,2) AS prev_user_yoy
+
+       FROM period_data curr
+       CROSS JOIN global_avg g
+
+       <if test="topCurrentWhere != null and topCurrentWhere != ''">
+           CROSS JOIN curr_top ct
+       </if>
+       <if test="topPreviousWhere != null and topPreviousWhere != ''">
+           CROSS JOIN prev_top pt
+       </if>
+
+       LEFT JOIN period_data prev
+       ON 1=1
+       <if test="groupByCarSeries">AND curr.car_series_name = prev.car_series_name</if>
+       <if test="groupByChannel">AND curr.channel_code = prev.channel_code</if>
+       <if test="groupField == 'dom_tag_first_code'">AND curr.dom_tag_first_code = prev.dom_tag_first_code</if>
+       <if test="groupField == 'dom_tag_second_code'">AND curr.dom_tag_second_code = prev.dom_tag_second_code</if>
+       <if test="groupField == 'dom_tag_three_code'">AND curr.dom_tag_three_code = prev.dom_tag_three_code</if>
+       <if test="groupField == 'dom_tag_four_code'">AND curr.dom_tag_four_code = prev.dom_tag_four_code</if>
+       <if test="groupField == 'topic'">AND curr.topic = prev.topic</if>
+       AND prev.tag = 'prev'
+
+       LEFT JOIN period_data prev_prev
+       ON 1=1
+       <if test="groupByCarSeries">AND curr.car_series_name = prev_prev.car_series_name</if>
+       <if test="groupByChannel">AND curr.channel_code = prev_prev.channel_code</if>
+       <if test="groupField == 'dom_tag_first_code'">AND curr.dom_tag_first_code = prev_prev.dom_tag_first_code</if>
+       <if test="groupField == 'dom_tag_second_code'">AND curr.dom_tag_second_code = prev_prev.dom_tag_second_code</if>
+       <if test="groupField == 'dom_tag_three_code'">AND curr.dom_tag_three_code = prev_prev.dom_tag_three_code</if>
+       <if test="groupField == 'dom_tag_four_code'">AND curr.dom_tag_four_code = prev_prev.dom_tag_four_code</if>
+       <if test="groupField == 'topic'">AND curr.topic = prev_prev.topic</if>
+       AND prev_prev.tag = 'prev_prev'
+
+       LEFT JOIN period_data ly
+       ON 1=1
+       <if test="groupByCarSeries">AND curr.car_series_name = ly.car_series_name</if>
+       <if test="groupByChannel">AND curr.channel_code = ly.channel_code</if>
+       <if test="groupField == 'dom_tag_first_code'">AND curr.dom_tag_first_code = ly.dom_tag_first_code</if>
+       <if test="groupField == 'dom_tag_second_code'">AND curr.dom_tag_second_code = ly.dom_tag_second_code</if>
+       <if test="groupField == 'dom_tag_three_code'">AND curr.dom_tag_three_code = ly.dom_tag_three_code</if>
+       <if test="groupField == 'dom_tag_four_code'">AND curr.dom_tag_four_code = ly.dom_tag_four_code</if>
+       <if test="groupField == 'topic'">AND curr.topic = ly.topic</if>
+       AND ly.tag = 'ly'
+
+       LEFT JOIN period_data ly_prev
+       ON 1=1
+       <if test="groupByCarSeries">AND curr.car_series_name = ly_prev.car_series_name</if>
+       <if test="groupByChannel">AND curr.channel_code = ly_prev.channel_code</if>
+       <if test="groupField == 'dom_tag_first_code'">AND curr.dom_tag_first_code = ly_prev.dom_tag_first_code</if>
+       <if test="groupField == 'dom_tag_second_code'">AND curr.dom_tag_second_code = ly_prev.dom_tag_second_code</if>
+       <if test="groupField == 'dom_tag_three_code'">AND curr.dom_tag_three_code = ly_prev.dom_tag_three_code</if>
+       <if test="groupField == 'dom_tag_four_code'">AND curr.dom_tag_four_code = ly_prev.dom_tag_four_code</if>
+       <if test="groupField == 'topic'">AND curr.topic = ly_prev.topic</if>
+       AND ly_prev.tag = 'ly_prev'
+
+       WHERE curr.tag = 'curr'
+       ) t
+
+       <where>
+           <if test="whereClause != null and whereClause != ''">
+               ${whereClause}
+           </if>
+           <if test="topCurrentWhere != null and topCurrentWhere != ''">
+               ${logicOperator} is_curr_top='是'
+           </if>
+           <if test="topPreviousWhere != null and topPreviousWhere != ''">
+               ${logicOperator} is_prev_top='是'
+           </if>
+       </where>
+   </select>
+
+   <sql id="safeDynamicGroupBy">
+       <choose>
+           <when test="groupByCarSeries or groupByChannel or groupField != null">
+               <if test="groupByCarSeries">car_series_name</if>
+               <if test="groupByChannel">
+                   <if test="groupByCarSeries">,</if>channel_code
+               </if>
+               <if test="groupField == 'dom_tag_first_code'">
+                   <if test="groupByCarSeries or groupByChannel">,</if>dom_tag_first_code
+               </if>
+               <if test="groupField == 'dom_tag_second_code'">
+                   <if test="groupByCarSeries or groupByChannel">,</if>dom_tag_second_code
+               </if>
+               <if test="groupField == 'dom_tag_three_code'">
+                   <if test="groupByCarSeries or groupByChannel">,</if>dom_tag_three_code
+               </if>
+               <if test="groupField == 'dom_tag_four_code'">
+                   <if test="groupByCarSeries or groupByChannel">,</if>dom_tag_four_code
+               </if>
+               <if test="groupField == 'topic'">
+                   <if test="groupByCarSeries or groupByChannel">,</if>topic
+               </if>
+           </when>
+           <otherwise>
+               1
+           </otherwise>
+       </choose>
+   </sql>
+
+
+    <sql id="whereCommonTopFilter" >
+        <!-- 1. 渠道数组（IN查询，为空则不生效） -->
+        <if test="channelIds != null and channelIds.size() > 0">
+            AND channel_code IN
+            <foreach collection="channelIds" item="channelId" open="(" separator="," close=")">
+                #{channelId}
+            </foreach>
+        </if>
+        <!-- 2. 品牌code（精确查询） -->
+        <if test="brandCode != null and brandCode != ''">
+            AND brand_code = #{brandCode}
+        </if>
+        <!-- 3. 情感（精确查询，对应sentiment字段） -->
+        <if test="sentimentList != null and sentimentList.size() > 0">
+            AND sentiment IN
+            <foreach collection="sentimentList" item="sentiment" open="(" separator="," close=")">
+                #{sentiment}
+            </foreach>
+        </if>
+        <!-- 4. 原文类型（精确查询，对应content_type字段） -->
+        <if test="contentType != null and contentType != ''">
+            AND content_type = #{contentType}
+        </if>
+
+        <if test="contentTypeMin != null and contentTypeMin != ''">
+            AND is_main_post = #{contentTypeMin}
+        </if>
+        <!-- 6. 原文（模糊查询，假设表中存在content字段，若无则替换为title/original_text_scene） -->
+        <if test="content != null and !content.isEmpty()">
+            AND (
+            <foreach collection="content" item="key" separator=" OR ">
+                content LIKE CONCAT('%@', #{key}, '%')
+            </foreach>
+            )
+        </if>
+
+        <if test="title != null and !title.isEmpty()">
+            AND (
+            <foreach collection="title" item="key" separator=" OR ">
+                title LIKE CONCAT('%@', #{key}, '%')
+            </foreach>
+            )
+        </if>
+        <!-- 5. 意图（精确查询，对应intention字段） -->
+        <if test="intentionType != null and intentionType != ''">
+            AND intention = #{intentionType}
+        </if>
+        <!-- 7. 车系（IN查询，为空则不生效） -->
+        <if test="carSeriesCode != null and carSeriesCode.size() > 0">
+            AND car_series_code IN
+            <foreach collection="carSeriesCode" item="seriesCode" open="(" separator="," close=")">
+                #{seriesCode}
+            </foreach>
+        </if>
+
+        <!-- 7. 省份 -->
+        <if test="provinceList != null and provinceList.size() > 0">
+            AND cust_province_code IN
+            <foreach collection="provinceList" item="province" open="(" separator="," close=")">
+                #{province}
+            </foreach>
+        </if>
+
+        <!-- 7. 广告类型 -->
+        <if test="adTypeList != null and adTypeList.size() > 0">
+            AND ad_type IN
+            <foreach collection="adTypeList" item="adType" open="(" separator="," close=")">
+                #{adType}
+            </foreach>
+        </if>
+
+        <!-- 7. 属性标签 -->
+        <if test="standpoint != null and standpoint.size() > 0">
+            AND (
+            <foreach collection="standpoint" item="key" separator=" OR ">
+                attribute_tag_name LIKE CONCAT('%', #{key}, '%')
+            </foreach>
+            )
+        </if>
+
+        <!-- 7. 客户类型 -->
+        <if test="custClassifyList != null and custClassifyList.size() > 0">
+            AND (
+            <foreach collection="custClassifyList" item="key" separator=" OR ">
+                cust_classify LIKE CONCAT('%', #{key}, '%')
+            </foreach>
+            )
+        </if>
+
+        <if test="waterMan != null and waterMan != ''">
+            AND is_wsater_army = #{waterMan}
+        </if>
+
+        <if test="VMan != null and VMan != ''">
+            AND is_big_v = #{VMan}
+        </if>
+
+        <!-- 7. 代码加密完去匹配 -->
+        <if test="customerGender != null and customerGender != ''">
+            AND cust_gender = #{customerGender}
+        </if>
+
+        <!-- 12. 主贴用户（模糊查询，对应主贴用户名称字段，假设表中有main_post_user_name字段） -->
+        <if test="mainPostUser != null and mainPostUser.size() > 0">
+            and (
+            <foreach collection="mainPostUser" item="item" separator="OR">
+                <trim prefix="(" suffix=")" prefixOverrides="AND">
+                    <if test="item.accountId != null and item.accountId != ''">
+                        and one_id_risk = #{item.accountId}
+                    </if>
+                    <if test="item.accountId == null or item.accountId == ''">
+                        <if test="item.accountName != null and item.accountName != ''">
+                            and cust_name = #{item.accountName}
+                        </if>
+                    </if>
+                    <!-- 渠道包含（与前面条件用OR连接） -->
+                    <if test="item.channel != null and item.channel.size() > 0">
+                        and channel_code IN
+                        <foreach collection="item.channel" item="channel" open="(" separator="," close=")">
+                            #{channel}
+                        </foreach>
+                    </if>
+                </trim>
+            </foreach>
+            )
+        </if>
+        <!-- 13. 发帖用户（模糊查询，对应发帖用户名称字段） -->
+        <if test="postUser != null and postUser.size() > 0">
+            and (
+            <foreach collection="postUser" item="item" separator="OR">
+                <trim prefix="(" suffix=")" prefixOverrides="AND">
+                    <if test="item.accountId != null and item.accountId != ''">
+                        AND retweeted_user_id = #{item.accountId}
+                    </if>
+                    <if test="item.accountId == null or item.accountId == ''">
+                        <if test="item.accountName != null and item.accountName != ''">
+                            and retweeted_user_name = #{item.accountName}
+                        </if>
+                    </if>
+                    <!-- 渠道包含（与前面条件用OR连接） -->
+                    <if test="item.channel != null and item.channel.size() > 0">
+                        and channel_code IN
+                        <foreach collection="item.channel" item="channel" open="(" separator="," close=")">
+                            #{channel}
+                        </foreach>
+                    </if>
+                </trim>
+            </foreach>
+            )
+        </if>
+
+    </sql>
+
+
+
+
+   <sql id="whereCommonFilter" >
+       <!-- 1. 渠道数组（IN查询，为空则不生效） -->
+        <if test="channelIds != null and channelIds.size() > 0">
+            AND channel_code IN
+            <foreach collection="channelIds" item="channelId" open="(" separator="," close=")">
+                #{channelId}
+            </foreach>
+        </if>
+        <!-- 2. 品牌code（精确查询） -->
+        <if test="brandCode != null and brandCode != ''">
+            AND brand_code = #{brandCode}
+        </if>
+       <!-- 3. 情感（精确查询，对应sentiment字段） -->
+       <if test="sentimentList != null and sentimentList.size() > 0">
+           AND sentiment IN
+           <foreach collection="sentimentList" item="sentiment" open="(" separator="," close=")">
+               #{sentiment}
+           </foreach>
+       </if>
+        <!-- 4. 原文类型（精确查询，对应content_type字段） -->
+        <if test="contentType != null and contentType != ''">
+            AND content_type = #{contentType}
+        </if>
+
+        <if test="contentTypeMin != null and contentTypeMin != ''">
+            AND is_main_post = #{contentTypeMin}
+        </if>
+        <!-- 6. 原文（模糊查询，假设表中存在content字段，若无则替换为title/original_text_scene） -->
+        <if test="content != null and !content.isEmpty()">
+            AND (
+            <foreach collection="content" item="key" separator=" OR ">
+                content LIKE CONCAT('%@', #{key}, '%')
+            </foreach>
+            )
+        </if>
+
+        <if test="title != null and !title.isEmpty()">
+            AND (
+            <foreach collection="title" item="key" separator=" OR ">
+                title LIKE CONCAT('%@', #{key}, '%')
+            </foreach>
+            )
+        </if>
+        <!-- 5. 意图（精确查询，对应intention字段） -->
+        <if test="intentionType != null and intentionType != ''">
+            AND intention = #{intentionType}
+        </if>
+        <!-- 7. 车系（IN查询，为空则不生效） -->
+        <if test="carSeriesCode != null and carSeriesCode.size() > 0">
+            AND car_series_code IN
+            <foreach collection="carSeriesCode" item="seriesCode" open="(" separator="," close=")">
+                #{seriesCode}
+            </foreach>
+        </if>
+
+       <!-- 7. 省份 -->
+       <if test="provinceList != null and provinceList.size() > 0">
+           AND cust_province_code IN
+           <foreach collection="provinceList" item="province" open="(" separator="," close=")">
+               #{province}
+           </foreach>
+       </if>
+
+       <!-- 7. 广告类型 -->
+       <if test="adTypeList != null and adTypeList.size() > 0">
+           AND ad_type IN
+           <foreach collection="adTypeList" item="adType" open="(" separator="," close=")">
+               #{adType}
+           </foreach>
+       </if>
+
+       <!-- 7. 属性标签 -->
+       <if test="standpoint != null and standpoint.size() > 0">
+           AND (
+           <foreach collection="standpoint" item="key" separator=" OR ">
+               attribute_tag_name LIKE CONCAT('%', #{key}, '%')
+           </foreach>
+           )
+       </if>
+
+       <!-- 7. 客户类型 -->
+       <if test="custClassifyList != null and custClassifyList.size() > 0">
+           AND (
+           <foreach collection="custClassifyList" item="key" separator=" OR ">
+               cust_classify LIKE CONCAT('%', #{key}, '%')
+           </foreach>
+           )
+       </if>
+
+       <if test="waterMan != null and waterMan != ''">
+           AND is_wsater_army = #{waterMan}
+       </if>
+
+       <if test="VMan != null and VMan != ''">
+           AND is_big_v = #{VMan}
+       </if>
+
+       <!-- 7. 代码加密完去匹配 -->
+       <if test="customerGender != null and customerGender != ''">
+           AND cust_gender = #{customerGender}
+       </if>
+
+        <!-- 9. 主题编码（精确查询，假设对应topic字段，若无则替换为dom_tag_first_code等标签编码字段） -->
+        <if test="topicCodeList != null and topicCodeList.size > 0">
+            AND topic IN
+            <foreach collection="topicCodeList" item="topicCode" open="(" separator="," close=")">
+                #{topicCode}
+            </foreach>
+        </if>
+       <if test="level != null">
+           <choose>
+               <!-- level=1：匹配一级标签编码 -->
+               <when test="level == '1' or level == 1">
+                   AND dom_tag_first_code IN
+                   <foreach collection="tagCodeList" item="tagCode" open="(" separator="," close=")">
+                       #{tagCode}
+                   </foreach>
+               </when>
+               <!-- level=2：匹配二级标签编码 -->
+               <when test="level == '2' or level == 2">
+                   AND dom_tag_second_code IN
+                   <foreach collection="tagCodeList" item="tagCode" open="(" separator="," close=")">
+                       #{tagCode}
+                   </foreach>
+               </when>
+               <!-- level=3：匹配三级标签编码 -->
+               <when test="level == '3' or level == 3">
+                   AND dom_tag_three_code IN
+                   <foreach collection="tagCodeList" item="tagCode" open="(" separator="," close=")">
+                       #{tagCode}
+                   </foreach>
+               </when>
+               <!-- level=4：匹配四级标签编码 -->
+               <when test="level == '4' or level == 4">
+                   AND dom_tag_four_code IN
+                   <foreach collection="tagCodeList" item="tagCode" open="(" separator="," close=")">
+                       #{tagCode}
+                   </foreach>
+               </when>
+           </choose>
+       </if>
+        <!-- 12. 主贴用户（模糊查询，对应主贴用户名称字段，假设表中有main_post_user_name字段） -->
+        <if test="mainPostUser != null and mainPostUser.size() > 0">
+            and (
+            <foreach collection="mainPostUser" item="item" separator="OR">
+                <trim prefix="(" suffix=")" prefixOverrides="AND">
+                    <if test="item.accountId != null and item.accountId != ''">
+                        and one_id_risk = #{item.accountId}
+                    </if>
+                    <if test="item.accountId == null or item.accountId == ''">
+                        <if test="item.accountName != null and item.accountName != ''">
+                            and cust_name = #{item.accountName}
+                        </if>
+                    </if>
+                    <!-- 渠道包含（与前面条件用OR连接） -->
+                    <if test="item.channel != null and item.channel.size() > 0">
+                        and channel_code IN
+                        <foreach collection="item.channel" item="channel" open="(" separator="," close=")">
+                            #{channel}
+                        </foreach>
+                    </if>
+                </trim>
+            </foreach>
+            )
+        </if>
+        <!-- 13. 发帖用户（模糊查询，对应发帖用户名称字段） -->
+        <if test="postUser != null and postUser.size() > 0">
+            and (
+            <foreach collection="postUser" item="item" separator="OR">
+                <trim prefix="(" suffix=")" prefixOverrides="AND">
+                    <if test="item.accountId != null and item.accountId != ''">
+                        AND retweeted_user_id = #{item.accountId}
+                    </if>
+                    <if test="item.accountId == null or item.accountId == ''">
+                        <if test="item.accountName != null and item.accountName != ''">
+                            and retweeted_user_name = #{item.accountName}
+                        </if>
+                    </if>
+                    <!-- 渠道包含（与前面条件用OR连接） -->
+                    <if test="item.channel != null and item.channel.size() > 0">
+                        and channel_code IN
+                        <foreach collection="item.channel" item="channel" open="(" separator="," close=")">
+                            #{channel}
+                        </foreach>
+                    </if>
+                </trim>
+            </foreach>
+            )
+        </if>
+
+    </sql>
+
+    <sql id="whereCommonText">
+        <!-- ===================== 动态关键词1：原文匹配 ===================== -->
+        <if test="contentRuleIdList != null or contentResourceIdList != null">
+            JOIN (
+            SELECT name FROM voc_ins_data_resource_desc_mv
+            WHERE status="Enabled"
+            <if test="contentRuleIdList != null and contentRuleIdList.size() > 0">
+                AND id IN
+                <foreach collection="contentRuleIdList" item="id" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+            <if test="contentResourceIdList != null and contentResourceIdList.size() > 0">
+                AND resource_id IN
+                <foreach collection="contentResourceIdList" item="resourceId" open="(" separator="," close=")">
+                    #{resourceId}
+                </foreach>
+            </if>
+            ) b ON a.original_text LIKE CONCAT('%', b.name, '%')
+        </if>
+
+        <!-- ===================== 动态关键词2：标题匹配 ===================== -->
+        <if test="titleRuleIdList != null or titleResourceIdList != null">
+            JOIN (
+            SELECT name FROM voc_ins_data_resource_desc_mv
+            WHERE status="Enabled"
+            <if test="titleRuleIdList != null and titleRuleIdList.size() > 0">
+                AND id IN
+                <foreach collection="titleRuleIdList" item="id" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+            <if test="titleResourceIdList != null and titleResourceIdList.size() > 0">
+                AND resource_id IN
+                <foreach collection="titleResourceIdList" item="resourceId" open="(" separator="," close=")">
+                    #{resourceId}
+                </foreach>
+            </if>
+            ) c ON a.title LIKE CONCAT('%', c.name, '%')
+        </if>
+    </sql>
+
+
+
+</mapper>

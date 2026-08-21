@@ -1,0 +1,4 @@
+spring.application.name: voc-app-data-integration-cqca
+system.appid: cqca-voc-data-integration
+
+spring.main.allow-bean-definition-overriding: true

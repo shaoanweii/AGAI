@@ -1,0 +1,376 @@
+@import './_variables.scss';
+// 工具类
+@import './utilities';
+@import './root.scss';
+@import './mainTable.scss';
+// Element Plus 重置样式
+@import './element-plus-reset.scss';
+
+:root {
+  // 品牌色
+  --brand-primary: #{$brand-primary};
+  --brand-secondary: #{$brand-secondary};
+
+  // 功能色
+  --color-error: #{$color-error};
+  --color-warning: #{$color-warning};
+  --color-success: #{$color-success};
+  --color-info: #{$color-info};
+  --color-error-light: #{$color-error-light};
+  --color-warning-light: #{$color-warning-light};
+  --color-success-light: #{$color-success-light};
+  --color-info-light: #{$color-info-light};
+
+  // 文字色
+  --text-primary: #{$text-primary};
+  --text-secondary: #{$text-secondary};
+  --text-tertiary: #{$text-tertiary};
+  --text-placeholder: #{$text-placeholder};
+  --text-link: #{$text-link};
+  --text-danger: #{$text-danger};
+  --text-warning: #{$text-warning};
+  --text-success: #{$text-success};
+
+  // 基础色
+  --border-dark: #{$border-dark};
+  --border-regular: #{$border-regular};
+  --bg-regular: #{$bg-regular};
+  --bg-light: #{$bg-light};
+  --color-disabled: #{$color-disabled};
+  --color-mask: #{$color-mask};
+
+  // 字体
+  --font-family: #{$font-family};
+
+  // 圆角
+  --border-radius-s: #{$border-radius-s};
+  --border-radius-m: #{$border-radius-m};
+  --border-radius-l: #{$border-radius-l};
+  --border-radius-xl: #{$border-radius-xl};
+  --border-radius-c: #{$border-radius-c};
+
+  // header高度
+  --header-height: #{$header-height};
+
+  --neutral-white: #{$neutral-white};
+
+  --menu-width: #{$menu-width};
+  //   --menu-width: 260px;
+  --menu-width-collapsed: #{$menu-width-collapsed};
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+html {
+  height: 100%;
+}
+body {
+  overflow: hidden;
+  background-color: var(--bgc-def);
+  min-width: 0;
+  overflow-x: hidden;
+}
+
+html,
+body,
+#app {
+  font-family: var(--font-family);
+}
+
+body,
+div,
+dl,
+dt,
+dd,
+ul,
+ol,
+li,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+pre,
+code,
+form,
+fieldset,
+legend,
+input,
+button,
+textarea,
+p,
+blockquote,
+th,
+td {
+  margin: 0;
+  padding: 0;
+}
+
+fieldset,
+img {
+  border: 0;
+}
+
+ul,
+ol,
+li {
+  list-style: none;
+}
+
+/* remember to define focus styles! */
+:focus {
+  outline: 0;
+}
+
+address,
+caption,
+cite,
+code,
+dfn,
+em,
+strong,
+th,
+var,
+optgroup {
+  font-style: normal;
+  font-weight: normal;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  /* font-size: 100%; */
+  font-weight: normal;
+}
+
+abbr,
+acronym {
+  border: 0;
+  font-variant: normal;
+}
+
+input,
+button,
+textarea,
+select,
+optgroup,
+option {
+  font-family: inherit;
+  font-size: inherit;
+  font-style: inherit;
+  font-weight: inherit;
+  background-color: #fff;
+  border: none;
+}
+
+code,
+kbd,
+samp,
+tt {
+  font-size: 100%;
+}
+
+a {
+  text-decoration: none;
+  color: #1c1c1e;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+/*@purpose To enable resizing for IE */
+/*@branch For IE6-Win, IE7-Win */
+// input,
+// button,
+// textarea {
+//     *font-size: 100%;
+// }
+
+ol,
+ul {
+  list-style: none;
+}
+
+/* tables still need 'cellspacing="0"' in the markup */
+table,
+tr,
+td {
+  border-collapse: collapse;
+  border-spacing: 0;
+  margin: 0;
+  padding: 0;
+}
+
+caption,
+th {
+  text-align: left;
+}
+
+sup,
+sub {
+  font-size: 100%;
+  vertical-align: baseline;
+}
+
+/* remember to highlight anchors and inserts somehow! */
+blockquote,
+q {
+  quotes: none;
+}
+
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: '';
+  content: none;
+}
+
+/**Common Css**/
+.fr {
+  float: right;
+  // *display: inline;
+}
+
+.fl {
+  float: left;
+  // *display: inline;
+}
+
+/*文本超出显示省略号*/
+.ehn,
+.otw,
+.tow {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+/*清除浮动*/
+.clearfix {
+  clear: both;
+  // *zoom: 1;
+}
+
+.clearfix:after {
+  display: block;
+  clear: both;
+  content: '\0020';
+  visibility: hidden;
+  height: 0;
+}
+
+::-webkit-scrollbar-track-piece {
+  /*background-color: rgba(28, 36, 56, 0.7);*/
+  width: 8px;
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar {
+  height: 10px !important;
+  width: 10px !important;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+  border-style: dashed;
+  background-color: rgba(157, 165, 183, 0.4);
+  border-color: transparent;
+  border-width: 2px;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(157, 165, 183, 0.5);
+}
+
+.fw-600 {
+  font-weight: 600 !important;
+}
+.text-center {
+  text-align: center;
+}
+
+// 统一覆盖 Element Plus tooltip 样式，保证全项目悬浮提示的视觉与可读性一致
+// Element Plus 2.10+ 中 tooltip popper 的类名为 el-popper + el-tooltip，而非旧版的 el-tooltip__popper
+// 因 el-select、el-popover、el-dropdown、el-cascader 等组件底层均复用 ElTooltip，
+// 其 popper 也带 .el-tooltip 类名，但它们一定会额外携带 el-xxx__popper / el-xxx__dropdown
+// 等子组件类名（如 el-select__popper、el-popover、el-cascader__dropdown），
+// 而纯 el-tooltip 不会带任何 el-xxx__ 格式的类名，因此用 :not([class*="__"]) 精确排除所有复用组件
+.common-tooltip {
+  color: #333 !important;
+  background: rgba(234, 248, 236, 1) !important;
+  // border: 1px solid rgba(234, 248, 236, 1) !important;
+  // font-size: 16px !important;
+  border: 1px solid #d9d9d9 !important;
+  font-size: 14px !important;
+  line-height: 24px !important;
+  border-radius: 8px !important;
+  text-align: justify !important;
+  padding: 12px 16px !important;
+}
+
+.common-tooltip > .el-popper__arrow::before,
+.common-tooltip > .el-popper__arrow::before {
+  background: rgba(234, 248, 236, 1) !important;
+  // border: 1px solid rgba(234, 248, 236, 1) !important;
+  border: 1px solid #d9d9d9 !important;
+}
+
+// 自定义 tooltip 样式 - 用于表格溢出内容显示
+.raw-data-tooltip {
+  max-width: 500px !important;
+  max-height: 300px !important;
+  overflow: auto !important;
+
+  // tooltip 内容区域
+  .el-tooltip__content {
+    max-width: 500px !important;
+    max-height: 300px !important;
+    overflow: auto !important;
+    word-break: break-all;
+    white-space: pre-wrap;
+  }
+}
+
+// 标准观点管理 tooltip 样式：不使用滚动容器，避免系统设置为“始终显示滚动条”时出现滚动条
+.standard-point-tooltip {
+  max-width: 500px !important;
+  overflow: visible !important;
+
+  .el-tooltip__content {
+    max-width: 500px !important;
+    overflow: visible !important;
+    word-break: break-all;
+    white-space: pre-wrap;
+  }
+}
+
+// 全局列表规范：表头保留加粗，表格内容统一常规字重；操作项保留可点击强调。
+.el-table,
+.el-table-v2 {
+  .el-table__body-wrapper,
+  .el-table-v2__body {
+    .el-table__cell,
+    .el-table__cell .cell,
+    .el-table__cell .cell :where(span, div, p, em, strong),
+    .el-table-v2__row-cell,
+    .el-table-v2__row-cell :where(span, div, p, em, strong) {
+      font-family: inherit !important;
+      font-weight: 400 !important;
+    }
+
+    .el-button,
+    .el-link,
+    a {
+      font-weight: 500 !important;
+    }
+  }
+}

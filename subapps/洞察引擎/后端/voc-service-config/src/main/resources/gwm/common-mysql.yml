@@ -1,0 +1,46 @@
+druid.mysql.usePingMethod: false
+
+spring:
+  datasource:
+    dynamic:
+      primary: master
+      strict: false
+      datasource:
+        master:
+          driverClassName: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://rm-2zebhiau527iuga71.mysql.rds.aliyuncs.com:3306/voc?characterEncoding=UTF-8&useUnicode=true&useSSL=false&tinyInt1isBit=false&allowPublicKeyRetrieval=true&allowMultiQueries=true&serverTimezone=Asia/Shanghai
+          username: root
+          password: PBE(gI/EvliYs01/HlKuOX9yChP1Ca0hPWkLW/wocVdN+DOPLEofGV3Aprq6Lqmu67G+6WHipXtwiRUuhh0Uj16dDA==)
+          druid:
+            # 初始化时建立物理连接的个数
+            initial-size: 1
+            # 连接池的最小空闲数量
+            min-idle: 2
+            # 连接池最大连接数量
+            max-active: 5
+            # 获取连接时最大等待时间，单位毫秒
+            max-wait: 60000
+            # 申请连接的时候检测，如果空闲时间大于timeBetweenEvictionRunsMillis，执行validationQuery检测连接是否有效。
+            test-while-idle: true
+            # 既作为检测的间隔时间又作为testWhileIdel执行的依据
+            time-between-eviction-runs-millis: 60000
+            # 销毁线程时检测当前连接的最后活动时间和当前时间差大于该值时，关闭当前连接(配置连接在池中的最小生存时间)
+            min-evictable-idle-time-millis: 30000
+            # 用来检测数据库连接是否有效的sql 必须是一个查询语句(oracle中为 select 1 from dual)
+            validation-query: select 'x'
+            # 申请连接时会执行validationQuery检测连接是否有效,开启会降低性能,默认为true
+            test-on-borrow: false
+            # 归还连接时会执行validationQuery检测连接是否有效,开启会降低性能,默认为true
+            test-on-return: false
+            # 是否缓存preparedStatement, 也就是PSCache,PSCache对支持游标的数据库性能提升巨大，比如说oracle,在mysql下建议关闭。
+            pool-prepared-statements: false
+
+
+mybatis-plus:
+  configuration:
+    # 这个配置会将执行的sql打印出来，在开发或测试的时候可以用
+    #log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    # 返回类型为Map,显示null对应的字段
+    call-setters-on-nulls: true
+    #开启mybatis的二级缓存
+    cache-enabled: true

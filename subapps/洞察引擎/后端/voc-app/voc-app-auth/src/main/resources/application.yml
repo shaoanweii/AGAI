@@ -1,0 +1,9 @@
+spring.application.name: voc-app-auth
+system.appid: security
+##是否开启voc默认密码加密方式
+#jasypt.encryptor:
+#  #pbe,voc
+#  enabled: pbe
+#  #prefix: VOC(
+#  prefix: PBE(
+#  suffix: )

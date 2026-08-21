@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.insights.engine.alert.mapper.AltMonitoringDataMapper">
+    <resultMap type="com.voc.service.insights.engine.alert.entity.AltMonitoringDataEntity" id="AltMonitoringDataMap">
+        <result property="id" column="id" jdbcType="VARCHAR"/>
+        <result property="workId" column="work_id" jdbcType="VARCHAR"/>
+        <result property="taskId" column="task_id" jdbcType="VARCHAR"/>
+        <result property="channelId" column="channel_id" jdbcType="VARCHAR"/>
+        <result property="clientId" column="client_id" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="dataSize" column="data_size" jdbcType="INTEGER"/>
+        <result property="dataType" column="data_type" jdbcType="VARCHAR"/>
+        <result property="tid" column="tid" jdbcType="VARCHAR"/>
+    </resultMap>
+    <insert id="moveToHistory">
+        insert into alt_monitoring_data_history
+        select id, #{workId}, task_id, channel_id, client_id, create_time, meta_date_create_time, data_size, data_type, tid
+        from alt_monitoring_data where id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </insert>
+    <insert id="reverseData">
+        insert into alt_monitoring_data
+        select id, #{workId}, task_id, channel_id, client_id, create_time, meta_date_create_time, data_size, data_type, tid
+        from  alt_monitoring_data_history where id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </insert>
+
+
+    <sql id="alt_monitoring_data_his">
+        WITH alt_monitoring_data_his AS (
+        SELECT date_str,
+               data_type,
+               channel_id,
+               client_id,
+               task_id,
+               IF(data_type = 'metaData', data_size, 0) AS metaData_data_size,
+               IF(data_type = 'nlpData', data_size, 0)  AS nlpData_data_size
+        FROM (SELECT f1.date_str,
+                     f1.data_type,
+                     f1.channel_id,
+                     c1.task_id,
+                     f1.client_id,
+                     IF(c1.data_size IS NULL, 0, c1.data_size) AS data_size
+              FROM (
+                       /** 补齐时间 **/
+                       WITH st
+                                AS (SELECT to_date(days_add(start_date, unnest)) AS start_date
+                                    FROM (SELECT array_generate(0, day_diff, 1) AS index_,
+                                                 start_date,
+                                                 end_date
+                                          FROM (SELECT *, date_diff('day', end_date, start_date) AS day_diff
+                                                FROM (SELECT to_date(min(create_time)) AS start_date,
+                                                             to_date(max(create_time)) AS end_date
+                                                      FROM alt_monitoring_data) f) f) f,
+                                         unnest(index_) AS unnest)
+                       SELECT s.start_date AS date_str,
+                              data_type,
+                              channel_id,
+                              client_id
+                       FROM st AS s,
+                           /** 补齐渠道 **/
+                            (SELECT channel_id, client_id
+                             FROM alt_task_config_data
+                             GROUP BY channel_id, client_id) f,
+                           /** 补齐数据源 **/
+                            (SELECT unnest AS data_type
+                             FROM (SELECT [ 'nlpData', 'metaData' ] d) f, unnest(d)) e
+                       GROUP BY s.start_date,
+                                channel_id,
+                                client_id,
+                                data_type
+                       ORDER BY start_date DESC,
+                                data_type) f1
+                       LEFT JOIN (SELECT to_date(create_time) AS date_str,
+                                         max(data_size)       AS data_size,
+                                         task_id,
+                                         channel_id,
+                                         client_id,
+                                         data_type
+                                  FROM alt_monitoring_data
+                                  WHERE
+                                      /** 存在重复数据时取最新数据行数据 **/
+                                      create_time IN (SELECT max(create_time)
+                                                      FROM alt_monitoring_data
+                                                      GROUP BY to_date(create_time), client_id, channel_id, data_type)
+                                  GROUP BY to_date(create_time),
+                                           data_type,
+                                           task_id,
+                                           channel_id,
+                                           client_id
+                                  ORDER BY to_date(create_time) DESC, data_type) AS c1
+                                 ON f1.date_str = c1.date_str AND
+                                    f1.channel_id = c1.channel_id AND
+                                    f1.data_type = c1.data_type
+              ORDER BY date_str DESC) f1
+        ORDER BY date_str DESC, data_type, channel_id, client_id)
+    </sql>
+
+    <sql id="monitoring_data_avg">
+        select channel_id,
+               client_id,
+               avg(metaData_data_size) as his_metaData_avg ,
+               avg(nlpData_data_size) as his_nlpData_avg
+        from alt_monitoring_data_his
+        where to_date(#{model.createTime}) > to_date(date_str)
+        group by client_id, channel_id
+    </sql>
+
+    <sql id="monitoring_data_ratio_mean_avg">
+        SELECT
+            task.channel_id,
+            task.client_id,
+            task.period_number,
+            IFNULL(IFNULL(SUM(his_metaData.metaData_data_size), 0) /  IFNULL(SUM(his_metaData.nlpData_data_size), 0), 0) / task.period_number AS his_diff_nlpData_avg
+        FROM
+            alt_task_config_data task
+                left join alt_monitoring_data_his his_metaData on
+                his_metaData.date_str BETWEEN DATE_SUB(CURDATE(), INTERVAL task.period_number DAY) AND CURDATE() AND his_metaData.task_id = task.id
+        WHERE
+            task.data_type != 'pushData'
+        group by
+            task.channel_id,
+            task.client_id,
+            task.period_number
+    </sql>
+
+    <sql id="monitoring_data_to_day">
+        select
+            channel_id,
+            client_id,
+            sum(if(nlpData_data_size = 0, 0, nlpData_data_size))  as today_nlpData,
+            sum(if(metaData_data_size = 0, 0, metaData_data_size)) as today_metaData
+        from alt_monitoring_data_his
+        where to_date(date_str) = to_date(#{model.createTime})
+        group by client_id,channel_id
+    </sql>
+
+
+    <select id="historicalRatioMean" parameterType="com.voc.service.insights.engine.model.alert.AltAlarmDataModel"
+            resultType="java.util.Map">
+        SELECT channel_id AS `key`,
+        AVG(ratio) AS `value`
+        FROM (SELECT channel_id,
+        data_size / LAG(data_size) OVER (PARTITION BY channel_id) AS ratio
+        FROM alt_monitoring_data
+        WHERE 1 = 1
+        <if test="model.clientId!= null and model.clientId!= ''">
+            AND client_id = #{model.clientId}
+        </if>
+        <if test="model.dataType!= null and model.dataType!= ''">
+            AND data_type = #{model.dataType}
+        </if>
+        ) vid
+        GROUP BY channel_id
+        HAVING AVG(ratio) IS NOT NULL
+        ORDER BY channel_id
+    </select>
+
+    <select id="getHistoricalAvg" parameterType="com.voc.service.insights.engine.model.alert.AltAlarmDataModel"
+            resultType="java.util.Map">
+        SELECT channel_id AS `key`,AVG(data_size) AS `value`
+        FROM alt_monitoring_data
+        WHERE 1 = 1
+        <if test="model.clientId!= null and model.clientId!= ''">
+            AND client_id = #{model.clientId}
+        </if>
+        <if test="model.dataType!= null and model.dataType!= ''">
+            AND data_type = #{model.dataType}
+        </if>
+        GROUP BY channel_id
+        HAVING AVG(data_size) IS NOT NULL
+        ORDER BY channel_id
+    </select>
+
+    <!--        <include refid="alt_monitoring_data_his"/>-->
+    <select id="nlpDataAlertBarChart" parameterType="com.voc.service.insights.engine.model.alert.AltAlarmDataModel"
+            resultType="com.voc.service.insights.engine.model.alert.InsAltDataModel">
+        <include refid="alt_monitoring_data_his"/>
+        select this.channel_id                as `channelId`,
+               today_nlpData,
+               today_metaData,
+               his_diff_nlpData_avg,
+                alarm_ompare,
+                ompare_rise,
+                ompare_reduce,
+                /** （计算公式=（今日NLP返回声音数/今日原始数据数量-历史比值均值）/历史比值均值*100%） **/
+                IFNULL(round(((ifnull(today_nlpData, 0) / ifnull(today_metaData, 0) - his_diff_nlpData_avg) / his_diff_nlpData_avg) * 100, 2), 0) as `statistics`,
+                IF(
+                    ompare_rise >= IFNULL(round(((ifnull(today_nlpData, 0) / ifnull(today_metaData, 0) - his_diff_nlpData_avg) / his_diff_nlpData_avg) * 100, 2), 0) and
+                    IFNULL(round(((ifnull(today_nlpData, 0) / ifnull(today_metaData, 0) - his_diff_nlpData_avg) / his_diff_nlpData_avg) * 100, 2), 0) >= ompare_reduce, 0,1
+                ) AS threshold
+        from ( <include refid="monitoring_data_to_day"/> ) as this
+        left join ( <include refid="monitoring_data_ratio_mean_avg"/> ) as diff_his
+        on this.client_id = diff_his.client_id and this.channel_id = diff_his.channel_id
+        left join
+        (
+            select client_id,channel_id,alarm_ompare,ompare_rise,ompare_reduce from voc.alt_task_config_data where data_type = 'nlpData'
+        ) task on this.client_id = task.client_id and this.channel_id = task.channel_id
+        where 1 = 1
+        <if test="model.clientId!= null and model.clientId!= ''">
+            AND this.client_id = #{model.clientId}
+        </if>
+        order by this.channel_id
+    </select >
+
+    <select id="pushDataAlertBarChart" parameterType="com.voc.service.insights.engine.model.alert.AltAlarmDataModel"
+            resultType="com.voc.service.insights.engine.model.alert.InsAltDataModel">
+        /** 推送任务最后一次抓取时间 **/
+        WITH task_last_exc AS (
+            SELECT max(stop_time)  AS last_exec_time,
+                   min(start_time) AS start_exec_time,
+                /** stop_time, **/
+                /** start_time,**/
+                   task.client_id,
+                   task.channel_id,
+                   task.data_type,
+                   task.scheduled_time
+            FROM alt_task_config_data task
+                     LEFT JOIN alt_task_execution_record record
+                               on task.id = record.task_id AND task.client_id = record.client_id AND
+                                  task.channel_id = record.channel_id AND
+                                  record.data_type = 'pushData' AND record.status = '1'
+                                   AND CASE task.period
+                                           WHEN 'day' THEN to_date(stop_time) = to_date(#{model.createTime}) and
+                                                           to_date(start_time) = to_date(#{model.createTime})
+                                           WHEN 'last_7_days' THEN (stop_time >= DATE(#{model.createTime}) - INTERVAL 7 DAY) and
+                                                                   (start_time >= DATE(#{model.createTime}) - INTERVAL 7 DAY)
+                                           ELSE 1 = 1
+                                      END
+            where 1 = 1
+              AND task.data_type = 'pushData'
+            <if test="model.clientId!= null and model.clientId!= ''">
+                AND task.client_id = #{model.clientId}
+            </if>
+            group by task.client_id ,
+                     task.channel_id,
+                     task.data_type,
+                     task.scheduled_time)
+
+        SELECT
+            channel_id,
+            data_type,
+            last_exec_time,
+            IFNULL(ROUND(TIME_TO_SEC(date_format(IFNULL(last_exec_time, #{model.createTime}),'%H:%i:%S')) / 3600 -
+                TIME_TO_SEC(IF(IFNULL(ROUND(TIME_TO_SEC(date_format(IFNULL(last_exec_time, #{model.createTime}),'%H:%i:%S')) / 3600 -
+                    TIME_TO_SEC(date_format(scheduled_time,'%H:%i:%S')) / 3600),
+                    0) >= 0,
+                    date_format(scheduled_time,'%H:%i:%S'),
+                    date_format(start_exec_time,'%H:%i:%S'))
+                    ) / 3600),
+            0) AS `statistics`,
+                IF(IFNULL(ROUND(TIME_TO_SEC(date_format(IFNULL(last_exec_time, #{model.createTime}),'%H:%i:%S')) / 3600 -
+                TIME_TO_SEC(date_format(scheduled_time,'%H:%i:%S')) / 3600),
+                0) >= 0,
+                1,
+            0)     AS `threshold`
+        FROM
+        task_last_exc AS tle
+        where 1 = 1
+        <if test="model.clientId!= null and model.clientId!= ''">
+            AND tle.client_id = #{model.clientId}
+        </if>
+        order by channel_id
+    </select>
+
+    <select id="metaDataAlertBarChart" parameterType="com.voc.service.insights.engine.model.alert.AltAlarmDataModel"
+            resultType="com.voc.service.insights.engine.model.alert.InsAltDataModel">
+        <include refid="alt_monitoring_data_his"/>
+        select
+            this.channel_id as `channelId`,
+            today_metaData,
+            his_metaData_avg,
+            alarm_ompare,
+            ompare_rise,
+            ompare_reduce,
+            /** （计算公式=（今日推送量-历史均值）/历史均值*100%） **/
+            ROUND(((today_metaData - his_metaData_avg) / his_metaData_avg) * 100,2) as `statistics`,
+            IF(
+                ompare_rise >= ROUND(((today_metaData - his_metaData_avg) / his_metaData_avg) * 100,2) and
+                ROUND(((today_metaData - his_metaData_avg) / his_metaData_avg) * 100,2) >= ompare_reduce,
+                0,1
+            ) AS threshold
+        from ( <include refid="monitoring_data_to_day"/> ) as this
+        left join ( <include refid="monitoring_data_avg"/> ) as h on this.client_id = h.client_id and this.channel_id = h.channel_id
+        left join
+        (
+            select client_id,channel_id,alarm_ompare,ompare_rise,ompare_reduce from voc.alt_task_config_data where data_type = 'metaData'
+        ) task on this.client_id = task.client_id and this.channel_id = task.channel_id
+        where 1 = 1
+        <if test="model.clientId!= null and model.clientId!= ''">
+            AND this.client_id = #{model.clientId}
+        </if>
+        order by this.channel_id
+    </select>
+
+</mapper>
+

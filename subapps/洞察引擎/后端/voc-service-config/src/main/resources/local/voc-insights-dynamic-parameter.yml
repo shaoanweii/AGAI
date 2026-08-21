@@ -1,0 +1,3 @@
+'batchPushNumber': 10
+'jsonDataSize': 1000012
+'customerId': ${ins.project.id}

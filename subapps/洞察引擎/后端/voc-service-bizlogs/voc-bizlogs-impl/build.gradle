@@ -1,0 +1,26 @@
+apply plugin: 'java-library'
+
+group = 'voc-service-bizlogs-impl'
+version = "2.0.0-SNAPSHOT"
+
+dependencies {
+    testImplementation  project(':voc-service-common').sourceSets.test.output
+    api project(':voc-service-common')
+    api project(':voc-service-bizlogs:voc-bizlogs-api')
+    api project(':voc-service-security:voc-security-api')
+    //api project(':voc-service-components:voc-cmps-swagger')
+    api project(':voc-service-components:voc-cmps-redis')
+    api project(':voc-service-components:voc-cmps-mybatis')
+    api project(':voc-service-components:voc-cmps-kafka')
+    api project(':voc-service-config')
+
+    compileOnly('org.springframework.boot:spring-boot-starter-web')
+    api('org.springframework.cloud:spring-cloud-starter-bootstrap')
+    api ("com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-discovery")
+    api ("com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-config")
+//    api 'com.alipay.sofa:rpc-sofa-boot-starter'
+//    api 'com.alipay.sofa:actuator-sofa-boot-starter'
+//    api 'com.alipay.sofa:isle-sofa-boot-starter'
+//    api 'com.alipay.sofa:tracer-sofa-boot-starter'
+//    api 'com.alipay.sofa:runtime-sofa-boot-starter'
+}

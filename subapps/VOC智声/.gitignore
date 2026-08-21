@@ -1,0 +1,39 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+coverage/
+
+# Editor directories and files
+# .vscode/*
+# !.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.sisyphus
+.claude
+
+# TypeScript 编译缓存
+tsconfig.tsbuildinfo
+
+/docs/exampleCode
+.eslintrc-auto-import.json
+src/types/components.d.ts
+src/types/auto-imports.d.ts
+
+# 统计代码行数
+count_lines.sh
+
+.playwright-mcp

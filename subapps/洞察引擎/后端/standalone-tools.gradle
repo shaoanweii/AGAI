@@ -1,0 +1,7 @@
+gradle.projectsEvaluated {
+    rootProject.tasks.register('pbeEncrypt', JavaExec) {
+        classpath = rootProject.project(':voc-service-config').sourceSets.main.runtimeClasspath
+        mainClass = 'com.voc.service.config.tools.PbeEncryptCli'
+        args = [rootProject.findProperty('mode') ?: 'encrypt', rootProject.findProperty('text') ?: 'Passw0rd@!']
+    }
+}

@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.analysis.core.v2.mapper.AysModelResltAnalysisMapper">
+
+    <select id="validDataCondition" resultType="com.voc.service.analysis.core.v2.entity.AysModelResultDataAnalysisEntity">
+        select min(date(publish_time)) as startTime , max(date(publish_time)) as endTime
+        from  ays_api_reslt_data
+    </select>
+
+    <select id="find" resultType="com.voc.service.analysis.core.v2.entity.AysModelResultDataAnalysisEntity">
+        select new_id, id,work_id,client_id,channel_id,content_type,data,data_md5,create_time, done
+        from voc_anal_flow_model_tags_result_data_full
+        where
+            work_id = #{workId}
+            and date(publish_time) BETWEEN DATE(#{startTime})  and DATE(#{endTime})
+        order by create_time desc
+    </select>
+
+    <insert id="moveBatch" parameterType="com.voc.service.analysis.model.AysValidDataModel">
+        insert into ays_api_reslt_data_analysis_valid(
+            new_id, id, work_id, old_work_id,client_id, channel_id,original_id,content_type,input_data_id, sample_data_type,
+            original_text_scene, brand_code_name, car_series_name, label_type,
+            label_type_level_first, label_type_level_second, label_type_level_three,
+            label_type_level_four, label_type_level_five, scenario, sentiment, intention_type, topic,
+            opinion, subject, fault_level, description, sentiment_score, keywords, publish_time,model_type,ext_fields,
+            create_time, update_time, done
+        )
+        select
+            uuid(),
+            new_id as id, #{workId}, work_id as old_work_id, client_id, channel_id,original_id,content_type,input_data_id, sample_data_type,
+            original_text_scene, brand_code_name, car_series_name, label_type,
+            label_type_level_first, label_type_level_second, label_type_level_three,
+            label_type_level_four, label_type_level_five, scenario, sentiment, intention_type, topic,
+            opinion, subject, fault_level, description, sentiment_score, keywords, publish_time,model_type,ext_fields,
+            create_time, now(),'0'
+        from
+        voc_anal_flow_model_tags_result_data_full
+        where
+            client_id = #{clientId}
+            and channel_id in
+            <foreach item="item" index="index" collection="channel" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+            and content_type = #{contentType}
+            and date(publish_time) BETWEEN DATE(#{startTime})  and DATE(#{endTime})
+            <if test="attrs != null and attrs.size() > 0">
+            and ( <include refid="tableCondition"></include> )
+            </if>
+            order by create_time desc limit 1000
+    </insert>
+
+    <sql id = "tableCondition">
+        <if test="matchingRule == 'or'">
+            1=0
+        </if>
+        <if test="matchingRule == 'and'">
+            1=1
+        </if>
+        <foreach collection="attrs"  item="item" >
+            <if test="item.logicalOperator == 'empty'">
+                ${matchingRule} ${item.fieldName} is null
+            </if>
+            <if test="item.logicalOperator == 'notEmpty'">
+                ${matchingRule} ${item.fieldName} is not null
+            </if>
+            <if test="item.logicalOperator == 'contain' and item.conditionType == 'value' and item.variableValue != 'textLength' ">
+                ${matchingRule} ${item.fieldName} like concat('%',#{item.conditionDetail},'%')
+            </if>
+            <if test="item.logicalOperator == 'contain' and item.conditionType == 'regex'">
+                ${matchingRule} ${item.fieldName} REGEXP #{item.conditionDetail}
+            </if>
+            <if test="item.logicalOperator == 'contain' and item.conditionType == 'resourceGroup'">
+                ${matchingRule}
+                <foreach item="name" index="index" collection="item.conditionDetailList" open="(" separator="OR" close=")">
+                    ${item.fieldName}  like concat('%',#{name},'%')
+                </foreach>
+            </if>
+
+            <if test="item.logicalOperator == 'notContain' and item.conditionType == 'value' and item.variableValue != 'textLength'">
+                ${matchingRule} ${item.fieldName} not like concat('%',#{item.conditionDetail},'%')
+            </if>
+            <if test="item.logicalOperator == 'notContain' and item.conditionType == 'regex'">
+                ${matchingRule} ${item.fieldName} not REGEXP  #{item.conditionDetail}
+            </if>
+            <if test="item.logicalOperator == 'notContain' and item.conditionType == 'resourceGroup'">
+                ${matchingRule}
+                <foreach item="name" index="index" collection="item.conditionDetailList" open="(" separator="and" close=")">
+                    ${item.fieldName} not like concat('%',#{name},'%')
+                </foreach>
+            </if>
+
+            <if test="item.logicalOperator == 'equals' and item.conditionType == 'value' and item.variableValue != 'textLength' ">
+                ${matchingRule} ${item.fieldName} = #{item.conditionDetail}
+            </if>
+            <if test="item.logicalOperator == 'equals' and item.conditionType == 'resourceGroup'">
+                ${matchingRule} ${item.fieldName} in
+                <foreach item="name" index="index" collection="item.conditionDetailList" open="(" separator="," close=")">
+                    #{name}
+                </foreach>
+            </if>
+
+            <if test="item.logicalOperator == 'notEqual' and item.conditionType == 'value' and item.variableValue != 'textLength' ">
+                ${matchingRule} ${item.fieldName} != #{item.conditionDetail}
+            </if>
+            <if test="item.logicalOperator == 'notEqual' and item.conditionType == 'regex'">
+                ${matchingRule} ${item.fieldName} not REGEXP  #{item.conditionDetail}
+            </if>
+            <if test="item.logicalOperator == 'notEqual' and item.conditionType == 'resourceGroup'">
+                ${matchingRule}
+                <foreach item="name" index="index" collection="item.conditionDetailList" open="(" separator="and" close=")">
+                    ${item.fieldName} != #{name}
+                </foreach>
+            </if>
+            <if test="item.logicalOperator == 'greaterThen' and item.variableValue == 'textLength'">
+                ${matchingRule} CHAR_LENGTH(${item.fieldName}) &gt; #{item.conditionDetail}
+            </if>
+            <if test="item.logicalOperator == 'lessThen' and item.variableValue == 'textLength'">
+                ${matchingRule} CHAR_LENGTH(${item.fieldName}) &lt; #{item.conditionDetail}
+            </if>
+            <if test="item.logicalOperator == 'greaterThenOrEqual' and item.variableValue == 'textLength'">
+                ${matchingRule} CHAR_LENGTH(${item.fieldName}) &gt;= #{item.conditionDetail}
+            </if>
+            <if test="item.logicalOperator == 'lessThenOrEqual' and item.variableValue == 'textLength'">
+                ${matchingRule} CHAR_LENGTH( ${item.fieldName}) &lt;= #{item.conditionDetail}
+            </if>
+            <if test="item.logicalOperator == 'equals' and item.variableValue == 'textLength'">
+                ${matchingRule} CHAR_LENGTH( ${item.fieldName}) = #{item.conditionDetail}
+            </if>
+
+            <if test="item.logicalOperator == 'greaterThen' and item.variableValue != 'textLength'">
+                ${matchingRule} ${item.fieldName} &gt; #{item.conditionDetail}
+            </if>
+            <if test="item.logicalOperator == 'lessThen' and item.variableValue != 'textLength'">
+                ${matchingRule} ${item.fieldName} &lt; #{item.conditionDetail}
+            </if>
+            <if test="item.logicalOperator == 'greaterThenOrEqual' and item.variableValue != 'textLength'">
+                ${matchingRule} ${item.fieldName} &gt;= #{item.conditionDetail}
+            </if>
+            <if test="item.logicalOperator == 'lessThenOrEqual' and item.variableValue != 'textLength'">
+                ${matchingRule} ${item.fieldName} &lt;= #{item.conditionDetail}
+            </if>
+        </foreach>
+    </sql>
+
+    <select id="dataCount" resultType="java.lang.Long">
+        select count(*) from voc_anal_flow_model_tags_result_data_full
+        where client_id = #{clientId} and  date(publish_time) BETWEEN DATE(#{startTime}) and DATE(#{endTime})
+        and content_type=#{contentType} and channel_id in
+        <foreach item="item" index="index" collection="channel" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and ( <include refid="tableCondition"></include> )
+    </select>
+    <select id="findIincompleteData"
+            resultType="java.lang.String">
+        with find_1 as (
+            select
+                id,
+                work_id
+            from
+                voc_anal_flow_model_tags_result_data_full
+            where
+                done = '0'
+            group by
+                id,
+                work_id
+            limit 1
+        )
+        select
+            new_id
+        from
+            voc_anal_flow_model_tags_result_data_full as f,
+            find_1 as c
+        where
+            done = '0'
+          and c.work_id = f.work_id
+        limit 100
+
+    </select>
+
+    <delete id="removeHistoryData">
+        delete from voc_anal_flow_model_tags_result_data_full
+        where to_date(publish_time)  &lt;= to_date(DATE_SUB(now(), INTERVAL ${days} day))
+    </delete>
+
+    <select id="findByWorkId" resultType="com.voc.service.analysis.core.v2.entity.AysModelResultDataAnalysisEntity">
+        select rda.brand_code_name as brand_code_name,rda.car_series_name as car_series_name from ins_ays_post_process_data rda
+        where
+        rda.done = '1'
+        <if test="conditionsParamModel.workIdList != null and conditionsParamModel.workIdList.size!=0 ">
+            and rda.work_id in
+            <foreach item="item" index="index" collection="conditionsParamModel.workIdList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        and rda.brand_code_name is not null
+        group by rda.brand_code_name, rda.car_series_name
+
+    </select>
+</mapper>

@@ -1,0 +1,21 @@
+server:
+  port: 8081
+  #vhost: 172.16.80.23
+  #vport: 30888
+
+spring:
+  cloud.nacos:
+    config:
+      enabled: false
+    discovery:
+      enabled: false
+  config:
+    location: classpath:${spring.profiles.active}/common.yml,classpath:${spring.profiles.active}/common-security-mysql.yml,classpath:${spring.profiles.active}/voc-security-redis.yml,classpath:${spring.profiles.active}/common-swagger.yml,classpath:${spring.profiles.active}/voc-security-white-list.yml,classpath:${spring.profiles.active}/voc-security-service.yml,classpath:${spring.profiles.active}/voc-security-white-client.yml
+
+#logging:
+#  config: classpath:${spring.profiles.active}/logback-spring.xml
+
+
+
+
+

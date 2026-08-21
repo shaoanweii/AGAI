@@ -1,0 +1,48 @@
+apply plugin: 'java-library'
+
+group = 'springbootadmin'
+version = "3.1.8-SNAPSHOT"
+
+dependencies {
+    api 'de.codecentric:spring-boot-admin-starter-server:3.1.8'
+
+    api('javax.servlet:javax.servlet-api')
+    api('org.springframework.boot:spring-boot-starter-thymeleaf')
+    api('org.springframework.boot:spring-boot-starter-mail')
+    api('org.springframework.boot:spring-boot-starter-security')
+    // 使用可获取的版本
+    api('org.springframework.cloud:spring-cloud-starter-bootstrap')
+    api ("com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-discovery")
+    api ("com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-config")
+//            {
+//                exclude group: "org.eclipse.jgit", module: "org.eclipse.jgit"
+//                exclude group: "org.bouncycastle", module: "bcprov-jdk18on"
+//                exclude group: "org.springframework", module: "spring-web"
+//                exclude group: "org.springframework", module: "spring-webflux"
+//                exclude group: "org.springframework.cloud", module: "spring-cloud-config-server"
+//                exclude group: "org.springframework.security", module: "spring-security-rsa"
+//                exclude group: "org.springframework.boot", module: "spring-boot-starter-webflux"
+//            }
+    // 使用可获取的版本
+//    api('com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-config'){
+//        exclude group: "org.springframework",module: "spring-web"
+//    }
+
+    // 添加缺失的依赖项
+    implementation 'org.eclipse.angus:jakarta.mail:2.0.3'
+}
+
+/*tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+
+    jar {
+        String someString = ''
+        configurations.runtimeClasspath.each { someString = someString + " lib//" + it.name }
+        manifest {
+            attributes "Manifest-Version": 1.0
+            attributes "jdk": sourceCompatibility
+            attributes 'Main-Class': 'com.voc.SpringBootAdminApplication'
+            attributes 'Class-Path': someString
+        }
+    }
+}*/

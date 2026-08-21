@@ -1,0 +1,567 @@
+plugins {
+    id 'java'
+    id 'idea'
+    id 'java-library'
+    id 'application'
+    id 'java-gradle-plugin'
+    id 'org.springframework.boot' version '3.3.13'
+    id 'io.spring.dependency-management' version '1.1.5'
+    id 'com.bmuschko.docker-remote-api' version '9.3.4'
+}
+
+ext {
+    set('springbootVersion', "3.3.13")
+    set('sofaVersion', "4.1.0")
+    set('swaggerV3Version', "2.2.15")
+    set('springCloudVersion', "2023.0.6")
+    set('springCloudAlibabaVersion', "2023.0.1.0")
+//    set('springCloudAlibabaVersion', "2025.0.0.0")
+    set('nacosClientVerison', "2.3.0")
+    set('druidSpringBootVersion', "1.2.23")
+    set('hikariCPVersion', "6.3.0")
+    set('mybatisPlusVersion', "3.5.14")
+    set('dynamicDatasourceVersion', '4.3.1')
+    set('validationVersion', "2.0.1.Final")
+    set('hibernateValidatorVersion', "6.1.5.Final")
+    set('xxlJobVersion', "3.2.0")
+    set('easyexcelVersion', "4.0.3")
+    set('apacheCommonsVersion', "4.4")
+    set('orikaCersion', "1.5.4")
+    set('springBootAdminVersion', "3.5.1")
+    set('apacheSkywalking', "9.4.0")
+    set('hutoolVserion', "5.8.41")
+    set('apachePoiVersion', "5.4.0")
+    set('mapstructVersion', '1.6.3')
+    set('mapstructProcessor', "1.6.3")
+    set('apachePool2Version', "2.12.1")
+    set('latencyutilsVersion', "2.0.3")
+    set('zxingCoreProcessorVersion', "3.3.0")
+    set('gracefulShutdownVersion', "2.2.2")
+    set('jacksoDataformatnVersion', "2.9.8")
+    set('netflixCommonsVersion', "0.3.0")
+    set('logstashLogstash', "8.1")
+    set('minioVersion', "8.5.17")
+    set('aliyunJavaSdkCore', "4.7.6")
+    set('aliyunJavaSdkDysmsapi', "2.2.1")
+    set('feignOkhttp', "13.6")
+    set('prometheusVersion', "1.12.1")
+    set('transmittableThread', "2.14.5")
+    set('sentinelAlibabaVersion', "2023.0.1.0")
+    set('sentinelcspAlibabaVersion', "1.8.9")
+    set('seleniumVersion', '4.4.0')
+    set('seataVersion', '2023.0.3.3')
+    set('springBootRedisVersion', '3.3.13')
+    set('springIntegrationRedisVersion', '6.4.0')
+    set('shiroSpringVersion', '1.9.0')
+    set('httpclientVersion', '4.5.14')
+    set('jacksonDatabindVersion', '2.17.3')
+    set('auth0JWTVersion', '4.4.0')
+    set('bcprovjdk15onVersion', '1.78') //漏洞修复 版本修改为1.78
+    set('mysqlVersion', '8.0.33')
+    set('knife4jOpenapi3Version', '4.5.0')
+    set('openfeignVersion', "13.6")
+    set('flinkGuavaVersion', "33.4.0-jre-20.0")
+    set('jasyptVersion', "3.0.5")
+    set('passayVersion', "1.6.6")
+    set('logbackClassicVersion', "1.5.19")
+    set('aspectjweaverVersion', "1.9.19")
+    set('caffeineVersion', "3.2.1")
+    set('httpasyncclientVersion', "4.1.3")
+    set('hanlpVersion', "portable-1.7.5")
+    set('liteflowVersion', "2.11.4.2")
+    set('redissonVersion', "4.0.0")
+    set('jetcacheVersion', "2.7.8")
+    set('kryo5Version', "5.5.0")
+    set('aviatorScriptVersion', "5.4.3")
+
+//    set('springKafkaVersion', "3.3.10") // 修复版本，使用可获取的版本
+    set('springKafkaVersion', "4.0.0-M2") // 修复版本，使用可获取的版本
+    set('nettyVersion', "4.1.125.Final") //漏洞修复，新增Netty统一版本
+    set('tomcatEmbedVersion', "10.1.43")//漏洞修复，新增tomcatEmbed版本
+    set('jacksonCoreVersion', "2.20.0") // 修复Jackson-core漏洞（2.11.3/2.12.2）
+    set('snakeyamlVersion', "2.5") // 修复SnakeYAML远程代码执行（1.23/1.30/1.33）
+    set('parquetAvroVersion', "1.15.2") // 修复Parquet-Avro任意代码执行（1.13.1）
+    set('okioVersion', "3.6.0") // 修复Okio拒绝服务（1.6.0/1.17.2）
+    set('commonsCompressVersion', "1.28.0") // 修复Commons-Compress无限循环（1.21/1.24.0）
+    set('jgitVersion', "7.3.0.202506031305-r") // 修复JGit XXE漏洞（6.6.1）
+    set('azureIdentityVersion', "1.18.1") // 修复Azure Identity权限提升（1.10.1）
+    set('jsonPathVersion', "2.9.0") // 修复JsonPath堆栈溢出（2.8.0）
+    set('guavaVersion', "33.3.1-jre") // 修复Guava临时目录权限（30.1-jre/31.0.1-jre）
+    set('avroVersion', "1.11.4") // 修复Avro Schema解析漏洞（配合Parquet）
+    set('bcprovVersion', "1.78") // 修复BouncyCastle CPU耗尽（1.64/1.70）
+    set('woodstoxVersion', "7.0.0") // 修复Woodstox SSRF（6.2.6，若需保留则升级）
+
+}
+
+
+allprojects { // 所有模块/项目的配置
+    group = 'com.voc'
+    version = '2.0.0'
+
+    repositories {
+        // 明确指定仓库顺序，优先使用可访问的远程仓库
+        mavenCentral()
+        // 阿里云公共仓库
+        maven {
+            url 'https://maven.aliyun.com/repository/public'
+        }
+        // 阿里云Spring仓库
+        maven {
+            url 'https://maven.aliyun.com/repository/spring'
+        }
+        // Spring官方仓库
+        maven {
+            url 'https://repo.spring.io/release'
+        }
+        maven {
+            url 'https://repo.spring.io/milestone'
+        }
+        maven {
+            url 'https://repo.spring.io/snapshot'
+        }
+        // 本地Maven仓库
+        mavenLocal()
+        // 其他可能的仓库
+        maven {
+            url 'https://jcenter.bintray.com/'
+        }
+        // 添加Sonatype snapshots仓库，可能包含所需的依赖
+        maven {
+            url 'https://oss.sonatype.org/content/repositories/snapshots/'
+        }
+    }
+
+    //业务编码字符集,注意这是指定源码解码的字符集[编译器]
+    compileJava.options.encoding "UTF-8"
+    //测试编码字符集,注意这是指定源码解码的字符集[编译器]
+    compileTestJava.options.encoding "UTF-8"
+    //编译JAVA文件时采用UTF-8:注意这是指定源码编码的字符集【源文件】
+    tasks.withType(JavaCompile) {
+        options.encoding = "UTF-8"
+    }
+    //编译JAVA文件时采用UTF-8:注意这是指定文档编码的字符集【源文件】
+    tasks.withType(Javadoc) {
+        options.encoding = "UTF-8"
+    }
+
+    configurations.configureEach {
+        resolutionStrategy {
+            // Jackson 系列
+            force "com.fasterxml.jackson.core:jackson-databind:${jacksonDatabindVersion}"
+            force "com.fasterxml.jackson.core:jackson-core:${jacksonCoreVersion}"
+            force "com.fasterxml.jackson.dataformat:jackson-dataformat-jsonpath:${jacksonDatabindVersion}" // 与jackson-databind版本一致
+            force "com.fasterxml.jackson.core:jackson-annotations:${jacksonDatabindVersion}"
+            force "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${jacksonDatabindVersion}" // 补充Jackson时间模块强制
+
+            // Spring 核心安全版本
+            force "org.springframework:spring-webmvc:6.1.21"
+            force "org.springframework:spring-webflux:6.1.21"
+            force "org.springframework:spring-context:6.1.21"
+            force "org.springframework:spring-beans:6.1.21"
+            force "org.springframework:spring-aop:6.1.21"
+            force "org.springframework:spring-expression:6.1.21"
+            force "org.springframework:spring-tx:6.1.21"
+            force "org.springframework:spring-jdbc:6.1.21"
+            force "org.springframework:spring-web:6.1.21"
+
+            // HTTP 客户端
+            force "org.apache.httpcomponents:httpclient:${httpclientVersion}" // 4.5.14（文档1已定义，修复CVE-2020-13956）
+
+            force "org.apache.parquet:parquet-avro:${parquetAvroVersion}"
+            force "com.squareup.okio:okio:${okioVersion}"
+            force "com.azure:azure-identity:${azureIdentityVersion}"
+            force "com.google.guava:guava:${guavaVersion}"
+            force "org.apache.avro:avro:${avroVersion}"
+            force "org.bouncycastle:bcprov-jdk18on:${bcprovjdk15onVersion}"
+            force "org.apache.tomcat.embed:tomcat-embed-core:${tomcatEmbedVersion}"
+            force "org.apache.kafka:kafka-clients:3.9.1"
+
+            force "com.jayway.jsonpath:json-path:${jsonPathVersion}" // 2.9.0（文档1已定义，修复堆栈溢出漏洞）
+            force "com.squareup.retrofit2:converter-jackson:3.0.0"
+            force "com.squareup.okhttp3:okhttp:4.12.0"
+            force "org.springframework.boot:spring-boot-starter-test:3.5.11"
+            force "org.springframework.cloud:spring-cloud-openfeign-core:4.1.5"
+            force "org.springframework.cloud:spring-boot-starter-webflux:3.3.13"
+//            force "org.springframework.cloud:spring-boot-starter-web:3.3.13"
+            force "org.springframework.boot:spring-boot-starter:3.3.13"
+            force "org.yaml:snakeyaml:2.5"
+            force "org.springframework:spring-core:6.1.21"
+            force 'org.eclipse.jgit:org.eclipse.jgit:7.4.0.202509020913-r'
+
+            force "org.springframework.boot:spring-boot-autoconfigure:4.0.0-M3"
+//            force 'org.springframework.cloud:spring-cloud-config-server:5.0.0-M4'
+            force 'org.springframework.cloud:spring-cloud-config-server:5.0.2'
+
+            force "io.netty:netty-common:${nettyVersion}"
+            force "io.netty:netty-handler:${nettyVersion}"
+            force "io.netty:netty-codec:${nettyVersion}"
+            force "io.netty:netty-codec-http:${nettyVersion}"
+            force "io.netty:netty-codec-http2:${nettyVersion}"
+            force "io.netty:netty-transport:${nettyVersion}"
+            force "io.netty:netty-buffer:${nettyVersion}"
+            force "io.netty:netty-resolver:${nettyVersion}"
+
+            force "commons-io:commons-io:2.16.1"
+            force "org.apache.commons:commons-compress:1.28.0"
+            force "org.apache.commons:commons-collections4:4.4"
+            force "org.springframework.security:spring-security-rsa:1.1.5"
+            force "org.cryptacular:cryptacular:1.2.7"
+//            force "com.alibaba.cloud:spring-alibaba-nacos-config:2023.0.0.0-RC1"
+//            force "com.alibaba.cloud:spring-cloud-alibaba-commons:2023.0.0.0-RC1"
+
+            // 3. 排除无业务依赖的高危组件
+            exclude group: 'io.airlift', module: 'aircompressor'
+            // 优化组件排除策略
+            exclude group: 'io.github.classgraph', module: 'classgraph'
+            exclude group: 'commons-beanutils', module: 'commons-beanutils'
+            exclude group: 'com.fasterxml.woodstox', module: 'woodstox-core'
+            exclude group: 'com.oracle.oci', module: 'oci-java-sdk-common'
+            exclude group: 'org.ini4j', module: 'ini4j'
+            // 添加新的高危组件排除
+            exclude group: 'xerces', module: 'xercesImpl'
+            exclude group: 'xalan', module: 'xalan'
+            exclude group: 'xml-apis', module: 'xml-apis'
+            exclude group: 'org.ow2.asm', module: 'asm' // 使用安全版本替代
+            exclude group: 'org.eclipse.jgit', module: 'org.eclipse.jgit' // 使用安全版本替代
+            exclude group: 'com.alibaba.nacos', module: 'nacos-api'
+            exclude group: "org.springframework.cloud", module: "spring-cloud-config-server"
+        }
+    }
+
+}
+
+
+subprojects { //子模块配置
+    apply plugin: "java"
+    apply plugin: "idea"
+    apply plugin: 'java-library'
+    // 只有应用程序模块才需要Spring Boot插件，voc-service-common是库模块，不应该应用Spring Boot插件
+    if (project.name != 'voc-service-common') {
+        apply plugin: 'org.springframework.boot'
+    }
+    apply plugin: 'io.spring.dependency-management'
+
+
+    java {
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of(17))
+        }
+    }
+
+
+    dependencyManagement {
+        imports {
+            mavenBom org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
+            mavenBom "org.springframework.boot:spring-boot-dependencies:${springbootVersion}"
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+        }
+        dependencies {
+            dependency("com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-discovery:${springCloudAlibabaVersion}")
+
+            dependency("com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-config:${springCloudAlibabaVersion}")
+
+//            dependency "com.alibaba.cloud:spring-alibaba-nacos-config:2023.0.1.3"
+//            dependency "com.alibaba.cloud:spring-cloud-alibaba-commons:2023.0.0.0-RC1"
+
+
+            dependency ("com.baomidou:dynamic-datasource-spring-boot3-starter:${dynamicDatasourceVersion}") {
+                exclude group: "org.springframework",name: "spring-core"
+                exclude group: "com.jayway.jsonpath",name: "json-path"
+                exclude group: "org.springframework",name: "spring-web"
+                exclude group: "org.springframework",name: "spring-webmvc"
+                exclude group: "org.springframework.boot",name: "spring-boot-starter-test"
+                exclude group: "org.springframework.boot",name: "spring-boot-starter-web"
+            }
+            dependency "org.springframework.kafka:spring-kafka:${springKafkaVersion}"
+            //druid连接池
+            dependency "com.esotericsoftware.kryo:kryo5:${kryo5Version}"
+            dependency "org.redisson:redisson:${redissonVersion}"
+            dependency "com.googlecode.aviator:aviator:${aviatorScriptVersion}"
+            dependency "com.alicp.jetcache:jetcache-starter-redis:${jetcacheVersion}"
+            dependency "com.alicp.jetcache:jetcache-starter-redis-lettuce:${jetcacheVersion}"
+//            dependency ("com.alibaba:druid-spring-boot-3-starter:${druidSpringBootVersion}"){
+//                exclude group: "org.springframework.boot",name: "spring-boot-autoconfigure"
+//            }
+            dependency "com.alibaba.cloud:spring-cloud-starter-alibaba-seata:${seataVersion}"
+            dependency "com.zaxxer:HikariCP:${hikariCPVersion}"
+
+//            dependency "com.github.timpeeters:spring-boot-graceful-shutdown:${gracefulShutdownVersion}"
+            dependency "io.minio:minio:${minioVersion}"
+            dependency "com.yomahub:liteflow-spring-boot-starter:${liteflowVersion}"
+            dependency "com.yomahub:liteflow-el-builder:${liteflowVersion}"
+
+            dependency "com.hankcs:hanlp:${hanlpVersion}"
+            dependency "org.apache.httpcomponents:httpasyncclient:${httpasyncclientVersion}"
+
+
+            dependency "com.github.ben-manes.caffeine:caffeine:${caffeineVersion}"
+            dependency "ch.qos.logback:logback-classic:${logbackClassicVersion}"
+            dependency "ch.qos.logback:logback-core:${logbackClassicVersion}"
+            dependency "org.aspectj:aspectjweaver:${aspectjweaverVersion}"
+
+
+            dependency "com.fasterxml.jackson.core:jackson-databind:${jacksonDatabindVersion}"
+            dependency "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${jacksonDatabindVersion}"
+
+
+            //分布式任务
+            dependency "com.github.xiaoymin:knife4j-openapi3-jakarta-spring-boot-starter:${knife4jOpenapi3Version}"
+            dependency "org.apache.flink:flink-shaded-guava:${flinkGuavaVersion}"
+
+            dependency ("org.passay:passay:${passayVersion}"){
+                exclude group: "org.bouncycastle",name: "bcprov-jdk18on"
+                exclude group: "org.cryptacular",name: "cryptacular"
+            }
+            dependency "com.xuxueli:xxl-job-core:${xxlJobVersion}"
+            //excel工具
+            dependency "com.alibaba:easyexcel:${easyexcelVersion}"
+            dependency "com.github.ulisesbocchio:jasypt-spring-boot:${jasyptVersion}"
+
+            //poi 工具
+            dependency "org.apache.poi:poi:${apachePoiVersion}"
+            dependency ("org.apache.poi:poi-ooxml:${apachePoiVersion}"){
+                exclude group: "org.bouncycastle",name: "bcprov-jdk18on"
+            }
+            //通用工具
+//            dependency "org.apache.commons:commons-collections4:${apacheCommonsVersion}"
+            dependency "org.apache.commons:commons-collections4:${apacheCommonsVersion}"
+            dependency "org.apache.commons:commons-pool2:${apachePool2Version}"
+//            dependency "ma.glasnost.orika:orika-core:${orikaCersion}"
+            //swagger
+            dependency "com.baomidou:mybatis-plus-boot-starter:${mybatisPlusVersion}"
+            dependency "com.baomidou:mybatis-plus-annotation:${mybatisPlusVersion}"
+            dependency "com.baomidou:mybatis-plus-jsqlparser:${mybatisPlusVersion}"
+            //admin 监控
+            dependency "de.codecentric:spring-boot-admin-starter-server:${springBootAdminVersion}"
+            dependency "de.codecentric:spring-boot-admin-starter-client:${springBootAdminVersion}"
+
+            dependency "org.apache.skywalking:apm-toolkit-logback-1.x:${apacheSkywalking}"
+            dependency "org.apache.skywalking:apm-toolkit-trace:${apacheSkywalking}"
+            dependency "net.logstash.logback:logstash-logback-encoder:${logstashLogstash}"
+
+            dependency "org.latencyutils:LatencyUtils:${latencyutilsVersion}"
+            dependency "cn.hutool:hutool-all:${hutoolVserion}"
+            dependency "org.mapstruct:mapstruct:${mapstructVersion}"
+            dependency "org.mapstruct:mapstruct-processor:${mapstructProcessor}"
+
+
+//            dependency "com.aliyun:aliyun-java-sdk-core:${aliyunJavaSdkCore}"
+//            dependency "com.aliyun:aliyun-java-sdk-dysmsapi:${aliyunJavaSdkDysmsapi}"
+
+            dependency "io.github.openfeign:feign-okhttp:${feignOkhttp}"
+            dependency "io.github.openfeign:feign-httpclient:${feignOkhttp}"
+            dependency "com.auth0:java-jwt:${auth0JWTVersion}"
+            dependency "io.github.openfeign:feign-hc5:${openfeignVersion}"
+            dependency "org.bouncycastle:bcprov-jdk18on:${bcprovjdk15onVersion}"
+
+            dependency "io.micrometer:micrometer-registry-prometheus:${prometheusVersion}"
+            dependency "org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3"
+
+            dependency "com.alibaba:transmittable-thread-local:${transmittableThread}"
+//            dependency "com.alibaba.csp:sentinel-datasource-nacos:${sentinelAlibabaVersion}"
+            dependency "com.alibaba.cloud:spring-cloud-starter-alibaba-sentinel:${sentinelAlibabaVersion}"
+            dependency "com.alibaba.csp:sentinel-core:${sentinelcspAlibabaVersion}"
+            dependency "com.alibaba.csp:sentinel-transport-simple-http:${sentinelcspAlibabaVersion}"
+            dependency "org.springframework.boot:spring-boot-starter-data-redis:${springBootRedisVersion}"
+            dependency "org.springframework.integration:spring-integration-redis:${springIntegrationRedisVersion}"
+            dependency "org.apache.httpcomponents:httpclient:${httpclientVersion}"
+            dependency "com.mysql:mysql-connector-j:9.4.0"
+
+            dependency 'javax.servlet:javax.servlet-api:4.0.1'
+            dependency 'jakarta.servlet:jakarta.servlet-api:5.0.0'
+
+            dependency ('com.github.pagehelper:pagehelper-spring-boot-starter:2.1.1'){
+                exclude group: 'org.yaml', name: 'snakeyaml'
+            }
+
+
+
+            dependency 'org.springframework.boot:spring-boot-starter-validation:3.2.2'
+            dependency 'com.szlanyou.cloud:ly-cloud-common-logtracing-pz1a:0.0.1-SNAPSHOT'
+
+            dependency 'org.springframework.boot:spring-cloud-starter-bootstrap:4.1.0'
+            dependency 'org.springframework.cloud:spring-cloud-starter-loadbalancer:4.1.0'
+            dependency 'org.apache.logging.log4j:log4j-slf4j-impl:2.23.1'
+//            dependency 'org.testcontainers:milvus:1.19.8'
+//            dependency 'org.testcontainers:junit-jupiter:1.19.6'
+//            dependency 'org.testcontainers:testcontainers:1.19.6'
+            dependency 'com.google.j2objc:j2objc-annotations:1.3'
+            dependency 'com.google.code.gson:gson:2.10'
+            dependency 'com.squareup.okhttp3:okhttp:4.12.0'
+            dependency 'org.springframework.cloud:spring-cloud-config-server:5.0.2'
+            dependency 'org.springframework.boot:spring-boot-starter-test:3.5.11'
+            dependency 'org.yaml:snakeyaml:2.5'
+            dependency('com.squareup.retrofit2:converter-jackson:3.0.0') {
+                // 排除该依赖自带的旧版本jackson-databind
+                exclude group: 'com.fasterxml.jackson.core', name: 'jackson-databind'
+                exclude group: 'com.squareup.okhttp3', name: 'okhttp'
+            }
+            dependency "org.eclipse.jgit:org.eclipse.jgit:7.4.0.202509020913-r"
+            dependency "org.eclipse.jgit:org.eclipse.jgit.ssh.jsch:7.4.0.202509020913-r"
+            dependency "org.eclipse.jgit:org.eclipse.jgit.http.server:7.4.0.202509020913-r"
+            dependency "org.springframework.security:spring-security-rsa:1.1.5"
+            dependency "org.cryptacular:cryptacular:1.2.7"
+            dependency 'com.microsoft.playwright:playwright:1.40.0'
+            dependency "org.springframework.cloud:spring-boot-starter-webflux:3.3.13"
+//            dependency "org.springframework.cloud:spring-boot-starter-web:3.3.13"
+
+            // 覆盖 Spring BOM 中的漏洞版本
+            dependency "org.springframework:spring-core:6.1.21"
+            dependency "org.springframework:spring-web:6.1.21"
+            dependency "org.springframework:spring-webmvc:6.1.21"
+            dependency "org.springframework:spring-webflux:6.1.21"
+            dependency "org.springframework:spring-context:6.1.21"
+            dependency "org.projectlombok:lombok:1.18.30"
+            dependency ('com.alibaba.nacos:nacos-client:2.3.0')
+            dependency ('com.alibaba.nacos:nacos-common:2.3.0')
+            dependency('org.springframework.retry:spring-retry:2.0.10')
+        }
+
+    }
+
+
+
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-test'
+
+        testImplementation ('org.springframework.boot:spring-boot-starter-test'){
+            exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+        }
+//        implementation 'org.testng:testng:7.9.0'
+//        testImplementation 'io.rest-assured:rest-assured:5.4.0'
+        testImplementation 'org.projectlombok:lombok'
+        testImplementation 'org.mapstruct:mapstruct-processor'
+
+        // 一个丰富的工具类,各种判空,各种类型操作,各种日期工具 官方文档https://www.hutool.cn/
+        implementation "org.projectlombok:lombok"
+        annotationProcessor "org.projectlombok:lombok"
+        annotationProcessor "org.mapstruct:mapstruct-processor"
+
+        // 添加缺失的依赖项
+        implementation 'io.prometheus:simpleclient_common:0.15.0'
+        implementation 'org.jspecify:jspecify:0.2.0'
+
+        constraints {
+            implementation('org.yaml:snakeyaml:2.5')
+            implementation ('org.apache.parquet:parquet-avro:1.15.2')
+            implementation ('org.slf4j:slf4j-ext:2.0.17')
+            implementation ('cn.hutool:hutool-core:5.8.41')
+            implementation ('com.squareup.okio:okio:3.6.0')
+            implementation ('com.azure:azure-identity:1.18.1')
+            implementation ('com.jayway.jsonpath:json-path:2.9.0')
+            implementation ('org.apache.commons:commons-compress:1.28.0')
+            implementation ('com.fasterxml.jackson.core:jackson-databind:2.17.3')
+            implementation ('com.fasterxml.jackson.core:jackson-core:2.17.3')
+            implementation ('com.fasterxml.jackson.core:jackson-annotations:2.17.3')
+            implementation ('com.alibaba.nacos:nacos-client:2.3.0')
+            implementation ('com.alibaba.nacos:nacos-common:2.3.0')
+            implementation ("org.apache.tomcat.embed:tomcat-embed-core:${tomcatEmbedVersion}")
+            implementation ('org.bouncycastle:bcprov-jdk18on:1.78') // 注：ext中已定义1.78，此处需改为${bcprovjdk15onVersion}
+            implementation ('com.mysql:mysql-connector-j:9.4.0')
+            implementation ("org.apache.avro:avro:${avroVersion}")
+            implementation ("com.squareup.retrofit2:converter-jackson:3.0.0")
+            implementation "com.squareup.retrofit2:adapter-java8:3.0.0"
+            implementation ("com.squareup.okhttp3:okhttp:4.12.0")
+            implementation ("org.springframework.boot:spring-boot-starter-test:3.5.11")
+            implementation ("org.springframework.boot:spring-boot-starter:3.3.13")
+            implementation ("org.yaml:snakeyaml:2.5")
+            implementation 'commons-io:commons-io:2.16.1'
+            implementation "com.google.guava:guava:${guavaVersion}"
+            implementation "org.gitlab4j:gitlab4j-api:6.4.0"
+            implementation "org.springframework:spring-webmvc:6.1.21"
+            implementation "org.springframework:spring-webflux:6.1.21"
+            implementation "org.springframework:spring-web:6.1.21"
+            implementation "org.springframework:spring-core:6.1.21"
+            implementation "org.springframework.boot:spring-boot-autoconfigure:3.1.5"
+            implementation ("org.springframework.cloud:spring-cloud-config-server:5.0.2")
+            implementation "org.eclipse.jgit:org.eclipse.jgit:7.4.0.202509020913-r"
+            implementation "org.springframework.security:spring-security-rsa:1.1.5"
+            implementation "org.cryptacular:cryptacular:1.2.7"
+            implementation "org.springframework.cloud:spring-boot-starter-webflux:3.3.13"
+            implementation "org.springframework.cloud:spring-boot-starter-web:3.3.13"
+//            implementation "com.alibaba.cloud:spring-alibaba-nacos-config:2023.0.0.0-RC1"
+//            implementation "com.alibaba.cloud:spring-cloud-alibaba-commons:2023.0.0.0-RC1"
+        }
+    }
+
+    compileJava {
+    }
+
+
+    test {
+        enabled = false
+
+        useTestNG()
+
+        jvmArgs '--add-opens', '-Dspring.profiles.active=local','java.base/java.lang=ALL-UNNAMED'
+
+        systemProperty 'file.encoding', 'UTF-8'
+        include(["**/*Tests.class", "**/*Test.class"])
+        testLogging.showStandardStreams = true
+
+    }
+
+
+
+    task clearJar(type: Delete) {
+        delete "$buildDir/libs/lib"
+    }
+
+    task clearVocJar(type: Delete) {
+        delete "$buildDir/libs/lib-voc"
+    }
+
+    // 将依赖包复制到lib目录
+    task copyAllJar(type: Copy, dependsOn: 'clearJar') {
+        from configurations.runtimeClasspath
+        into "$buildDir/libs/lib"
+        exclude("voc-*.jar")
+
+        dependsOn jar
+    }
+
+    // 将依赖包复制到lib目录
+    task copyVocJar(type: Copy, dependsOn: 'clearVocJar') {
+        from configurations.runtimeClasspath
+        into "$buildDir/libs/lib-voc"
+        include("voc-*.jar")
+
+        dependsOn jar
+    }
+
+    jar { enabled = true }
+
+    project.afterEvaluate {
+        copyAllJar.doFirst {
+            copy {
+                from configurations.runtimeClasspath
+                into "$buildDir/libs/lib-voc"
+                include("voc-*.jar")
+            }
+        }
+
+        jar.doFirst {
+            copy {
+                delete "$buildDir/libs/logback-spring.xml"
+                delete "$buildDir/libs/start.sh"
+
+                from "$buildDir/../src/main/resources/dev_start"
+                into "$buildDir/libs/"
+                include("logback-spring.xml","start.sh")
+            }
+
+
+        }
+    }
+}
+
+// 只为根项目禁用Spring Boot插件的bootJar任务
+if (project == rootProject) {
+    bootJar {
+        enabled = false
+    }
+}
+
+test {
+    enabled = false
+}

@@ -1,0 +1,535 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.analysis.risk.mapper.RiskDataAnalysisMapper">
+
+    <select id="queryRuleIdList" resultType="java.lang.String">
+        SELECT
+        icr.rule_id
+        FROM voc_ms_be.ins_closed_rule icr
+        LEFT JOIN (
+        SELECT rule_id,value
+        FROM ins_closed_rule_condition
+        WHERE condition_type="intention" and value ="抱怨"
+        )  icrc ON icr.rule_id=icrc.rule_id
+        where icr.is_enabled="enabled"
+        ORDER BY
+        process_priority ASC,
+        FIELD(event_level, 'S', 'A', 'B', 'C', 'D') asc,
+        icrc.value IS NOT NULL desc
+    </select>
+
+    <update id="delJob">
+        update xxl_job.xxl_job_info set trigger_status = 0 where 1=1
+        <if test="jobIdList != null and jobIdList.size() > 0">
+            and executor_param IN
+            <foreach collection="jobIdList" item="ruleId" open="(" separator="," close=")">
+                #{ruleId}
+            </foreach>
+        </if>
+    </update>
+
+
+    <delete id="deleteJobIdList" >
+       delete from xxl_job.xxl_job_info where executor_handler="warningTaskRun"
+    </delete>
+
+    <insert id="addJob">
+        INSERT INTO xxl_job.xxl_job_info (
+        job_group,
+        job_desc,
+        add_time,
+        update_time,
+        author,
+        alarm_email,
+        schedule_type,
+        schedule_conf,
+        misfire_strategy,
+        executor_route_strategy,
+        executor_handler,
+        executor_param,
+        executor_block_strategy,
+        executor_timeout,
+        executor_fail_retry_count,
+        glue_type,
+        glue_source,
+        glue_remark,
+        glue_updatetime,
+        child_jobid,
+        trigger_status,
+        trigger_last_time,
+        trigger_next_time
+        ) VALUES (
+        3,
+        CONCAT('预警任务',#{ruleId}),
+        '2025-11-14 15:27:50',
+        '2025-11-14 15:27:50',
+        'liuhb',
+        '',
+        'CRON',
+        #{cron},
+        'DO_NOTHING',
+        'FIRST',
+        'warningTaskRun',
+        #{ruleId},
+        'SERIAL_EXECUTION',
+        0,
+        0,
+        'BEAN',
+        '',
+        'GLUE代码初始化',
+        '2025-11-14 15:27:50',
+        '',
+        1,
+        0,
+        0
+        );
+    </insert>
+
+
+    <select id="querySoundsData" resultType="com.voc.service.insights.engine.model.WarningTaskResultModel">
+        SELECT
+        id,
+        data_id,
+        channel_catagory,
+        channel_code,
+        channel_name,
+        brand_code,
+        brand_name,
+        car_series_code,
+        car_series_name,
+        model_name,
+        original_text as content,
+        content_type,
+        title,
+        sentiment,
+        intention,
+        data_create_time,
+        publish_time,
+        create_time,
+        is_outer,
+        hot_word,
+        keywords,
+        original_text_scene,
+        market_id,
+        competitive_type,
+        series_factory,
+        automark,
+        one_id_risk,
+        usage_scenario_first,
+        usage_scenario_second,
+        d2c_responsible_dept,
+        d2c_accountable_dept,
+        d2c_cc_dept,
+        cust_global_id,
+        cust_classify,
+        cust_main_phone,
+        is_car_owner,
+        cust_age,
+        cust_age_group,
+        cust_name,
+        cust_gender,
+        cust_high_educaion,
+        marrige_statue,
+        family_income,
+        is_exchange_flg,
+        purchase_car_times,
+        is_member_flg,
+        cust_province_code,
+        cust_province,
+        cust_city_code,
+        cust_city,
+        cust_type,
+        cust_lived_prov,
+        cust_lived_city,
+        cust_profession,
+        is_wsater_army,
+        is_manager_focused,
+        is_big_v,
+        author_id,
+        author_nick,
+        is_main_post,
+        original_link,
+        retweeted_url,
+        retweeted_user_id,
+        retweeted_user_name,
+        retweeted_content,
+        retweeted_title,
+        retweeted_time,
+        comment_user_name,
+        comment_user_id,
+        comment_url,
+        vhl_vin,
+        dlr_oc_name,
+        dlr_oc_code,
+        tag_event_clarity,
+        tag_complaint_flag_needing_reply,
+        tag_need_forvclosed_loop,
+        "" as sensitive_type,
+        view_count,
+        comment_count,
+        like_count,
+        share_count,
+        favorite_count,
+        work_order_id,
+        quest_id,
+        quest_type,
+        quest_answer_score,
+        quest_business_type,
+        quest_business_scenario,
+        topic,
+        topic_text,
+        opinion,
+        dom_tag_first_code,
+        dom_tag_second_code,
+        dom_tag_three_code,
+        dom_tag_four_code,
+        dom_tag_first,
+        dom_tag_second,
+        dom_tag_three,
+        dom_tag_four,
+        abandon
+        FROM
+        voc_sentiment_annotations_results_v
+        <where>
+            <if test="startTime != null and startTime !=''">
+                and insert_dt >= #{startTime} and  insert_dt &lt; #{endTime}
+            </if>
+            <!-- 1. 渠道数组（IN查询，为空则不生效） -->
+            <if test="channelIds != null and channelIds.size() > 0">
+                AND channel_code IN
+                <foreach collection="channelIds" item="channelId" open="(" separator="," close=")">
+                    #{channelId}
+                </foreach>
+            </if>
+            <!-- 2. 品牌code（精确查询） -->
+            <if test="brandCode != null and brandCode != ''">
+                AND brand_code = #{brandCode}
+            </if>
+            <!-- 3. 情感（精确查询，对应sentiment字段） -->
+            <if test="sentiment != null and sentiment != ''">
+                AND sentiment = #{sentiment}
+            </if>
+            <!-- 4. 原文类型（精确查询，对应content_type字段） -->
+            <if test="contentType != null and contentType != ''">
+                AND content_type = #{contentType}
+            </if>
+
+            <if test="contentTypeMin != null and contentTypeMin != ''">
+                AND is_main_post = #{contentTypeMin}
+            </if>
+            <!-- 6. 原文（模糊查询，假设表中存在content字段，若无则替换为title/original_text_scene） -->
+            <if test="content != null and content != ''">
+                AND original_text LIKE CONCAT('%', #{content}, '%')
+            </if>
+            <!-- 8. 标题（模糊查询） -->
+            <if test="title != null and title != ''">
+                AND title LIKE CONCAT('%', #{title}, '%')
+            </if>
+            <!-- 5. 意图（精确查询，对应intention字段） -->
+            <if test="intentionType != null and intentionType != ''">
+                AND intention = #{intentionType}
+            </if>
+            <!-- 7. 车系（IN查询，为空则不生效） -->
+            <if test="carSeriesCode != null and carSeriesCode.size() > 0">
+                AND car_series_code IN
+                <foreach collection="carSeriesCode" item="seriesCode" open="(" separator="," close=")">
+                    #{seriesCode}
+                </foreach>
+            </if>
+
+            <!-- 7. 广告类型 -->
+            <if test="adTypeList != null and adTypeList.size() > 0">
+                AND ad_type IN
+                <foreach collection="adTypeList" item="adType" open="(" separator="," close=")">
+                    #{adType}
+                </foreach>
+            </if>
+            <!-- 9. 主题编码（精确查询，假设对应topic字段，若无则替换为dom_tag_first_code等标签编码字段） -->
+            <if test="topicCode != null and topicCode != ''">
+                AND topic = #{topicCode}
+                <!-- 若topicCode对应标签编码，可改为：AND dom_tag_first_code = #{topicCode} -->
+            </if>
+            <if test="level != null and level != '' and tagCode != null and tagCode != ''">
+                <choose>
+                    <!-- level=1：匹配一级标签编码 -->
+                    <when test="level == '1'">
+                        AND dom_tag_first_code = #{tagCode}
+                    </when>
+                    <!-- level=2：匹配二级标签编码 -->
+                    <when test="level == '2'">
+                        AND dom_tag_second_code = #{tagCode}
+                    </when>
+                    <!-- level=3：匹配三级标签编码 -->
+                    <when test="level == '3'">
+                        AND dom_tag_three_code = #{tagCode}
+                    </when>
+                    <!-- level=4：匹配四级标签编码 -->
+                    <when test="level == '4'">
+                        AND dom_tag_four_code = #{tagCode}
+                    </when>
+                </choose>
+            </if>
+            <!-- 12. 主贴用户（模糊查询，对应主贴用户名称字段，假设表中有main_post_user_name字段） -->
+            <if test="mainPostUser != null and mainPostUser.size() > 0">
+                and (
+                <foreach collection="mainPostUser" item="item" separator="OR">
+                    <trim prefix="(" suffix=")" prefixOverrides="AND">
+                        <if test="item.accountId != null and item.accountId != ''">
+                            and one_id_risk = #{item.accountId}
+                        </if>
+                        <if test="item.accountId == null or item.accountId == ''">
+                            <if test="item.accountName != null and item.accountName != ''">
+                                and cust_name = #{item.accountName}
+                            </if>
+                        </if>
+                        <!-- 渠道包含（与前面条件用OR连接） -->
+                        <if test="item.channel != null and item.channel.size() > 0">
+                            and channel_code IN
+                            <foreach collection="item.channel" item="channel" open="(" separator="," close=")">
+                                #{channel}
+                            </foreach>
+                        </if>
+                    </trim>
+                </foreach>
+                )
+            </if>
+            <!-- 13. 发帖用户（模糊查询，对应发帖用户名称字段） -->
+            <if test="postUser != null and postUser.size() > 0">
+                and (
+                <foreach collection="postUser" item="item" separator="OR">
+                    <trim prefix="(" suffix=")" prefixOverrides="AND">
+                        <if test="item.accountId != null and item.accountId != ''">
+                            AND retweeted_user_id = #{item.accountId}
+                        </if>
+                        <if test="item.accountId == null or item.accountId == ''">
+                            <if test="item.accountName != null and item.accountName != ''">
+                                and retweeted_user_name = #{item.accountName}
+                            </if>
+                        </if>
+                        <!-- 渠道包含（与前面条件用OR连接） -->
+                        <if test="item.channel != null and item.channel.size() > 0">
+                            and channel_code IN
+                            <foreach collection="item.channel" item="channel" open="(" separator="," close=")">
+                                #{channel}
+                            </foreach>
+                        </if>
+                    </trim>
+                </foreach>
+                )
+            </if>
+        </where>
+    </select>
+
+
+
+    <select id="executeRuleTestInfo" resultType="com.voc.service.insights.engine.model.WarningTaskResultModel">
+        SELECT
+        id,
+        data_id,
+        batch_id,
+        channel_name,
+        channel_code,
+        brand_name,
+        brand_code,
+        car_series_name,
+        car_series_code,
+        content_type,
+        is_main_post,
+        title,
+        content,
+        sentiment,
+        intention,
+        publish_time,
+        dom_tag_first_code,
+        dom_tag_second_code,
+        dom_tag_three_code,
+        dom_tag_four_code,
+        dom_tag_first,
+        dom_tag_second,
+        dom_tag_three,
+        dom_tag_four,
+        topic_id,
+        topic_text,
+        publish_user_id,
+        publish_user_nickname,
+        main_post_user_id,
+        main_post_user_name,
+        create_time,
+        update_time
+        FROM
+        voc_ms_td.report_rule_test_data_risk_info
+        <where>
+            <if test="batchId != null and batchId !=''">
+                and batch_id = #{batchId}
+            </if>
+            <!-- 1. 渠道数组（IN查询，为空则不生效） -->
+            <if test="channelIds != null and channelIds.size() > 0">
+                AND channel_code IN
+                <foreach collection="channelIds" item="channelId" open="(" separator="," close=")">
+                    #{channelId}
+                </foreach>
+            </if>
+            <!-- 2. 品牌code（精确查询） -->
+            <if test="brandCode != null and brandCode != ''">
+                AND brand_code = #{brandCode}
+            </if>
+            <!-- 3. 情感（精确查询，对应sentiment字段） -->
+            <if test="sentiment != null and sentiment != ''">
+                AND sentiment = #{sentiment}
+            </if>
+            <!-- 4. 原文类型（精确查询，对应content_type字段） -->
+            <if test="contentType != null and contentType != ''">
+                AND content_type = #{contentType}
+            </if>
+            <!-- 6. 原文（模糊查询，假设表中存在content字段，若无则替换为title/original_text_scene） -->
+            <if test="content != null and content != ''">
+                AND content LIKE CONCAT('%', #{content}, '%')
+            </if>
+            <!-- 8. 标题（模糊查询） -->
+            <if test="title != null and title != ''">
+                AND title LIKE CONCAT('%', #{title}, '%')
+            </if>
+            <!-- 5. 意图（精确查询，对应intention字段） -->
+            <if test="intentionType != null and intentionType != ''">
+                AND intention = #{intentionType}
+            </if>
+            <!-- 7. 车系（IN查询，为空则不生效） -->
+            <if test="carSeriesCode != null and carSeriesCode.size() > 0">
+                AND car_series_code IN
+                <foreach collection="carSeriesCode" item="seriesCode" open="(" separator="," close=")">
+                    #{seriesCode}
+                </foreach>
+            </if>
+            <!-- 9. 主题编码（精确查询，假设对应topic字段，若无则替换为dom_tag_first_code等标签编码字段） -->
+            <if test="topicCode != null and topicCode != ''">
+                AND topic_id = #{topicCode}
+                <!-- 若topicCode对应标签编码，可改为：AND dom_tag_first_code = #{topicCode} -->
+            </if>
+            <if test="level != null and level != '' and tagCode != null and tagCode != ''">
+                <choose>
+                    <!-- level=1：匹配一级标签编码 -->
+                    <when test="level == '1'">
+                        AND dom_tag_first_code = #{tagCode}
+                    </when>
+                    <!-- level=2：匹配二级标签编码 -->
+                    <when test="level == '2'">
+                        AND dom_tag_second_code = #{tagCode}
+                    </when>
+                    <!-- level=3：匹配三级标签编码 -->
+                    <when test="level == '3'">
+                        AND dom_tag_three_code = #{tagCode}
+                    </when>
+                    <!-- level=4：匹配四级标签编码 -->
+                    <when test="level == '4'">
+                        AND dom_tag_four_code = #{tagCode}
+                    </when>
+                </choose>
+            </if>
+            <!-- 12. 主贴用户（模糊查询，对应主贴用户名称字段，假设表中有main_post_user_name字段） -->
+            <if test="mainPostUser != null and mainPostUser.size() > 0">
+                and (
+                <foreach collection="mainPostUser" item="item" separator="OR">
+                    <trim prefix="(" suffix=")" prefixOverrides="AND">
+                        <if test="item.accountId != null and item.accountId != ''">
+                            and publish_user_id = #{item.accountId}
+                        </if>
+                        <if test="item.accountId == null or item.accountId == ''">
+                            <if test="item.accountName != null and item.accountName != ''">
+                                and publish_user_nickname = #{item.accountName}
+                            </if>
+                        </if>
+                        <!-- 渠道包含（与前面条件用OR连接） -->
+                        <if test="item.channel != null and item.channel.size() > 0">
+                            and channel_code IN
+                            <foreach collection="item.channel" item="channel" open="(" separator="," close=")">
+                                #{channel}
+                            </foreach>
+                        </if>
+                    </trim>
+                </foreach>
+                )
+            </if>
+            <!-- 13. 发帖用户（模糊查询，对应发帖用户名称字段） -->
+            <if test="postUser != null and postUser.size() > 0">
+                and (
+                <foreach collection="postUser" item="item" separator="OR">
+                    <trim prefix="(" suffix=")" prefixOverrides="AND">
+                        <if test="item.accountId != null and item.accountId != ''">
+                            AND main_post_user_id = #{item.accountId}
+                        </if>
+                        <if test="item.accountId == null or item.accountId == ''">
+                            <if test="item.accountName != null and item.accountName != ''">
+                                and main_post_user_name = #{item.accountName}
+                            </if>
+                        </if>
+                        <!-- 渠道包含（与前面条件用OR连接） -->
+                        <if test="item.channel != null and item.channel.size() > 0">
+                            and channel_code IN
+                            <foreach collection="item.channel" item="channel" open="(" separator="," close=")">
+                                #{channel}
+                            </foreach>
+                        </if>
+                    </trim>
+                </foreach>
+                )
+            </if>
+        </where>
+    </select>
+
+
+    <select id="toDayApiData" resultType="com.voc.service.analysis.risk.entity.CarDataEntity">
+        SELECT
+        hash_code,
+        app_name_final,
+        brand,
+        car_brand,
+        content,
+        feel_tag,
+        news_author_final,
+        news_posttime,
+        news_title,
+        news_url,
+        report_date,
+        series,
+        create_time,
+        job_nm,
+        batch_dt,
+        process_attention,
+        is_deleted,
+        ds,
+        insert_dt
+        FROM
+        voc_ms_td.voc_imp_hudi_ca_es_bdu_bdu_netopinion_complaint_miaozhen
+        WHERE create_time >= DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY) and is_deleted=0
+    </select>
+
+
+    <select id="queryResultDataRisk"
+            resultType="com.voc.service.analysis.risk.entity.ReportModelTagsResultDataRiskEntity">
+        SELECT
+        id,
+        closed_rule_id,
+        warning_time,
+        warning_event_no,
+        sounds_id,
+        data_id,
+        content,
+        content_type,
+        publish_time,
+        second_channel_code,
+        second_channel_name,
+        main_post_title,
+        main_post_details,
+        post_user_id,
+        post_user_name,
+        post_time,
+        main_post_url
+        FROM
+        report_model_tags_result_data_risk
+        WHERE
+        date(create_time ) >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+        AND date(create_time) &lt; DATE_ADD(CURDATE(), INTERVAL 1 DAY);
+    </select>
+
+
+</mapper>

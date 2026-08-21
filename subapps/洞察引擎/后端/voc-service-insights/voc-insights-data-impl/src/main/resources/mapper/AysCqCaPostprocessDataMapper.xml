@@ -1,0 +1,878 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.insights.engine.data.mapper.AysCqCaPostprocessDataMapper">
+
+    <sql id="postprocessKeywordConditions">
+        <if test="title != null and title !='' ">
+<!--            and (-->
+<!--            (-->
+<!--            <foreach item="item" index="index" collection="titleKeywordList" separator=" and ">-->
+<!--                title like concat('%',#{item},'%')-->
+<!--            </foreach>-->
+<!--            )-->
+<!--            or-->
+<!--            (-->
+<!--            <foreach item="item" index="index" collection="titleKeywordList" separator=" and ">-->
+<!--                original_text like concat('%',#{item},'%')-->
+<!--            </foreach>-->
+<!--            )-->
+<!--            )-->
+            and title MATCH_ALL REPLACE(#{title}, ',', ' ')
+        </if>
+        <if test="content != null and content !=''">
+<!--            and (-->
+<!--            (-->
+<!--            <foreach item="item" index="index" collection="contentKeywordList" separator=" and ">-->
+<!--                original_text like concat('%',#{item},'%')-->
+<!--            </foreach>-->
+<!--            )-->
+<!--            or-->
+<!--            (-->
+<!--            <foreach item="item" index="index" collection="contentKeywordList" separator=" and ">-->
+<!--                title like concat('%',#{item},'%')-->
+<!--            </foreach>-->
+<!--            )-->
+<!--            )-->
+            and original_text MATCH_ALL REPLACE(#{content}, ',', ' ')
+        </if>
+        <if test="opinion != null and opinion!=''">
+            and (
+            <foreach item="item" index="index" collection="opinionKeywordList" separator=" and ">
+                opinion like concat('%',#{item},'%')
+            </foreach>
+            )
+        </if>
+    </sql>
+
+
+    <sql id="postprocessWhereConditions">
+        <if test="startTime !=null and endTime!=null ">
+            and date(publish_time) BETWEEN DATE(#{startTime}) and DATE(#{endTime})
+        </if>
+
+        <if test="tagIssueSeverity != null and tagIssueSeverity.size()!=0">
+            and tag_issue_severity in
+            <foreach item="item" index="index" collection="tagIssueSeverity" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="isWsaterArmy != null and isWsaterArmy !='' and isWsaterArmy ==1">
+            and (is_wsater_army = "1" or is_wsater_army = "Y")
+        </if>
+        <if test="isWsaterArmy != null and isWsaterArmy !='' and isWsaterArmy ==0">
+            and (is_wsater_army = "0" or is_wsater_army = "N")
+        </if>
+        <if test="tagHighValueFlag != null and tagHighValueFlag !=''">
+            and tag_high_quality_voc_flag= #{tagHighValueFlag}
+        </if>
+        <if test="isManagerFocused != null and isManagerFocused !=''">
+            and is_manager_focused= #{isManagerFocused}
+        </if>
+        <if test="isBigV != null and isBigV !=''">
+            and is_big_v= #{isBigV}
+        </if>
+        <if test="isMainPost != null and isMainPost !='' and isMainPost ==1">
+            and is_main_post="Y"
+        </if>
+        <if test="isMainPost != null and isMainPost !='' and isMainPost ==0">
+            and is_main_post="N"
+        </if>
+        <if test="idList != null and idList.size()!=0">
+            and id in
+            <foreach item="item" index="index" collection="idList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="dataId != null and dataId.size()!=0">
+            and data_id in
+            <foreach item="item" index="index" collection="dataId" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="topicList != null and topicList.size()!=0">
+            and topic in
+            <foreach item="item" index="index" collection="topicList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="dataStatus != null and dataStatus.size()!=0">
+            and abandon in
+            <foreach item="item" index="index" collection="dataStatus" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="sentiment != null and sentiment.size()!=0">
+            and sentiment in
+            <foreach item="item" index="index" collection="sentiment" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="intention != null and intention.size()!=0 ">
+            and intention in
+            <foreach item="item" index="index" collection="intention" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="brandCode != null and brandCode.size()!=0 ">
+            and brand_code in
+            <foreach item="item" index="index" collection="brandCode" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="carSeries != null and carSeries.size()!=0 ">
+            and car_series_code in
+            <foreach item="item" index="index" collection="carSeries" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="usageScenarioFirstList != null and usageScenarioFirstList.size()!=0 ">
+            and usage_scenario_first in
+            <foreach item="item" index="index" collection="usageScenarioFirstList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="usageScenarioSecondList != null and usageScenarioSecondList.size()!=0 ">
+            and usage_scenario_second in
+            <foreach item="item" index="index" collection="usageScenarioSecondList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="firstChannelCodeList != null and firstChannelCodeList.size() !=0 ">
+            and channel_catagory in
+            <foreach item="item" index="index" collection="firstChannelCodeList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="threeChannelCodeList != null and threeChannelCodeList.size() !=0 ">
+            and channel_code in
+            <foreach item="item" index="index" collection="threeChannelCodeList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="(firstCodeTag != null and firstCodeTag.size() != 0)
+            or (secondCodeTag != null and secondCodeTag.size() != 0)
+            or (threeCodeTag != null and threeCodeTag.size() != 0)
+            or (fourCodeTag != null and fourCodeTag.size() != 0)">
+            <trim prefix=" and (" suffix=")" prefixOverrides="or">
+                <if test="firstCodeTag != null and firstCodeTag.size() !=0">
+                    or dom_tag_first_code in
+                    <foreach item="item" index="index" collection="firstCodeTag" open="(" separator="," close=")">
+                        #{item}
+                    </foreach>
+                </if>
+                <if test="secondCodeTag != null and secondCodeTag.size()  !=0">
+                    or dom_tag_second_code in
+                    <foreach item="item" index="index" collection="secondCodeTag" open="(" separator="," close=")">
+                        #{item}
+                    </foreach>
+                </if>
+                <if test="threeCodeTag != null and threeCodeTag.size()  !=0">
+                    or dom_tag_three_code in
+                    <foreach item="item" index="index" collection="threeCodeTag" open="(" separator="," close=")">
+                        #{item}
+                    </foreach>
+                </if>
+                <if test="fourCodeTag != null and fourCodeTag.size()  !=0">
+                    or dom_tag_four_code in
+                    <foreach item="item" index="index" collection="fourCodeTag" open="(" separator="," close=")">
+                        #{item}
+                    </foreach>
+                </if>
+            </trim>
+        </if>
+        <if test="contentType != null and contentType !=''">
+            and content_type= #{contentType}
+        </if>
+        <if test="topic != null and topic !=''">
+            and topic= #{topic}
+        </if>
+        <if test="highQualityTag != null and highQualityTag !=''">
+            and tag_high_quality_voc_flag= #{highQualityTag}
+        </if>
+        <if test="originalId != null and originalId !=''">
+            and data_id like concat('%',#{originalId},'%')
+        </if>
+        <include refid="postprocessKeywordConditions"/>
+        <if test="originalTextScene != null and originalTextScene !=''">
+            and original_text_scene like concat('%',#{originalTextScene},'%')
+        </if>
+        <if test="soundsId != null and soundsId !=''">
+            and id like concat('%',#{soundsId},'%')
+        </if>
+        <if test="authorId != null and authorId !=''">
+            and one_id like concat('%',#{authorId},'%')
+        </if>
+
+        <if test="authorNick != null and authorNick !=''">
+            and cust_name like concat('%',#{authorNick},'%')
+        </if>
+
+        <if test="workOrderId != null and workOrderId !=''">
+            and work_order_id like concat('%',#{workOrderId},'%')
+        </if>
+
+        <if test="questId != null and questId !=''">
+            and quest_id like concat('%',#{questId},'%')
+        </if>
+
+        <if test="questType != null and questType !=''">
+            and quest_type like concat('%',#{questType},'%')
+        </if>
+
+        <if test="userName != null and userName !=''">
+            and cust_name like concat('%',#{userName},'%')
+        </if>
+
+        <if test="d2cCcDept != null and d2cCcDept !=''">
+            and d2c_cc_dept like concat('%',#{d2cCcDept},'%')
+        </if>
+
+        <if test="originalLink != null and originalLink !=''">
+            and original_link like concat('%',#{originalLink},'%')
+        </if>
+    </sql>
+
+    <!-- 两阶段查询第一阶段：仅查id+publish_time，PageHelper自动处理分页与总条数 -->
+    <select id="pagePostprocessIdList"
+            resultType="com.voc.service.insights.engine.data.entity.AysCqCaPostprocessDataEntity">
+        /**洞察引擎结果数据两阶段查询第一阶段：仅查id+publish_time**/
+        select id, publish_time
+        from voc_ms_td.voc_sentiment_annotations_results_v
+        where
+        <include refid="postprocessWhereConditions"/>
+        order by publish_time desc,id desc
+        limit #{pageNum}, #{pageSize}
+    </select>
+
+    <!-- 两阶段查询第二阶段：根据id+publish_time集合查询所需字段，避免跨时间段id重复 -->
+    <select id="getPostprocessDataByIds"
+            resultType="com.voc.service.insights.engine.data.entity.AysCqCaPostprocessDataEntity">
+        /**洞察引擎结果数据两阶段查询第二阶段：根据id+publish_time集合查询所需字段**/
+        SELECT
+        id AS id,
+        data_id AS data_id,
+        channel_catagory AS channel_catagory,
+        channel_code AS channel_code,
+        channel_name AS channel_name,
+        automark AS automark,
+        brand_code AS brand_code,
+        brand_name AS brand_name,
+        car_series_code AS car_series_code,
+        car_series_name AS car_series_name,
+        model_name AS model_name,
+        content_type AS content_type,
+        title AS title,
+        sentiment AS sentiment,
+        intention AS intention,
+        data_create_time AS data_create_time,
+        publish_time AS publish_time,
+        create_time AS create_time,
+        is_outer AS is_outer,
+        hot_word AS hot_word,
+        keywords AS keywords,
+        original_text_scene AS original_text_scene,
+        original_text AS original_text,
+        market_id AS market_id,
+        competitive_type AS competitive_type,
+        series_factory AS series_factory,
+        one_id AS one_id,
+        user_journey1 AS user_journey1,
+        user_journey2 AS user_journey2,
+        user_journey3 AS user_journey3,
+        usage_scenario_first AS usage_scenario_first,
+        usage_scenario_second AS usage_scenario_second,
+        d2c_responsible_dept AS d2c_responsible_dept,
+        d2c_accountable_dept AS d2c_accountable_dept,
+        d2c_cc_dept AS d2c_cc_dept,
+        cust_global_id AS cust_global_id,
+        cust_classify AS cust_classify,
+        cust_main_phone AS cust_main_phone,
+        is_car_owner AS is_car_owner,
+        cust_age AS cust_age,
+        cust_age_group AS cust_age_group,
+        cust_name AS cust_name,
+        cust_gender AS cust_gender,
+        cust_high_educaion AS cust_high_educaion,
+        marrige_statue AS marrige_statue,
+        family_income AS family_income,
+        is_exchange_flg AS is_exchange_flg,
+        purchase_car_times AS purchase_car_times,
+        is_member_flg AS is_member_flg,
+        cust_province_code AS cust_province_code,
+        cust_province AS cust_province,
+        cust_city_code AS cust_city_code,
+        cust_city AS cust_city,
+        cust_type AS cust_type,
+        cust_lived_prov AS cust_lived_prov,
+        cust_lived_city AS cust_lived_city,
+        cust_profession AS cust_profession,
+        vhl_vin AS vhl_vin,
+        vhl_color_name AS vhl_color_name,
+        vhl_product_date AS vhl_product_date,
+        vhl_offline_date AS vhl_offline_date,
+        vhl_is_abroad AS vhl_is_abroad,
+        vhl_dis_ch AS vhl_dis_ch,
+        vhl_dis_mt AS vhl_dis_mt,
+        vhl_eng_clsf AS vhl_eng_clsf,
+        vhl_eng_seris AS vhl_eng_seris,
+        vhl_veh_type AS vhl_veh_type,
+        vhl_country AS vhl_country,
+        vhl_bd_clsf AS vhl_bd_clsf,
+        vhl_seg_mt AS vhl_seg_mt,
+        vhl_pow_clsf AS vhl_pow_clsf,
+        vhl_fu_clsf AS vhl_fu_clsf,
+        vhl_modl_st AS vhl_modl_st,
+        vhl_std_plnt_code AS vhl_std_plnt_code,
+        dlr_oc_id AS dlr_oc_id,
+        dlr_oc_code AS dlr_oc_code,
+        dlr_oc_name AS dlr_oc_name,
+        dlr_oc_province_code AS dlr_oc_province_code,
+        dlr_oc_province AS dlr_oc_province,
+        dlr_oc_city_code AS dlr_oc_city_code,
+        dlr_oc_city AS dlr_oc_city,
+        dlr_dc_id AS dlr_dc_id,
+        dlr_dc_code AS dlr_dc_code,
+        dlr_dc_name AS dlr_dc_name,
+        dlr_dc_province_code AS dlr_dc_province_code,
+        dlr_dc_province AS dlr_dc_province,
+        dlr_dc_city_code AS dlr_dc_city_code,
+        dlr_dc_city AS dlr_dc_city,
+        dlr_mc_id AS dlr_mc_id,
+        dlr_mc_code AS dlr_mc_code,
+        dlr_mc_name AS dlr_mc_name,
+        dlr_mc_province_code AS dlr_mc_province_code,
+        dlr_mc_province AS dlr_mc_province,
+        dlr_mc_city_code AS dlr_mc_city_code,
+        dlr_mc_city AS dlr_mc_city,
+        is_wsater_army AS is_wsater_army,
+        is_manager_focused AS is_manager_focused,
+        is_big_v AS is_big_v,
+        author_id AS author_id,
+        author_nick AS author_nick,
+        is_main_post AS is_main_post,
+        original_link AS original_link,
+        view_count AS view_count,
+        comment_count AS comment_count,
+        like_count AS like_count,
+        share_count AS share_count,
+        favorite_count AS favorite_count,
+        work_order_id AS work_order_id,
+        quest_id AS quest_id,
+        quest_type AS quest_type,
+        quest_answer_score AS quest_answer_score,
+        quest_business_type AS quest_business_type,
+        quest_business_scenario AS quest_business_scenario,
+        tag_accuracy AS tag_accuracy,
+        tag_customer_issue_classification AS tag_customer_issue_classification,
+        tag_issue_severity AS tag_issue_severity,
+        tag_code_status AS tag_code_status,
+        tag_business_domain AS tag_business_domain,
+        tag_event_clarity AS tag_event_clarity,
+        tag_high_value_flag AS tag_high_value_flag,
+        tag_complaint_flag_needing_reply AS tag_complaint_flag_needing_reply,
+        tag_complaint_flag_needing_prtv_msg AS tag_complaint_flag_needing_prtv_msg,
+        tag_high_quality_voc_flag AS tag_high_quality_voc_flag,
+        tag_new_energy_or_fuel AS tag_new_energy_or_fuel,
+        tag_need_forvclosed_loop AS tag_need_forvclosed_loop,
+        topic AS topic,
+        topic_text AS topic_text,
+        opinion AS opinion,
+        cpt_tag_first_code AS cpt_tag_first_code,
+        cpt_tag_second_code AS cpt_tag_second_code,
+        cpt_tag_three_code AS cpt_tag_three_code,
+        cpt_tag_four_code AS cpt_tag_four_code,
+        cpt_tag_first AS cpt_tag_first,
+        cpt_tag_second AS cpt_tag_second,
+        cpt_tag_three AS cpt_tag_three,
+        cpt_tag_four AS cpt_tag_four,
+        ujy_tag_first_code AS ujy_tag_first_code,
+        ujy_tag_second_code AS ujy_tag_second_code,
+        ujy_tag_three_code AS ujy_tag_three_code,
+        ujy_tag_four_code AS ujy_tag_four_code,
+        ujy_tag_first AS ujy_tag_first,
+        ujy_tag_second AS ujy_tag_second,
+        ujy_tag_three AS ujy_tag_three,
+        ujy_tag_four AS ujy_tag_four,
+        cma_tag_first_code AS cma_tag_first_code,
+        cma_tag_second_code AS cma_tag_second_code,
+        cma_tag_three_code AS cma_tag_three_code,
+        cma_tag_four_code AS cma_tag_four_code,
+        cma_tag_first AS cma_tag_first,
+        cma_tag_second AS cma_tag_second,
+        cma_tag_three AS cma_tag_three,
+        cma_tag_four AS cma_tag_four,
+        dom_tag_first_code AS dom_tag_first_code,
+        dom_tag_second_code AS dom_tag_second_code,
+        dom_tag_three_code AS dom_tag_three_code,
+        dom_tag_four_code AS dom_tag_four_code,
+        dom_tag_first AS dom_tag_first,
+        dom_tag_second AS dom_tag_second,
+        dom_tag_three AS dom_tag_three,
+        dom_tag_four AS dom_tag_four,
+        nps_tag_first_code AS nps_tag_first_code,
+        nps_tag_second_code AS nps_tag_second_code,
+        nps_tag_three_code AS nps_tag_three_code,
+        nps_tag_four_code AS nps_tag_four_code,
+        nps_tag_first AS nps_tag_first,
+        nps_tag_second AS nps_tag_second,
+        nps_tag_three AS nps_tag_three,
+        nps_tag_four AS nps_tag_four,
+        vtr_tag_first_code AS vtr_tag_first_code,
+        vtr_tag_second_code AS vtr_tag_second_code,
+        vtr_tag_three_code AS vtr_tag_three_code,
+        vtr_tag_four_code AS vtr_tag_four_code,
+        vtr_tag_first AS vtr_tag_first,
+        vtr_tag_second AS vtr_tag_second,
+        vtr_tag_three AS vtr_tag_three,
+        vtr_tag_four AS vtr_tag_four,
+        abandon
+        FROM voc_ms_td.voc_sentiment_annotations_results_v
+        WHERE id IN
+        <foreach item="item" collection="idList" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+        <if test="startTime != null and startTime != ''">
+            AND publish_time &gt;= #{startTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            AND publish_time &lt;= #{endTime}
+        </if>
+        order by publish_time desc,id desc
+    </select>
+
+    <select id="pagePostprocessDataList"
+            resultType="com.voc.service.insights.engine.data.entity.AysCqCaPostprocessDataEntity">
+        /**洞察引擎获取结果数据列表0305优化**/
+        SELECT
+        f1.id AS id,
+        data_id AS data_id,
+        channel_catagory AS channel_catagory,
+        channel_code AS channel_code,
+        channel_name AS channel_name,
+        automark AS automark,
+        brand_code AS brand_code,
+        brand_name AS brand_name,
+        car_series_code AS car_series_code,
+        car_series_name AS car_series_name,
+        model_name AS model_name,
+        content_type AS content_type,
+        title AS title,
+        sentiment AS sentiment,
+        intention AS intention,
+        data_create_time AS data_create_time,
+        f1.publish_time AS publish_time,
+        create_time AS create_time,
+        is_outer AS is_outer,
+        hot_word AS hot_word,
+        keywords AS keywords,
+        original_text_scene AS original_text_scene,
+        original_text AS original_text,
+        market_id AS market_id,
+        competitive_type AS competitive_type,
+        series_factory AS series_factory,
+        one_id AS one_id,
+        user_journey1 AS user_journey1,
+        user_journey2 AS user_journey2,
+        user_journey3 AS user_journey3,
+        usage_scenario_first AS usage_scenario_first,
+        usage_scenario_second AS usage_scenario_second,
+        d2c_responsible_dept AS d2c_responsible_dept,
+        d2c_accountable_dept AS d2c_accountable_dept,
+        d2c_cc_dept AS d2c_cc_dept,
+        cust_global_id AS cust_global_id,
+        cust_classify AS cust_classify,
+        cust_main_phone AS cust_main_phone,
+        is_car_owner AS is_car_owner,
+        cust_age AS cust_age,
+        cust_age_group AS cust_age_group,
+        cust_name AS cust_name,
+        cust_gender AS cust_gender,
+        cust_high_educaion AS cust_high_educaion,
+        marrige_statue AS marrige_statue,
+        family_income AS family_income,
+        is_exchange_flg AS is_exchange_flg,
+        purchase_car_times AS purchase_car_times,
+        is_member_flg AS is_member_flg,
+        cust_province_code AS cust_province_code,
+        cust_province AS cust_province,
+        cust_city_code AS cust_city_code,
+        cust_city AS cust_city,
+        cust_type AS cust_type,
+        cust_lived_prov AS cust_lived_prov,
+        cust_lived_city AS cust_lived_city,
+        cust_profession AS cust_profession,
+        vhl_vin AS vhl_vin,
+        vhl_color_name AS vhl_color_name,
+        vhl_product_date AS vhl_product_date,
+        vhl_offline_date AS vhl_offline_date,
+        vhl_is_abroad AS vhl_is_abroad,
+        vhl_dis_ch AS vhl_dis_ch,
+        vhl_dis_mt AS vhl_dis_mt,
+        vhl_eng_clsf AS vhl_eng_clsf,
+        vhl_eng_seris AS vhl_eng_seris,
+        vhl_veh_type AS vhl_veh_type,
+        vhl_country AS vhl_country,
+        vhl_bd_clsf AS vhl_bd_clsf,
+        vhl_seg_mt AS vhl_seg_mt,
+        vhl_pow_clsf AS vhl_pow_clsf,
+        vhl_fu_clsf AS vhl_fu_clsf,
+        vhl_modl_st AS vhl_modl_st,
+        vhl_std_plnt_code AS vhl_std_plnt_code,
+        dlr_oc_id AS dlr_oc_id,
+        dlr_oc_code AS dlr_oc_code,
+        dlr_oc_name AS dlr_oc_name,
+        dlr_oc_province_code AS dlr_oc_province_code,
+        dlr_oc_province AS dlr_oc_province,
+        dlr_oc_city_code AS dlr_oc_city_code,
+        dlr_oc_city AS dlr_oc_city,
+        dlr_dc_id AS dlr_dc_id,
+        dlr_dc_code AS dlr_dc_code,
+        dlr_dc_name AS dlr_dc_name,
+        dlr_dc_province_code AS dlr_dc_province_code,
+        dlr_dc_province AS dlr_dc_province,
+        dlr_dc_city_code AS dlr_dc_city_code,
+        dlr_dc_city AS dlr_dc_city,
+        dlr_mc_id AS dlr_mc_id,
+        dlr_mc_code AS dlr_mc_code,
+        dlr_mc_name AS dlr_mc_name,
+        dlr_mc_province_code AS dlr_mc_province_code,
+        dlr_mc_province AS dlr_mc_province,
+        dlr_mc_city_code AS dlr_mc_city_code,
+        dlr_mc_city AS dlr_mc_city,
+        is_wsater_army AS is_wsater_army,
+        is_manager_focused AS is_manager_focused,
+        is_big_v AS is_big_v,
+        author_id AS author_id,
+        author_nick AS author_nick,
+        is_main_post AS is_main_post,
+        original_link AS original_link,
+        view_count AS view_count,
+        comment_count AS comment_count,
+        like_count AS like_count,
+        share_count AS share_count,
+        favorite_count AS favorite_count,
+        work_order_id AS work_order_id,
+        quest_id AS quest_id,
+        quest_type AS quest_type,
+        quest_answer_score AS quest_answer_score,
+        quest_business_type AS quest_business_type,
+        quest_business_scenario AS quest_business_scenario,
+        tag_accuracy AS tag_accuracy,
+        tag_customer_issue_classification AS tag_customer_issue_classification,
+        tag_issue_severity AS tag_issue_severity,
+        tag_code_status AS tag_code_status,
+        tag_business_domain AS tag_business_domain,
+        tag_event_clarity AS tag_event_clarity,
+        tag_high_value_flag AS tag_high_value_flag,
+        tag_complaint_flag_needing_reply AS tag_complaint_flag_needing_reply,
+        tag_complaint_flag_needing_prtv_msg AS tag_complaint_flag_needing_prtv_msg,
+        tag_high_quality_voc_flag AS tag_high_quality_voc_flag,
+        tag_new_energy_or_fuel AS tag_new_energy_or_fuel,
+        tag_need_forvclosed_loop AS tag_need_forvclosed_loop,
+        topic AS topic,
+        topic_text AS topic_text,
+        opinion AS opinion,
+        cpt_tag_first_code AS cpt_tag_first_code,
+        cpt_tag_second_code AS cpt_tag_second_code,
+        cpt_tag_three_code AS cpt_tag_three_code,
+        cpt_tag_four_code AS cpt_tag_four_code,
+        cpt_tag_first AS cpt_tag_first,
+        cpt_tag_second AS cpt_tag_second,
+        cpt_tag_three AS cpt_tag_three,
+        cpt_tag_four AS cpt_tag_four,
+        ujy_tag_first_code AS ujy_tag_first_code,
+        ujy_tag_second_code AS ujy_tag_second_code,
+        ujy_tag_three_code AS ujy_tag_three_code,
+        ujy_tag_four_code AS ujy_tag_four_code,
+        ujy_tag_first AS ujy_tag_first,
+        ujy_tag_second AS ujy_tag_second,
+        ujy_tag_three AS ujy_tag_three,
+        ujy_tag_four AS ujy_tag_four,
+        cma_tag_first_code AS cma_tag_first_code,
+        cma_tag_second_code AS cma_tag_second_code,
+        cma_tag_three_code AS cma_tag_three_code,
+        cma_tag_four_code AS cma_tag_four_code,
+        cma_tag_first AS cma_tag_first,
+        cma_tag_second AS cma_tag_second,
+        cma_tag_three AS cma_tag_three,
+        cma_tag_four AS cma_tag_four,
+        dom_tag_first_code AS dom_tag_first_code,
+        dom_tag_second_code AS dom_tag_second_code,
+        dom_tag_three_code AS dom_tag_three_code,
+        dom_tag_four_code AS dom_tag_four_code,
+        dom_tag_first AS dom_tag_first,
+        dom_tag_second AS dom_tag_second,
+        dom_tag_three AS dom_tag_three,
+        dom_tag_four AS dom_tag_four,
+        nps_tag_first_code AS nps_tag_first_code,
+        nps_tag_second_code AS nps_tag_second_code,
+        nps_tag_three_code AS nps_tag_three_code,
+        nps_tag_four_code AS nps_tag_four_code,
+        nps_tag_first AS nps_tag_first,
+        nps_tag_second AS nps_tag_second,
+        nps_tag_three AS nps_tag_three,
+        nps_tag_four AS nps_tag_four,
+        vtr_tag_first_code AS vtr_tag_first_code,
+        vtr_tag_second_code AS vtr_tag_second_code,
+        vtr_tag_three_code AS vtr_tag_three_code,
+        vtr_tag_four_code AS vtr_tag_four_code,
+        vtr_tag_first AS vtr_tag_first,
+        vtr_tag_second AS vtr_tag_second,
+        vtr_tag_three AS vtr_tag_three,
+        vtr_tag_four AS vtr_tag_four,
+        abandon
+        FROM
+        (select
+             id,publish_time
+         from
+             voc_ms_td.voc_sentiment_annotations_results_v
+        where 1=1
+        <if test="startTime != null and startTime !=''">
+            and date(publish_time) BETWEEN DATE(#{startTime}) and DATE(#{endTime})
+        </if>
+        <if test="idList != null and idList.size()!=0">
+            and id in
+            <foreach item="item" index="index" collection="idList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="dataId != null and dataId.size()!=0">
+            and data_id in
+            <foreach item="item" index="index" collection="dataId" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="sentiment != null and sentiment.size()!=0">
+            and sentiment in
+            <foreach item="item" index="index" collection="sentiment" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="intention != null and intention.size()!=0 ">
+            and intention in
+            <foreach item="item" index="index" collection="intention" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="brandCode != null and brandCode.size()!=0 ">
+            and brand_code in
+            <foreach item="item" index="index" collection="brandCode" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="carSeries != null and carSeries.size()!=0 ">
+            and car_series_code in
+            <foreach item="item" index="index" collection="carSeries" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="usageScenarioFirstList != null and usageScenarioFirstList.size()!=0 ">
+            and usage_scenario_first in
+            <foreach item="item" index="index" collection="usageScenarioFirstList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="usageScenarioSecondList != null and usageScenarioSecondList.size()!=0 ">
+            and usage_scenario_second in
+            <foreach item="item" index="index" collection="usageScenarioSecondList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="contentType != null and contentType !=''">
+            and content_type= #{contentType}
+        </if>
+        <if test="topic != null and topic !=''">
+            and topic= #{topic}
+        </if>
+        <if test="originalId != null and originalId !=''">
+            and data_id like concat('%',#{originalId},'%')
+        </if>
+        <include refid="postprocessKeywordConditions"/>
+        <if test="originalTextScene != null and originalTextScene !=''">
+            and original_text_scene like concat('%',#{originalTextScene},'%')
+        </if>
+        <if test="soundsId != null and soundsId !=''">
+            and id like concat('%',#{soundsId},'%')
+        </if>
+        <if test="tagIssueSeverity != null and tagIssueSeverity.size()!=0">
+            and tag_issue_severity in
+            <foreach item="item" index="index" collection="tagIssueSeverity" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="isWsaterArmy != null and isWsaterArmy !='' and isWsaterArmy ==1">
+            and (is_wsater_army = "1" or is_wsater_army = "Y")
+        </if>
+        <if test="isWsaterArmy != null and isWsaterArmy !='' and isWsaterArmy ==0">
+            and (is_wsater_army = "0" or is_wsater_army = "N")
+        </if>
+        <if test="tagHighValueFlag != null and tagHighValueFlag !=''">
+            and tag_high_quality_voc_flag= #{tagHighValueFlag}
+        </if>
+        <if test="isManagerFocused != null and isManagerFocused !=''">
+            and is_manager_focused= #{isManagerFocused}
+        </if>
+
+        <if test="isBigV != null and isBigV !=''">
+            and is_big_v= #{isBigV}
+        </if>
+        <if test="isMainPost != null and isMainPost !='' and isMainPost ==1">
+            and is_main_post="Y"
+        </if>
+        <if test="isMainPost != null and isMainPost !='' and isMainPost ==0">
+            and is_main_post="N"
+        </if>
+        <if test="highQualityTag != null and highQualityTag !=''">
+            and tag_high_quality_voc_flag= #{highQualityTag}
+        </if>
+        <if test="topicList != null and topicList.size()!=0">
+            and topic in
+            <foreach item="item" index="index" collection="topicList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="dataStatus != null and dataStatus.size()!=0">
+            and abandon in
+            <foreach item="item" index="index" collection="dataStatus" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="firstChannelCodeList != null and firstChannelCodeList.size() !=0 ">
+            and channel_catagory in
+            <foreach item="item" index="index" collection="firstChannelCodeList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="threeChannelCodeList != null and threeChannelCodeList.size() !=0 ">
+            and channel_code in
+            <foreach item="item" index="index" collection="threeChannelCodeList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="(firstCodeTag != null and firstCodeTag.size() != 0)
+            or (secondCodeTag != null and secondCodeTag.size() != 0)
+            or (threeCodeTag != null and threeCodeTag.size() != 0)
+            or (fourCodeTag != null and fourCodeTag.size() != 0)">
+            <trim prefix=" and (" suffix=")" prefixOverrides="or">
+                <if test="firstCodeTag != null and firstCodeTag.size() !=0">
+                    or dom_tag_first_code in
+                    <foreach item="item" index="index" collection="firstCodeTag" open="(" separator="," close=")">
+                        #{item}
+                    </foreach>
+                </if>
+                <if test="secondCodeTag != null and secondCodeTag.size()  !=0">
+                    or dom_tag_second_code in
+                    <foreach item="item" index="index" collection="secondCodeTag" open="(" separator="," close=")">
+                        #{item}
+                    </foreach>
+                </if>
+                <if test="threeCodeTag != null and threeCodeTag.size()  !=0">
+                    or dom_tag_three_code in
+                    <foreach item="item" index="index" collection="threeCodeTag" open="(" separator="," close=")">
+                        #{item}
+                    </foreach>
+                </if>
+                <if test="fourCodeTag != null and fourCodeTag.size()  !=0">
+                    or dom_tag_four_code in
+                    <foreach item="item" index="index" collection="fourCodeTag" open="(" separator="," close=")">
+                        #{item}
+                    </foreach>
+                </if>
+            </trim>
+        </if>
+        <if test="authorId != null and authorId !=''">
+            and one_id like concat('%',#{authorId},'%')
+        </if>
+        <if test="authorNick != null and authorNick !=''">
+            and cust_name like concat('%',#{authorNick},'%')
+        </if>
+        <if test="workOrderId != null and workOrderId !=''">
+            and work_order_id like concat('%',#{workOrderId},'%')
+        </if>
+        <if test="questId != null and questId !=''">
+            and quest_id like concat('%',#{questId},'%')
+        </if>
+        <if test="questType != null and questType !=''">
+            and quest_type like concat('%',#{questType},'%')
+        </if>
+        <if test="userName != null and userName !=''">
+            and cust_name like concat('%',#{userName},'%')
+        </if>
+        <if test="d2cCcDept != null and d2cCcDept !=''">
+            and d2c_cc_dept like concat('%',#{d2cCcDept},'%')
+        </if>
+        <if test="originalLink != null and originalLink !=''">
+            and original_link like concat('%',#{originalLink},'%')
+        </if>
+        order by publish_time desc ,id desc
+        limit #{pageNum}, #{pageSize}
+         ) f1
+        left join voc_ms_td.voc_sentiment_annotations_results_v f2 on f1.id = f2.id and f1.publish_time = f2.publish_time
+        order by f1.publish_time desc,f1.id desc
+    </select>
+
+
+    <select id="queryCarSeriesList"
+            resultType="com.voc.service.insights.engine.vo.BaseCarSeriesDataVo">
+        SELECT
+        car_series_code AS code,
+        car_series_name AS name
+        FROM
+        voc_ms_td.voc_sentiment_annotations_results_v where car_series_code &lt;&gt; '' and car_series_name &lt;&gt;
+        ''
+        <if test="dataId != null and dataId.size()!=0">
+            and data_id in
+            <foreach item="item" index="index" collection="dataId" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+
+        <if test="brandCode != null and brandCode.size()!=0 ">
+            and brand_code in
+            <foreach item="item" index="index" collection="brandCode" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+
+    </select>
+
+
+    <select id="queryBrandList"
+            resultType="com.voc.service.insights.engine.vo.BaseCarSeriesDataVo">
+        SELECT
+        distinct brand_code AS code,
+        brand_name AS name
+        FROM
+        voc_ms_td.voc_sentiment_annotations_results_v where brand_code &lt;&gt; '' and brand_name &lt;&gt;
+        ''
+        <if test="dataId != null and dataId.size()!=0">
+            and data_id in
+            <foreach item="item" index="index" collection="dataId" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+
+    <select id="findAllFinalTagLibClientVoList"
+            resultType="com.voc.service.insights.engine.vo.BaseCarSeriesDataVo">
+        SELECT
+        topic AS code,
+        topic_text AS name
+        FROM
+        voc_ms_td.voc_sentiment_annotations_results_v where topic is not null and topic_text is not null
+        <if test="dataId != null and dataId.size()!=0">
+            and data_id in
+            <foreach item="item" index="index" collection="dataId" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+    <select id="countPostprocessDataList" resultType="java.lang.Integer">
+        select count(1)
+        from voc_ms_td.voc_sentiment_annotations_results_v
+        where 1=1
+        <include refid="postprocessWhereConditions"/>
+    </select>
+
+</mapper>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.analysis.core.v2.mapper.AysBatchUpdateMapper">
+
+    <update id="updateStatusToDone">
+        UPDATE voc_anal_flow_batch_update_record
+        SET status = 1 , update_time = now()
+        where id in
+        <foreach item="item" index="index" collection="ids" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
+
+    <update id="batchUpdateResultData">
+        UPDATE voc_anal_flow_model_tags_result_data_full_ext
+        <set>
+            update_time = now(),
+            <foreach collection="updateValues" item="value" index="field" separator=",">
+                ${field} = #{value}
+            </foreach>
+        </set>
+        <where>
+            id is not null
+            <if test="ids != null and ids.size() > 0">
+                and id IN
+                <foreach item="item" index="index" collection="ids" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="filters != null and filters.size() > 0">
+                and
+                <foreach collection="filters" item="value" index="field" separator="and">
+                    ${field} = #{value}
+                </foreach>
+            </if>
+        </where>
+    </update>
+
+</mapper>

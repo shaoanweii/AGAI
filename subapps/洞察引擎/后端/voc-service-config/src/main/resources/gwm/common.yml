@@ -1,0 +1,81 @@
+spring:
+  #cloud.config.allow-override: true
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+
+management:
+  security:
+    enabled: false
+  endpoints:
+    web:
+      exposure:
+        base-path: /actuator            # 指定上下文路径，启用相应端点
+        #include: health,metrics,prometheus
+        include: "*"
+    #对外开放所有监控点
+    enabled-by-default: true
+  endpoint:
+    #heaLth必须开
+    health:
+      enabled: true
+      show-details: always
+    beans:
+      enabled: true
+
+
+threadpool:
+  async:
+    executor:
+      enabled: true
+      corePoolSize: 10
+      maxPoolSize: 100
+      queueCapacity: 200
+      threadNamePrefix: auth-
+
+
+  #asypt:
+  #encryptor:
+  #  enabled: true
+  ##   # 加密算法
+  #   algorithm: PBEWITHHMACSHA512ANDAES_256
+  ##   # 加密使用的盐
+  #  password: P@ssw0rd!@#123..
+  #   bean: lazyJasyptStringEncryptor
+  #  provider-name: SunJCE
+  #  salt-generator-classname: org.jasypt.salt.RandomSaltGenerator
+  #  iv-generator-classname: org.jasypt.iv.RandomIvGenerator
+#   #property:
+#   #   detector-bean: customEncryptablePropertyDetector
+#   #  # 自定义解密逻辑类 如果配置了，默认的解析器将不工作
+#   #  resolver-bean: encryptablePropertyResolver
+#jasypt:
+#  encryptor:
+#    property:
+#      detector-bean: lazyEncryptablePropertyDetector
+#      resolver-bean: lazyEncryptablePropertyResolver
+
+
+#服务映射访问地址，提供feign调用
+service.auth.login.v1: http://10.250.11.22:8005/api/auth/login
+service.auth.sso.v1: http://10.250.11.22:8005/api/auth
+service.auth.logout.v1: http://10.250.11.22:8005/api/auth/logout
+service.auth.v1: http://10.250.11.22:8005/api/auth
+service.ops.v1: http://10.250.11.22:8005/api/ops
+service.logs.v1: http://10.250.11.22:8005/api/logs
+service.stats.v1: http://10.250.11.22:8005/api/stats
+service.msg.v1: http://10.250.11.22:8005/api/msg
+service.ins.v1: http://10.250.11.22:8005/api/ins
+service.model.v1: http://10.250.11.22:8005/api/model
+service.template.v1: http://10.250.11.22:8005/api/template
+
+
+spring.cloud.openfeign:
+  okhttp.enabled: true
+  httpclient.enabled: false
+  # 开启压缩
+  compression:
+    request:
+      enabled: true
+    response:
+      enabled: true

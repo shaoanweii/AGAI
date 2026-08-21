@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.insights.engine.mapper.InsTagInfoMapper">
+    <resultMap id="BaseResultMap" type="com.voc.service.insights.engine.entity.InsTagInfoEntity">
+        <result column="id" property="id"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="name" property="name"/>
+        <result column="name_en" property="nameEn"/>
+        <result column="code" property="code"/>
+        <result column="type" property="type"/>
+        <result column="label_type" property="labelType"/>
+        <result column="energy" property="energy"/>
+        <result column="stage" property="stage"/>
+        <result column="apply_number" property="applyNumber"/>
+        <result column="tagged_corpus" property="taggedCorpus"/>
+        <result column="enable" property="enable"/>
+        <result column="source" property="source"/>
+        <result column="seriousness" property="seriousness"/>
+        <result column="description" property="description"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,
+                parent_id,
+                name,
+                name_en,
+                code,
+                type,
+                label_type,
+                energy,
+                stage,
+                apply_number,
+                tagged_corpus,
+                enable,
+                source,
+                seriousness,
+                description,
+                create_time,
+                update_time
+    </sql>
+
+    <select id="findTagInfoByType" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        ins_tag_info
+        where
+        1=1
+        <if test="type !=null and type !=''">
+            and type = #{type}
+        </if>
+    </select>
+    <select id="queryInsTagInfo" resultType="com.voc.service.insights.engine.vo.InsTagInfoListVo">
+        SELECT
+        g4.id,
+        g1.name as firstDimensionName,
+        g1.type,
+        g1.NAME_EN as firstDimensionNameEn,
+        g1.code as firstDimensionCode,
+        g1.id as firstId,
+        g2.name as secondDimensionName,
+        g2.NAME_EN as secondDimensionNameEn,
+        g2.code as secondDimensionCode,
+        g2.id as secondId,
+        g3.name as thirdDimensionName,
+        g3.NAME_EN as thirdDimensionNameEn,
+        g3.code as thirdDimensionCode,
+        g3.id as thirdId,
+        g4.name,
+        g4.NAME_EN as nameEn,
+        g4.code as code,
+        g4.enable as enable,
+        g4.source,
+        g4.seriousness,
+        g4.description,
+        g4.label_type as labelType,
+        g4.create_time
+        FROM
+        ins_tag_info g4
+        LEFT JOIN ins_tag_info g3 ON g4.parent_id=g3.ID
+        LEFT JOIN ins_tag_info g2 ON g3.parent_id=g2.ID
+        LEFT JOIN ins_tag_info g1 ON g2.parent_id=g1.ID
+        WHERE
+        1=1
+        AND g1.CODE IS NOT NULL
+        <if test="model.type != null and model.type !=''">
+            AND g4.type = #{model.type}
+        </if>
+        <if test="model.enable != null and model.enable !=''">
+            AND g4.enable = #{model.enable}
+        </if>
+        <if test="model.seriousness != null and model.seriousness !=''">
+            AND g4.seriousness = #{model.seriousness}
+        </if>
+        <if test="model.firstDimensionCodes != null and model.firstDimensionCodes.size()>0">
+            AND g1.code in
+            <foreach item="item" collection="model.firstDimensionCodes" separator="," open="(" close=")" index="">
+                #{item}
+            </foreach>
+        </if>
+        <if test="model.name != null and model.name != ''">
+            AND g4.NAME LIKE CONCAT('%', #{model.name} ,'%')
+        </if>
+        <if test="model.firstId != null and model.firstId !=''">
+            AND g1.id = #{model.firstId}
+        </if>
+        <if test="model.secondId != null and model.secondId !=''">
+            AND g2.id = #{model.secondId}
+        </if>
+        <if test="model.thirdId != null and model.thirdId !=''">
+            AND g3.id = #{model.thirdId}
+        </if>
+        <if test="model.order !=null and model.order !=''">
+            order by ${model.order}
+        </if>
+        <if test="model.order ==null or model.order ==''">
+            order by create_time desc
+        </if>
+    </select>
+    <select id="queryInsTagInfoVoById" parameterType="String"
+            resultType="com.voc.service.insights.engine.vo.InsTagInfoListVo">
+        SELECT g4.id,
+               g1.name       as firstDimensionName,
+               g1.NAME_EN    as firstDimensionNameEn,
+               g1.code       as firstDimensionCode,
+               g1.id         as firstId,
+               g2.name       as secondDimensionName,
+               g2.NAME_EN    as secondDimensionNameEn,
+               g2.code       as secondDimensionCode,
+               g2.id         as secondId,
+               g3.name       as thirdDimensionName,
+               g3.NAME_EN    as thirdDimensionNameEn,
+               g3.code       as thirdDimensionCode,
+               g3.id         as thirdId,
+               g4.name,
+               g4.NAME_EN    as nameEn,
+               g4.code       as code,
+               g4.enable     as enable,
+               g4.source,
+               g4.seriousness,
+               g4.description,
+               g4.label_type as labelType
+        FROM ins_tag_info g4
+                 LEFT JOIN ins_tag_info g3 ON g4.parent_id = g3.ID
+                 LEFT JOIN ins_tag_info g2 ON g3.parent_id = g2.ID
+                 LEFT JOIN ins_tag_info g1 ON g2.parent_id = g1.ID
+        WHERE g4.id = #{id}
+    </select>
+
+    <select id="findAllTaginfo" resultType="com.voc.service.insights.engine.entity.InsTagInfoEntity">
+        select tag_name as name,tag_code as code,tag_parent_id as parentId,id from ins_tag_info
+    </select>
+</mapper>

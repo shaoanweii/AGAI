@@ -1,0 +1,291 @@
+@import './_variables.scss';
+
+.w-full {
+  width: 100%;
+}
+
+.iw-full {
+  width: 100% !important;
+}
+
+.h-full {
+  height: 100%;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-s-none {
+  flex-shrink: 0;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
+// flex 工具类
+@for $i from 1 through 10 {
+  .flex-#{$i} {
+    flex: $i;
+  }
+}
+
+.flex-none {
+  flex: none;
+}
+
+.flex-auto {
+  flex: auto;
+}
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+// X轴两端对齐
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.flex-x-end {
+  display: flex;
+  justify-content: end;
+}
+
+.flex-baseline {
+  display: flex;
+  align-items: baseline;
+}
+
+.line-height-22 {
+  line-height: 22px;
+}
+
+.items-center {
+  align-items: center;
+}
+
+// X轴居中
+.flex-x-center {
+  display: flex;
+  justify-content: center;
+}
+// Y轴居中
+.flex-y-center {
+  display: flex;
+  align-items: center;
+}
+
+.inline-flex-y-center {
+  display: inline-flex;
+  align-items: center;
+}
+// X轴两端对齐，Y轴居中
+.flex-x-between-x-center {
+  @extend .flex-between;
+  @extend .items-center;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.text-center {
+  text-align: center;
+}
+// 居中定位
+.position-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.ps-relative {
+  position: relative;
+}
+
+.ps-absolute {
+  position: absolute;
+}
+
+.ps-fixed {
+  position: fixed;
+}
+
+.inline-block {
+  display: inline-block;
+}
+
+.cursor-point {
+  cursor: pointer;
+}
+
+.overflow-auto {
+  overflow: auto;
+}
+
+.overflow-hidden {
+  overflow: hidden;
+}
+
+.overflow-y-auto {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+// ==================== 通用工具类 ====================
+
+// 页面标题
+.page-title {
+  @extend .text-h2;
+  @extend .font-600;
+  @extend .text-primary;
+  // color: var(--brand-secondary);
+
+  .pt-sub {
+    @extend .text-h3;
+    @extend .text-secondary;
+  }
+}
+
+.page-container {
+}
+
+// 图标容器
+.icon-container {
+  width: 40px;
+  height: 40px;
+  background-color: var(--neutral-white);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tag-def {
+  background: #fafafa;
+  border-radius: 16px 16px 16px 16px;
+  border: 1px solid #e9eaeb;
+  padding: 2px 8px;
+  text-align: center;
+  @extend .text-small;
+  @extend .text-tertiary;
+}
+
+.multi-line-ellipsis {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3; /* 显示的最大行数 */
+  overflow: hidden; /* 隐藏超出部分 */
+}
+
+.two-line-ellipsis {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2; /* 显示的最大行数 */
+  overflow: hidden; /* 隐藏超出部分 */
+}
+
+.single-line-ellipsis {
+  white-space: nowrap; /* 禁止文字换行 */
+  overflow: hidden; /* 隐藏超出容器的内容 */
+  text-overflow: ellipsis; /* 超出部分显示省略号 */
+  min-width: 0;
+}
+
+.f-card-border {
+  box-shadow: 0px 1px 2px 0px rgba(10, 13, 18, 0.05);
+  border: 1px solid #ebedf0;
+  border-radius: 8px;
+  width: 100%;
+  min-width: 0; // 确保组件可以正确收缩
+
+  &.primary {
+    border: 1px solid #1677ff;
+  }
+}
+
+.reser-card-title {
+  font-weight: 600;
+  font-size: 20px;
+  color: #333333;
+  line-height: 32px;
+  display: flex;
+  align-items: center;
+  .line-height {
+    font-weight: 500;
+    font-size: 20px;
+    color: #1677ff;
+    line-height: 20px;
+  }
+}
+
+.iround-8 {
+  border-radius: 8px !important;
+}
+
+.iround-4 {
+  border-radius: 4px !important;
+}
+
+.object-contain {
+  object-fit: contain;
+}
+
+.border-left-e5e6eb {
+  border-left: 1px solid #e5e6eb;
+}
+
+// 事件处理分割线
+.divid-line {
+  width: 100%;
+  border-bottom: 2px dashed #ebedf0;
+}
+
+// 文字换行
+.text-break {
+  word-break: break-all; /* 强制拆分字符（数字/英文优先用这个） */
+  overflow-wrap: break-word; /* 辅助兼容，处理长单词换行 */
+  white-space: normal; /* 确保不被其他样式覆盖（默认值，可省略） */
+}
+
+.switch-btn-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+
+  .sw-item {
+    padding: 6px 18px;
+    font-weight: 400;
+    font-size: 14px;
+    color: #1f2733;
+    line-height: 20px;
+    background: #ffffff;
+    border-radius: 4px 4px 4px 4px;
+    border: 1px solid #dfe2e8;
+    cursor: pointer;
+  }
+
+  .active {
+    background: #1677ff;
+    border: 1px solid #1677ff;
+    font-weight: 500;
+    font-size: 14px;
+    color: #ffffff;
+    line-height: 20px;
+  }
+}

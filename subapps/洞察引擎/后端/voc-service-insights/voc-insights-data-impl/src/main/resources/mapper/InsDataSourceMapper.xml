@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.insights.engine.data.mapper.InsDataSourceMapper">
+    <resultMap type="com.voc.service.insights.engine.data.entity.InsDataSourceEntity" id="BaseResultMap">
+        <result column="id" property="id" />
+        <result column="data_source_name" property="dataSourceName" />
+        <result column="data_source_type" property="dataSourceType" />
+        <result column="data_source_access_way" property="dataSourceAccessWay" />
+        <result column="create_user" property="createUser" />
+        <result column="create_time" property="createTime" />
+        <result column="label_type" property="labelType" typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler" />
+        <result column="model_type" property="modelType" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,
+                data_source_name,
+                data_source_type,
+                data_source_access_way,
+                create_user,
+                create_time,
+                label_type,
+                model_type
+    </sql>
+
+    <update id="updateDataSource">
+        update ins_data_source set batch_id = #{batchId},create_time = #{createTime} where id = #{id}
+    </update>
+
+    <select id="findDataSource" resultMap="BaseResultMap">
+            select
+                <include refid="Base_Column_List" />
+            from ins_data_source
+            where 1=1
+            <if test="insDataSourceModel.dataSourceName != null and insDataSourceModel.dataSourceName != ''">
+                and data_source_name LIKE CONCAT('%', #{insDataSourceModel.dataSourceName} ,'%')
+            </if>
+            <if test="insDataSourceModel.dataSourceAccessWay != null and insDataSourceModel.dataSourceAccessWay != ''">
+                and data_source_access_way = #{insDataSourceModel.dataSourceAccessWay}
+            </if>
+            <if test="insDataSourceModel.dataSourceType != null and insDataSourceModel.dataSourceType != ''">
+                and data_source_type = #{insDataSourceModel.dataSourceType}
+            </if>
+    </select>
+
+    <select id="findDataSourceByName" resultMap="BaseResultMap">
+        select
+            <include refid="Base_Column_List" />
+        from
+            ins_data_source
+        where
+            data_source_name = #{dataSourceName}
+    </select>
+
+    <delete id="deleteDataSource">
+        delete from ins_data_source where id = #{id}
+    </delete>
+
+    <select id="findDataSourceById" resultMap="BaseResultMap">
+        select
+            <include refid="Base_Column_List" />
+        from
+            ins_data_source
+        where
+            id = #{id}
+    </select>
+</mapper>
+

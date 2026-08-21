@@ -1,0 +1,12 @@
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="icon &#60;- change size here" clip-path="url(#clip0_256216_107190)">
+<g id="edit/delete">
+<path id="Vector" fill-rule="evenodd" clip-rule="evenodd" d="M11.75 2.375V0.875L4.25 0.875002V2.375L0.875 2.375V3.875H2.1875L2.1875 14C2.1875 14.6213 2.69118 15.125 3.3125 15.125L12.6875 15.125C13.3088 15.125 13.8125 14.6213 13.8125 14V3.875L15.125 3.875V2.375L11.75 2.375ZM3.6875 13.625L3.6875 3.875L12.3125 3.875V13.625L3.6875 13.625ZM5.75 5.75V11.375H7.25V5.75H5.75ZM8.75 5.75V11.375H10.25V5.75H8.75Z" fill="#4E5969"/>
+</g>
+</g>
+<defs>
+<clipPath id="clip0_256216_107190">
+<rect width="16" height="16" fill="white"/>
+</clipPath>
+</defs>
+</svg>

@@ -1,0 +1,17 @@
+server.port: 8080
+
+spring:
+  cloud.nacos:
+    config:
+      enabled: false
+    discovery:
+      enabled: false
+  #config:
+  #  location: classpath:${spring.profiles.active}/common.yml,classpath:${spring.profiles.active}/common-security-client.yml,classpath:${spring.profiles.active}/voc-analysis-starrocks.yml,classpath:${spring.profiles.active}/voc-analysis-redis.yml,classpath:${spring.profiles.active}/common-swagger.yml,classpath:${spring.profiles.active}/common-security-client.yml,classpath:${spring.profiles.active}/voc-analysis-service.yml
+
+
+  security:
+    user:
+      #admin Server端登录时用的账户密码
+      name: ${USERNAME:admin}
+      password: ${PASSWORD:Passw0rd}

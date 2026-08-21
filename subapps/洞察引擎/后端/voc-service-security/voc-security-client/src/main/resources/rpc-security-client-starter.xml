@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
+       default-autowire="byName">
+
+    <!--<bean id="CommonService" class="common.com.voc.service.CommonService"/>
+
+
+    <bean id="NPSAnalysisServiceImpl" class="com.voc.service.stats.impl.NPSAnalysisServiceImpl"/>
+-->
+    <!--<sofa:reference id="iSecurityService" interface="api.security.com.voc.service.ISecurityService">
+        <sofa:binding.bolt/>
+    </sofa:reference>-->
+
+</beans>

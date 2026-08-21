@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.insights.engine.mapper.InsRegionMapper">
+    <resultMap id="BaseResultMap" type="com.voc.service.insights.engine.entity.InsRegionEntity" >
+        <result column="id" property="id" />
+        <result column="parent_id" property="parentId" />
+        <result column="name" property="name" />
+        <result column="name_en" property="nameEn" />
+        <result column="create_time" property="createTime" />
+        <result column="create_user" property="createUser" />
+        <result column="update_time" property="updateTime" />
+        <result column="update_user" property="updateUser" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,
+                parent_id,
+                name,
+                name_en,
+                create_time,
+                create_user,
+                update_time,
+                update_user
+    </sql>
+
+    <update id="updateRegionCategory">
+        UPDATE ins_region
+        <set>
+            parent_id = #{region.parentId},
+            name = #{region.name},
+            name_en = #{region.nameEn},
+            update_time = #{region.updateTime},
+            update_user = #{region.updateUser}
+        </set>
+        WHERE id = #{region.id}
+    </update>
+
+    <delete id="deleteRegionCategory">
+        DELETE FROM ins_region WHERE id = #{regionCategoryId} or parent_id = #{regionCategoryId}
+    </delete>
+
+    <select id="findRegionCategoryList" resultMap="BaseResultMap">
+        SELECT
+            <include refid="Base_Column_List"/>
+        FROM ins_region
+        where parent_id = '0'
+        order by create_time asc
+    </select>
+
+    <select id="findAllRegionCategoryList" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM ins_region
+        where parent_id != '0'
+    </select>
+    <select id="findRegionChildIdsByParentId" resultType="java.lang.String">
+        select id from ins_region where parent_id = #{regionId}
+    </select>
+
+    <select id="findRegionCategoryByName" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from ins_region
+        where name = #{name}
+        and parent_id = #{parentId}
+    </select>
+
+    <select id="findRegionCategoryListHierarchical" resultMap="BaseResultMap">
+        WITH RECURSIVE CTE AS (SELECT *
+                               FROM ins_region
+                               WHERE  id in
+                                <foreach item="item" index="index" collection="regionConfigModel.parentIds" open="(" separator="," close=")">
+                                    #{item}
+                                </foreach>
+                               UNION ALL
+                               SELECT t.*
+                               FROM ins_region t
+                                        INNER JOIN CTE ON t.id = CTE.parent_id)
+        select * from CTE
+        group by id
+    </select>
+</mapper>

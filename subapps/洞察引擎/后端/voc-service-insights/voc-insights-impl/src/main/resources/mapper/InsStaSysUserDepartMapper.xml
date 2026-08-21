@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.insights.engine.mapper.InsStaSysUserDepartMapper">
+    <resultMap id="BaseResultMap" type="com.voc.service.insights.engine.entity.StaSysUserDepartEntity" >
+        <result column="id" property="id" />
+        <result column="user_id" property="userId" />
+        <result column="dep_id" property="depId" />
+        <result column="org_type" property="orgType" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,
+                user_id,
+                dep_id,
+                org_type
+    </sql>
+    <select id="findStaSysUserDepartList" resultType="com.voc.service.insights.engine.entity.StaSysUserDepartEntity">
+        select
+            ssud.id,
+            ssud.user_id,
+            ssud.dep_id,
+            ssud.org_type,
+            sd.name as deptName
+        from sta_sys_user_depart ssud
+        left join sta_sys_depart sd on ssud.dep_id = sd.code
+        where 1=1
+        <if test="sysUserDepartModel.userId !=null and sysUserDepartModel.userId !=''">
+            and ssud.user_id = #{sysUserDepartModel.userId}
+        </if>
+        <if test="sysUserDepartModel.depId !=null and sysUserDepartModel.depId !=''">
+            and ssud.dep_id = #{sysUserDepartModel.depId}
+        </if>
+        <if test="sysUserDepartModel.orgType !=null and sysUserDepartModel.orgType !=''">
+            and ssud.org_type = #{sysUserDepartModel.orgType}
+        </if>
+        <if test="sysUserDepartModel.userIds !=null and sysUserDepartModel.userIds.size()>0">
+            and ssud.user_id in
+            <foreach item="item" index="index" collection="sysUserDepartModel.userIds" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+    <select id="findDownAllHierarchical" resultType="java.lang.String">
+        select user_id from sta_sys_user_depart where dep_id in (
+            WITH RECURSIVE CTE AS (SELECT *
+                                   FROM sta_sys_depart
+                                   WHERE  1=1
+                                     and id = #{depId}
+                                   UNION ALL
+                                   SELECT t.*
+                                   FROM sta_sys_depart t
+                                            INNER JOIN CTE ON t.parent_id = CTE.id
+                                   where 1=1
+            )
+            SELECT code
+            FROM CTE
+            ORDER BY id
+        )
+    </select>
+    <select id="findDownAllHierarchicalList"
+            resultType="com.voc.service.insights.engine.entity.StaSysUserDepartEntity">
+        WITH RECURSIVE dept_hierarchy AS (
+            -- 从三级部门开始，同时记录根部门ID
+            SELECT id, name, parent_id, id as root_dept_id,code
+            FROM sta_sys_depart
+            WHERE id IN (
+                SELECT d3.id
+                FROM sta_sys_depart d1
+                         JOIN sta_sys_depart d2 ON d1.id = d2.parent_id
+                         JOIN sta_sys_depart d3 ON d2.id = d3.parent_id
+                WHERE d1.parent_id = '-1'
+            )
+
+            UNION ALL
+
+            -- 递归查询所有子部门，保持根部门ID
+            SELECT d.id, d.name, d.parent_id, dh.root_dept_id,d.code
+            FROM sta_sys_depart d
+                     JOIN dept_hierarchy dh ON d.parent_id = dh.id
+        )
+        -- 按三级部门分组显示用户
+        SELECT
+            dh.root_dept_id as depId,
+            (SELECT name FROM sta_sys_depart WHERE id = dh.root_dept_id) as deptName,
+            du.user_id as userId
+        FROM sta_sys_user_depart du
+                 JOIN dept_hierarchy dh ON du.dep_id = dh.code
+        ORDER BY dh.root_dept_id, du.user_id
+    </select>
+</mapper>

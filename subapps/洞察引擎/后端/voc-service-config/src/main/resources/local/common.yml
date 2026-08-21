@@ -1,0 +1,80 @@
+k8s_host: 172.16.80.16
+
+project_id: 4cb464bb8f604284dd83c92356fd62a4
+clients.ds.mappings:
+  '0': 'voc'
+  '1': 'futong'                               #北京富通东方科技有限公司
+  'gwm': 'gwm'                                  #长城汽车
+  'f25f2b8837e10c6ea50cb2c5f1e7aa48': 'avw'   #大众汽车（安徽）有限公司
+  '0373277a12bb39dd6fa0ced72561ed5a': 'shvw'   #大众汽车（安徽）有限公司
+  'e11ab369ea4d56a7a64ab0a3c491a2cc': 'hst'    #大众汽车（安徽）有限公司
+  '764547797eb2e192763f5334028d49c9': 'dndc'    #大众汽车（安徽）有限公司
+
+
+spring:
+  #cloud.config.allow-override: true
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+
+management:
+  security:
+    enabled: false
+  endpoints:
+    web:
+      exposure:
+        base-path: /actuator            # 指定上下文路径，启用相应端点
+        #include: health,metrics,prometheus
+        include: "*"
+    #对外开放所有监控点
+    enabled-by-default: true
+  endpoint:
+    #heaLth必须开
+    health:
+      enabled: true
+      show-details: always
+    beans:
+      enabled: true
+
+
+threadpool:
+  async:
+    executor:
+      enabled: true
+      corePoolSize: 10
+      maxPoolSize: 100
+      queueCapacity: 200
+      threadNamePrefix: auth-
+
+
+
+#服务映射访问地址，提供feign调用
+service.url: 172.16.80.16:32215
+service.auth.login.v1: http://${service.url}/api/auth/login
+service.auth.sso.v1: http://${service.url}/api/auth
+service.auth.logout.v1: http://${service.url}/api/auth/logout
+service.auth.v1: http://${service.url}/api/auth
+service.logs.v1: http://${service.url}/api/logs
+service.msg.v1: http://${service.url}/api/msg
+service.ins.v1: http://${service.url}/api/insights
+service.model.v1: http://${service.url}/api/model
+service.template.v1: http://${service.url}/api/template
+service.analysis.v1: http://${service.url}/api/analysis
+service.onnx.v1: http://${service.url}/api/onnx
+service.risk.v1: http://${service.url}/api/risk
+service.integertaion.v1: http://${service.url}/api/integration/
+
+spring.cloud.openfeign:
+    okhttp.enabled: true
+    httpclient.enabled: false
+    # 开启压缩
+    compression:
+      request:
+        enabled: true
+      response:
+        enabled: true
+

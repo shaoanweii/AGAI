@@ -1,0 +1,949 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.insights.engine.mapper.InsTagLibClientMapper">
+    <resultMap id="BaseResultMap" type="com.voc.service.insights.engine.entity.InsTagLibClientEntity">
+
+        <result column="id" property="id" />
+        <result column="tag_parent_id" property="tagParentId" />
+        <result column="tag_name" property="tagName" />
+        <result column="tag_name_en" property="tagNameEn" />
+        <result column="tag_code" property="tagCode" />
+        <result column="tag_type" property="tagType" />
+        <result column="tag_attribute" property="tagAttribute" />
+        <result column="energy_type" property="energyType" typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
+        <result column="car_type" property="carType" typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
+        <result column="tag_status" property="tagStatus" />
+        <result column="tag_description" property="tagDescription" />
+        <result column="synonyms" property="synonyms" />
+        <result column="seriousness" property="seriousness" />
+        <result column="user_journey1" property="userJourney1" />
+        <result column="user_journey2" property="userJourney2" />
+        <result column="scenario_attr" property="scenarioAttr" />
+        <result column="attribute_label_ids" property="attributeLabelIds" typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
+        <result column="event_clarity" property="eventClarity" />
+        <result column="d2c_responsible_dept" property="d2cResponsibleDept" />
+        <result column="d2c_cc_dept" property="d2cCcDept" typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="create_user" property="createUser" />
+        <result column="update_user" property="updateUser" />
+        <result column="app_client" property="appClient" />
+        <result column="sort" property="sort" />
+        <result column="level" property="level" />
+        <result column="emotion" property="emotion" />
+        <result column="intention" property="intention" />
+        <result column="d2c_accountable_dept" property="d2cAccountableDept" typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
+        <result column="tag_accuracy" property="tagAccuracy" />
+        <result column="tag_customer_issue_classification" property="tagCustomerIssueClassification" />
+        <result column="tag_issue_severity" property="tagIssueSeverity" />
+        <result column="tag_code_status" property="tagCodeStatus" />
+        <result column="tag_business_domain" property="tagBusinessDomain" />
+        <result column="tag_high_value_flag" property="tagHighValueFlag" />
+        <result column="tag_complaint_flag_needing_reply" property="tagComplaintFlagNeedingReply" />
+        <result column="tag_high_quality_voc_flag" property="tagHighQualityVocFlag" />
+        <result column="tag_new_energy_or_fuel" property="tagNewEnergyOrFuel" />
+        <result column="tag_need_forvclosed_loop" property="tagNeedForvclosedLoop" />
+        <result column="mapping_code" property="mappingCode" />
+        <result column="susceptive_type" property="susceptiveType" />
+        <result column="identifier" property="identifier" />
+    </resultMap>
+
+    <resultMap id="CategoryResultMap" type="com.voc.service.insights.engine.vo.TagLibCategoryVo">
+        <result column="id" property="id" />
+        <result column="tag_parent_id" property="tagParentId" />
+        <result column="tag_name" property="tagName" />
+        <result column="tag_name_en" property="tagNameEn" />
+        <result column="tag_code" property="tagCode" />
+        <result column="tag_type" property="tagType" />
+        <result column="tag_description" property="tagDescription" />
+        <result column="tag_status" property="tagStatus" />
+        <result column="synonyms" property="synonyms" />
+        <result column="sort" property="sort" />
+        <result column="leaf_count" property="leafCount" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,
+                tag_parent_id,
+                tag_name,
+                tag_name_en,
+                tag_code,
+                tag_type,
+                tag_attribute,
+                energy_type,
+                car_type,
+                tag_status,
+                tag_description,
+                synonyms,
+                seriousness,
+                user_journey1,
+                user_journey2,
+                scenario_attr,
+                attribute_label_ids,
+                event_clarity,
+                d2c_responsible_dept,
+                d2c_cc_dept,
+                create_time,
+                update_time,
+                create_user,
+                update_user,
+                app_client,
+                sort,
+                `level`,
+                emotion,
+                intention,
+                d2c_accountable_dept,
+                tag_accuracy,
+                tag_customer_issue_classification,
+                tag_issue_severity,
+                tag_code_status,
+                tag_business_domain,
+                tag_high_value_flag,
+                tag_complaint_flag_needing_reply,
+                tag_high_quality_voc_flag,
+                tag_new_energy_or_fuel,
+                tag_need_forvclosed_loop,
+          mapping_code,
+          susceptive_type,
+          identifier
+    </sql>
+
+    <sql id="Category_Column_List">
+        t.id,
+        t.tag_parent_id,
+        t.tag_name,
+        t.tag_name_en,
+        t.tag_code,
+        t.tag_type,
+        t.tag_description,
+        t.tag_status,
+        t.synonyms,
+        t.sort,
+        ifnull(lc.leaf_count, 0) as leaf_count
+    </sql>
+
+    <select id="checkTagLibName" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from ins_tag_client where tag_name = #{tagLibClientName} and tag_type = #{tagType} and identifier = #{identifier}
+    </select>
+
+    <select id="findTagLibClientById" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from ins_tag_client where id = #{tagLibClientId}
+    </select>
+
+    <select id="findTagLibClientList" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from ins_tag_client
+        where
+        1=1
+        <if test="tagLibClientModel.tagAttribute !=null and tagLibClientModel.tagAttribute !=''">
+            and tag_attribute = #{tagLibClientModel.tagAttribute}
+        </if>
+
+        <if test="tagLibClientModel.tagParentIds != null and tagLibClientModel.tagParentIds.size()>0">
+            and tag_parent_id in
+            <foreach item="item" index="index" collection="tagLibClientModel.tagParentIds" open="(" separator=","
+                     close=")">
+                #{item}
+            </foreach>
+        </if>
+
+        <if test="tagLibClientModel.tagTypeList != null and tagLibClientModel.tagTypeList.size()>0">
+            and tag_type in
+            <foreach item="item" index="index" collection="tagLibClientModel.tagTypeList" open="(" separator=","
+                     close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="tagLibClientModel.tagType != null and tagLibClientModel.tagType!=''">
+            and tag_type = #{tagLibClientModel.tagType}
+        </if>
+        <if test="tagLibClientModel.ids != null and tagLibClientModel.ids .size()>0">
+            and id in
+            <foreach item="item" index="index" collection="tagLibClientModel.ids" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="tagLibClientModel.energy != null and tagLibClientModel.energy != ''">
+            and
+            json_contains(energy_type,#{tagLibClientModel.energy,typeHandler=com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler})
+        </if>
+        <if test="tagLibClientModel.tagStatus != null and tagLibClientModel.tagStatus != ''">
+            and tag_status = #{tagLibClientModel.tagStatus}
+        </if>
+        <if test="tagLibClientModel.tagStatusList != null and tagLibClientModel.tagStatusList.size()>0">
+            and tag_status in
+            <foreach item="item" index="index" collection="tagLibClientModel.tagStatusList" open="(" separator=","
+                     close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="tagLibClientModel.tagName != null and tagLibClientModel.tagName != ''">
+            and tag_name like concat('%',#{tagLibClientModel.tagName},'%')
+        </if>
+        <if test="tagLibClientModel.tagType != null and tagLibClientModel.tagType!='' and (tagLibClientModel.tagParentIds == null or tagLibClientModel.tagParentIds.size() == 0 )">
+            or tag_parent_id = '-1'
+        </if>
+
+        <if test="tagLibClientModel.order !=null and tagLibClientModel.order !=''">
+            order by tag_type,${tagLibClientModel.order}
+        </if>
+        <if test="tagLibClientModel.order ==null or tagLibClientModel.order ==''">
+            order by create_time asc
+        </if>
+
+    </select>
+
+    <select id="findCategoryList" resultMap="CategoryResultMap">
+        with recursive max_level_cte as (
+            select
+                tag_type,
+                max(`level`) as max_level
+            from ins_tag_client
+            where tag_attribute = 'Category'
+            <if test="tagLibClientModel.tagType != null and tagLibClientModel.tagType != ''">
+                and tag_type = #{tagLibClientModel.tagType}
+            </if>
+            <if test="tagLibClientModel.tagTypeList != null and tagLibClientModel.tagTypeList.size() > 0">
+                and tag_type in
+                <foreach item="item" index="index" collection="tagLibClientModel.tagTypeList" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            group by tag_type
+        ),
+        matched_cte as (
+            select
+                id,
+                tag_parent_id
+            from ins_tag_client
+            where tag_attribute = 'Category'
+            <if test="tagLibClientModel.tagType != null and tagLibClientModel.tagType != ''">
+                and tag_type = #{tagLibClientModel.tagType}
+            </if>
+            <if test="tagLibClientModel.tagTypeList != null and tagLibClientModel.tagTypeList.size() > 0">
+                and tag_type in
+                <foreach item="item" index="index" collection="tagLibClientModel.tagTypeList" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <choose>
+                <when test="tagLibClientModel.tagName != null and tagLibClientModel.tagName != ''">
+                    and tag_name like concat('%', #{tagLibClientModel.tagName}, '%')
+                </when>
+                <otherwise>
+                    and 1 = 0
+                </otherwise>
+            </choose>
+        ),
+        ancestor_cte as (
+            select
+                id,
+                tag_parent_id
+            from matched_cte
+            union all
+            select
+                p.id,
+                p.tag_parent_id
+            from ins_tag_client p
+            inner join ancestor_cte a on p.id = a.tag_parent_id
+            where p.tag_attribute = 'Category'
+        ),
+        leaf_path_cte as (
+            select
+                c.tag_type,
+                c.id as leaf_id,
+                c.id as node_id,
+                c.tag_parent_id
+            from ins_tag_client c
+            inner join max_level_cte m on c.tag_type = m.tag_type
+                and c.`level` = m.max_level
+            where c.tag_attribute = 'Category'
+            union all
+            select
+                p.tag_type,
+                lp.leaf_id,
+                p.id as node_id,
+                p.tag_parent_id
+            from ins_tag_client p
+            inner join leaf_path_cte lp on p.id = lp.tag_parent_id
+            where p.tag_attribute = 'Category'
+        ),
+        leaf_count_cte as (
+            select
+                tag_type,
+                node_id,
+                count(distinct leaf_id) as leaf_count
+            from leaf_path_cte
+            group by tag_type, node_id
+        )
+        select
+        <include refid="Category_Column_List"/>
+        from ins_tag_client t
+        inner join max_level_cte m on t.tag_type = m.tag_type
+        left join leaf_count_cte lc on t.tag_type = lc.tag_type
+            and t.id = lc.node_id
+        where t.tag_attribute = 'Category'
+        <choose>
+            <when test="tagLibClientModel.tagName != null and tagLibClientModel.tagName != ''">
+                and t.id in (
+                    select distinct id
+                    from ancestor_cte
+                )
+                and (
+                    t.`level` &lt; m.max_level
+                    or t.id in (
+                        select id
+                        from matched_cte
+                    )
+                )
+            </when>
+            <otherwise>
+                and t.`level` &lt; m.max_level
+            </otherwise>
+        </choose>
+        order by t.tag_type asc, t.`level` asc, t.create_time asc
+    </select>
+
+    <select id="findExperienceCodeList" resultMap="BaseResultMap">
+        with recursive category_cte as (
+            select
+                id,
+                tag_parent_id,
+                tag_type
+            from ins_tag_client
+            where tag_attribute = 'Category'
+            <choose>
+                <when test="tagLibClientModel.tagParentId != null and tagLibClientModel.tagParentId != '' and tagLibClientModel.tagParentId !='0'.toString() ">
+                    and id = #{tagLibClientModel.tagParentId}
+                </when>
+                <otherwise>
+                    and tag_parent_id = '0'
+                    and tag_type = #{tagLibClientModel.tagType}
+                </otherwise>
+            </choose>
+            union all
+            select
+                t.id,
+                t.tag_parent_id,
+                t.tag_type
+            from ins_tag_client t
+            inner join category_cte c on t.tag_parent_id = c.id
+            where t.tag_attribute = 'Category'
+        )
+        select
+        itc.id,
+        itc.tag_parent_id,
+        itc.tag_name,
+        itc.tag_name_en,
+        itc.tag_code,
+        itc.tag_type,
+        itc.tag_attribute,
+        itc.identifier,
+        itc.tag_status,
+        itc.tag_description,
+        itc.synonyms,
+        itc.create_time,
+        itc.update_time,
+        if(su.firstname is null ,null,concat(su.firstname, '-', su.employee_id)) as update_user,
+        itc.`level`
+        from ins_tag_client itc
+        left join voc_ms_be.sys_users su on su.id = itc.update_user
+        where itc.identifier = 'FinalCategory'
+        <choose>
+            <when test="tagLibClientModel.tagParentId != null and tagLibClientModel.tagParentId != '' and tagLibClientModel.tagParentId !='0'.toString() ">
+                and itc.tag_parent_id in (
+                    select id
+                    from category_cte
+                )
+            </when>
+            <otherwise>
+                and itc.tag_type = #{tagLibClientModel.tagType}
+            </otherwise>
+        </choose>
+        <if test="tagLibClientModel.tagType != null and tagLibClientModel.tagType != ''">
+            and itc.tag_type = #{tagLibClientModel.tagType}
+        </if>
+        <if test="tagLibClientModel.ids != null and tagLibClientModel.ids.size()>0">
+            and itc.id in
+            <foreach item="item" index="index" collection="tagLibClientModel.ids" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="tagLibClientModel.codes != null and tagLibClientModel.codes.size()>0">
+            and itc.tag_code in
+            <foreach item="item" index="index" collection="tagLibClientModel.codes" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="tagLibClientModel.tagStatus != null and tagLibClientModel.tagStatus != ''">
+            and itc.tag_status = #{tagLibClientModel.tagStatus}
+        </if>
+        <if test="tagLibClientModel.tagStatusList != null and tagLibClientModel.tagStatusList.size()>0">
+            and itc.tag_status in
+            <foreach item="item" index="index" collection="tagLibClientModel.tagStatusList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="tagLibClientModel.tagName != null and tagLibClientModel.tagName != ''">
+            and itc.tag_name like concat('%',#{tagLibClientModel.tagName},'%')
+        </if>
+        <if test="tagLibClientModel.operateUser!=null and tagLibClientModel.operateUser!='' ">
+            and itc.update_user = #{tagLibClientModel.operateUser}
+        </if>
+        <if test="tagLibClientModel.order != null and tagLibClientModel.order != ''">
+            order by ${tagLibClientModel.order}
+        </if>
+        <if test="tagLibClientModel.order == null or tagLibClientModel.order == ''">
+            order by itc.create_time asc
+        </if>
+    </select>
+
+    <select id="countExperienceCodeList" resultType="java.lang.Long">
+        with recursive category_cte as (
+            select
+                id,
+                tag_parent_id,
+                tag_type
+            from ins_tag_client
+            where tag_attribute = 'Category'
+            <choose>
+                <when test="tagLibClientModel.tagParentId != null and tagLibClientModel.tagParentId != '' and tagLibClientModel.tagParentId != '0'">
+                    and id = #{tagLibClientModel.tagParentId}
+                </when>
+                <otherwise>
+                    and tag_parent_id = '0'
+                    and tag_type = #{tagLibClientModel.tagType}
+                </otherwise>
+            </choose>
+            union all
+            select
+                t.id,
+                t.tag_parent_id,
+                t.tag_type
+            from ins_tag_client t
+            inner join category_cte c on t.tag_parent_id = c.id
+            where t.tag_attribute = 'Category'
+        )
+        select count(1)
+        from ins_tag_client
+        where identifier = 'FinalCategory'
+        <choose>
+            <when test="tagLibClientModel.tagParentId != null and tagLibClientModel.tagParentId != '' and tagLibClientModel.tagParentId != '0'">
+                and tag_parent_id in (
+                    select id
+                    from category_cte
+                )
+            </when>
+            <otherwise>
+                and tag_type = #{tagLibClientModel.tagType}
+            </otherwise>
+        </choose>
+        <if test="tagLibClientModel.tagType != null and tagLibClientModel.tagType != ''">
+            and tag_type = #{tagLibClientModel.tagType}
+        </if>
+        <if test="tagLibClientModel.ids != null and tagLibClientModel.ids.size()>0">
+            and id in
+            <foreach item="item" index="index" collection="tagLibClientModel.ids" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="tagLibClientModel.codes != null and tagLibClientModel.codes.size()>0">
+            and tag_code in
+            <foreach item="item" index="index" collection="tagLibClientModel.codes" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="tagLibClientModel.tagStatus != null and tagLibClientModel.tagStatus != ''">
+            and tag_status = #{tagLibClientModel.tagStatus}
+        </if>
+        <if test="tagLibClientModel.tagStatusList != null and tagLibClientModel.tagStatusList.size()>0">
+            and tag_status in
+            <foreach item="item" index="index" collection="tagLibClientModel.tagStatusList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="tagLibClientModel.tagName != null and tagLibClientModel.tagName != ''">
+            and tag_name like concat('%',#{tagLibClientModel.tagName},'%')
+        </if>
+    </select>
+
+    <select id="findTagLibClientNameHierarchical" resultType="java.lang.String">
+        WITH RECURSIVE CTE AS (SELECT *
+                               FROM ins_tag_client
+                               WHERE id = #{tagLibClientId}
+                               UNION ALL
+                               SELECT t.*
+                               FROM ins_tag_client t
+                                        INNER JOIN CTE ON t.id = CTE.tag_parent_id)
+        SELECT GROUP_CONCAT(tag_name SEPARATOR '#') as tag_name
+        FROM CTE
+        where CTE.id != #{tagLibClientId}
+        group by tag_type
+        ORDER BY tag_code
+    </select>
+
+    <select id="findCalledTagLibClient" resultType="java.lang.String">
+        select
+        *
+        from
+        ins_tag_client
+        WHERE
+        tag_code LIKE CONCAT(#{tagLibClientModel.tagCode},'_f_' ,'%')
+        <if test="tagLibClientModel.tagAttribute !=null and tagLibClientModel.tagAttribute !=''">
+            and tag_attribute = #{tagLibClientModel.tagAttribute}
+        </if>
+        <if test="tagLibClientModel.tagType != null and tagLibClientModel.tagType!=''">
+            and tag_type = #{tagLibClientModel.tagType}
+        </if>
+    </select>
+
+    <select id="findTagLibClientHierarchical" resultMap="BaseResultMap">
+        WITH RECURSIVE CTE AS (SELECT *
+                            FROM ins_tag_client
+                            WHERE  id in
+                            <foreach item="item" index="index" collection="ids" open="(" separator="," close=")">
+                                #{item}
+                            </foreach>
+                            UNION ALL
+                            SELECT t.*
+                            FROM ins_tag_client t
+                            INNER JOIN CTE ON t.id = CTE.tag_parent_id)
+        select * from CTE
+        group by tag_code,tag_type
+    </select>
+
+    <select id="findDownTagLibHierarchical" resultMap="BaseResultMap">
+        WITH RECURSIVE CTE AS (SELECT *
+                               FROM ins_tag_client
+                               WHERE  1=1
+                                and tag_attribute = 'Category'
+                                <if test="ids != null and ids.size()>0">
+                                    and id in
+                                    <foreach item="item" index="index" collection="ids" open="(" separator="," close=")">
+                                        #{item}
+                                    </foreach>
+                                </if>
+                               <if test="tagCode !=null and tagCode.size()>0">
+                                   and tag_code in
+                                    <foreach item="item" index="index" collection="tagCode" open="(" separator=","
+                                             close=")">
+                                        #{item}
+                                    </foreach>
+                               </if>
+                               UNION ALL
+                               SELECT t.*
+                               FROM ins_tag_client t
+                                        INNER JOIN CTE ON t.tag_parent_id = CTE.id
+                                where 1=1
+        )
+        SELECT *
+        FROM CTE
+        where tag_attribute = 'FinalLabel'
+        <if test="tagName != null and tagName != ''">
+            and tag_name like concat('%',#{tagName},'%')
+        </if>
+        <if test="tagStatusList != null and tagStatusList.size()>0">
+            and tag_status in
+            <foreach item="item" index="index" collection="tagStatusList" open="(" separator=","
+                     close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="tagType !=null and tagType !=''">
+            and tag_type = #{tagType}
+        </if>
+        group by tag_name
+        ORDER BY create_time asc,id
+    </select>
+
+    <select id="findTagLibClientHierarchicalByCodes" resultMap="BaseResultMap">
+        WITH RECURSIVE CTE AS (SELECT *
+        FROM ins_tag_client
+        WHERE  tag_code in
+        <foreach item="item" index="index" collection="codes" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        UNION ALL
+        SELECT t.*
+        FROM ins_tag_client t
+        INNER JOIN CTE ON t.id = CTE.tag_parent_id)
+        select * from CTE
+        group by tag_code,tag_type
+    </select>
+
+    <select id="findTaglibCodeByName" resultType="java.lang.String">
+        select tag_code from ins_tag_client where tag_name in
+            <foreach item="item" index="index" collection="codes" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        <if test="tagAttribute !=null and tagAttribute != ''">
+            and tag_attribute = #{tagAttribute}
+        </if>
+    </select>
+
+    <select id="findDownAllTagLibHierarchical" resultMap="BaseResultMap">
+        WITH RECURSIVE CTE AS (SELECT *
+        FROM ins_tag_client
+        WHERE  1=1
+        <if test="ids != null and ids.size()>0">
+            and id in
+            <foreach item="item" index="index" collection="ids" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        UNION ALL
+        SELECT t.*
+        FROM ins_tag_client t
+        INNER JOIN CTE ON t.tag_parent_id = CTE.id
+        where 1=1
+        )
+        SELECT *
+        FROM CTE
+        ORDER BY id
+    </select>
+    <select id="findAllUpTagLibHierarchicalByTagId"
+            resultType="com.voc.service.insights.engine.vo.TagClientVo">
+        WITH RECURSIVE CTE AS (
+            -- 从最末级开始
+            SELECT
+                id,
+                tag_parent_id,
+                tag_name,
+                tag_code,
+                level,
+                emotion,
+                1 as depth
+            FROM ins_tag_client
+            WHERE 1=1
+             <if test="model.ids != null and model.ids.size()>0">
+                and  id in
+                <foreach item="item" index="index" collection="model.ids" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="model.tagName != null and model.tagName !=''">
+                and  tag_name=#{model.tagName}
+                and  tag_type="CA"
+            </if>
+            UNION ALL
+
+            -- 向上查找父级
+            SELECT
+                t.id,
+                t.tag_parent_id,
+                t.tag_name,
+                t.tag_code,
+                t.level,
+                t.emotion,
+                CTE.depth + 1 as depth
+            FROM ins_tag_client t
+                     INNER JOIN CTE ON t.id = CTE.tag_parent_id
+        )
+        SELECT
+            -- 第1级：根节点（深度最大的）
+            MAX(CASE WHEN rn = 1 THEN id END) as firstId,
+            MAX(CASE WHEN rn = 1 THEN tag_name END) as firstName,
+            MAX(CASE WHEN rn = 1 THEN tag_code END) as firstCode,
+            MAX(CASE WHEN rn = 1 THEN level END) as firstLevel,
+            MAX(CASE WHEN rn = 1 THEN emotion END) as firstEmotion,
+
+            -- 第2级
+            MAX(CASE WHEN rn = 2 THEN id END) as secondId,
+            MAX(CASE WHEN rn = 2 THEN tag_name END) as secondName,
+            MAX(CASE WHEN rn = 2 THEN tag_code END) as secondCode,
+            MAX(CASE WHEN rn = 2 THEN level END) as secondLevel,
+            MAX(CASE WHEN rn = 2 THEN emotion END) as secondEmotion,
+
+            -- 第3级
+            MAX(CASE WHEN rn = 3 THEN id END) as thirdId,
+            MAX(CASE WHEN rn = 3 THEN tag_name END) as thirdName,
+            MAX(CASE WHEN rn = 3 THEN tag_code END) as thirdCode,
+            MAX(CASE WHEN rn = 3 THEN level END) as thirdLevel,
+            MAX(CASE WHEN rn = 3 THEN emotion END) as thirdEmotion,
+
+            -- 第4级
+            MAX(CASE WHEN rn = 4 THEN id END) as fourthId,
+            MAX(CASE WHEN rn = 4 THEN tag_name END) as fourthName,
+            MAX(CASE WHEN rn = 4 THEN tag_code END) as fourthCode,
+            MAX(CASE WHEN rn = 4 THEN level END) as fourthLevel,
+            MAX(CASE WHEN rn = 4 THEN emotion END) as fourthEmotion,
+
+            -- 第5级：最末级（深度最小的）
+            MAX(CASE WHEN rn = 5 THEN id END) as fifthId,
+            MAX(CASE WHEN rn = 5 THEN tag_name END) as fifthName,
+            MAX(CASE WHEN rn = 5 THEN tag_code END) as fifthCode,
+            MAX(CASE WHEN rn = 5 THEN level END) as fifthLevel,
+            MAX(CASE WHEN rn = 5 THEN emotion END) as fifthEmotion,
+
+            -- 完整的路径信息
+            GROUP_CONCAT(tag_name ORDER BY depth DESC SEPARATOR ' > ') as fullNamePath,
+            GROUP_CONCAT(tag_code ORDER BY depth DESC SEPARATOR ' > ') as fullCodePath,
+            GROUP_CONCAT(id ORDER BY depth DESC SEPARATOR ' > ') as fullIdPath,
+
+            -- 总层级数
+            MAX(depth) as totalLevels
+        FROM (
+                 SELECT
+                     *,
+                     -- 为每级分配序号（根节点为1，依次递增）
+                     ROW_NUMBER() OVER (ORDER BY depth DESC) as rn
+                 FROM CTE
+                 ORDER BY depth DESC  -- 根节点在最前面
+             ) as numbered
+    </select>
+    <select id="findTopicOperatorUserIds" resultType="java.lang.String">
+        select distinct user_id
+        from (
+            select create_user as user_id
+            from ins_tag_client
+            where tag_attribute = 'Category'
+              and create_user is not null
+              and create_user != ''
+            union
+            select update_user as user_id
+            from ins_tag_client
+            where tag_attribute = 'Category'
+              and update_user is not null
+              and update_user != ''
+        ) operator_users
+    </select>
+
+    <select id="findVisibleTopicOperatorList" resultType="com.voc.service.insights.engine.vo.InsTopicOperatorVo">
+        select distinct
+            su.id as id,
+            concat(ifnull(su.firstname, ''), '-', ifnull(su.employee_id, '')) as userName
+        from voc_ms_be.sys_credentials sc
+        left join voc_ms_be.sys_users su on sc.user_id = su.id
+        where sc.app_id = #{appId}
+        <if test="userIds != null and userIds.size() > 0">
+            and sc.user_id in
+            <foreach collection="userIds" item="userId" open="(" separator="," close=")">
+                #{userId}
+            </foreach>
+        </if>
+        order by su.firstname asc, su.employee_id asc
+    </select>
+
+    <sql id="topicQueryCondition">
+        where itc.tag_attribute = 'FinalLabel'
+        <if test="model.topicCodes !=null and model.topicCodes.size()>0">
+            and itc.tag_code in
+            <foreach item="item" index="index" collection="model.topicCodes" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="model.tagName !=null and model.tagName !=''">
+            and itc.tag_name like concat('%',#{model.tagName},'%')
+        </if>
+        <if test="model.tagStatus !=null and model.tagStatus !=''">
+            and itc.tag_status = #{model.tagStatus}
+        </if>
+        <if test="model.mappingCode !=null and model.mappingCode !=''">
+            and itc.mapping_code = #{model.mappingCode}
+        </if>
+        <if test="model.emotions !=null and model.emotions.size()>0">
+            and itc.emotion in
+            <foreach item="item" index="index" collection="model.emotions" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="model.intentions !=null and model.intentions.size()>0">
+            and itc.intention in
+            <foreach item="item" index="index" collection="model.intentions" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="model.tagCustomerIssueClassifications !=null and model.tagCustomerIssueClassifications.size()>0">
+            and itc.tag_customer_issue_classification in
+            <foreach item="item" index="index" collection="model.tagCustomerIssueClassifications" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="model.tagIssueSeverities !=null and model.tagIssueSeverities.size()>0">
+            and itc.tag_issue_severity in
+            <foreach item="item" index="index" collection="model.tagIssueSeverities" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="model.operateUser !=null and model.operateUser !=''">
+            and (itc.create_user = #{model.operateUser} or itc.update_user = #{model.operateUser} )
+        </if>
+        <if test="model.eventClarity !=null and model.eventClarity !=''">
+            and itc.event_clarity =#{model.eventClarity}
+        </if>
+        <if test="model.susceptiveType !=null and model.susceptiveType !=''">
+            and itc.susceptive_type = #{model.susceptiveType}
+        </if>
+        <if test="model.tagAccuracy !=null and model.tagAccuracy !=''">
+            and itc.tag_accuracy = #{model.tagAccuracy}
+        </if>
+        <if test="model.tagBusinessDomains !=null and model.tagBusinessDomains.size()>0">
+            and itc.tag_business_domain in
+            <foreach item="item" index="index" collection="model.tagBusinessDomains" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="model.d2cResponsibleDept !=null and model.d2cResponsibleDept !=''">
+            and itc.d2c_responsible_dept = #{model.d2cResponsibleDept}
+        </if>
+        <if test="model.tagType !=null and model.tagType !=''">
+            and itc.tag_type = #{model.tagType}
+        </if>
+        <if test=" model.tagComplaintFlagNeedingReply !=null and model.tagComplaintFlagNeedingReply !=''">
+            and itc.tag_complaint_flag_needing_reply =#{model.tagComplaintFlagNeedingReply}
+        </if>
+        <if test=" model.tagNeedForvclosedLoop !=null and model.tagNeedForvclosedLoop !=''">
+            and itc.tag_need_forvclosed_loop = #{model.tagNeedForvclosedLoop}
+        </if>
+    </sql>
+
+    <select id="findTopicList" resultType="com.voc.service.insights.engine.vo.TagLibTopicVo">
+        select
+        itc.tag_name,
+        itc.tag_code
+        from ins_tag_client itc
+        <include refid="topicQueryCondition"/>
+        group by itc.tag_code
+    </select>
+
+    <select id="findlAllTopic" resultMap="BaseResultMap">
+        select
+        itc.id,
+        itc.tag_parent_id,
+        itc.tag_name,
+        itc.tag_name_en,
+        itc.tag_code,
+        itc.tag_type,
+        itc.tag_attribute,
+        itc.energy_type,
+        itc.car_type,
+        itc.tag_status,
+        itc.tag_description,
+        itc.seriousness,
+        itc.user_journey1,
+        itc.user_journey2,
+        itc.scenario_attr,
+        itc.attribute_label_ids,
+        itc.event_clarity,
+        ssd.name as d2c_responsible_dept,
+        itc.d2c_cc_dept,
+        itc.create_time,
+        itc.update_time,
+        itc.create_user,
+        itc.update_user,
+        itc.app_client,
+        itc.sort,
+        itc.`level`,
+        itc.emotion,
+        itc.intention,
+        itc.d2c_accountable_dept,
+        itc.tag_accuracy,
+        itc.tag_customer_issue_classification,
+        itc.tag_issue_severity,
+        itc.tag_code_status,
+        itc.tag_business_domain,
+        itc.tag_high_value_flag,
+        itc.tag_complaint_flag_needing_reply,
+        itc.tag_high_quality_voc_flag,
+        itc.tag_new_energy_or_fuel,
+        itc.tag_need_forvclosed_loop,
+        itc.mapping_code,
+        itc.identifier,
+        itc.susceptive_type,
+        itc.synonyms
+        from
+            ins_tag_client itc
+        left join sta_sys_depart ssd on ssd.id = itc.d2c_responsible_dept
+        <include refid="topicQueryCondition"/>
+
+        group by itc.tag_code
+        order by itc.create_time desc
+    </select>
+    <select id="findAllUpTagLibHierarchicalByTopicCode"
+            resultType="com.voc.service.insights.engine.vo.TagClientVo">
+        WITH RECURSIVE CTE AS (
+            -- 从所有末级节点开始
+            SELECT
+                id,
+                tag_parent_id,
+                tag_name,
+                tag_code,
+                level,
+                emotion,
+                tag_type,
+                1 as depth,
+                id as leaf_id,
+                CAST(id AS CHAR(1000)) as hierarchy_path
+            FROM ins_tag_client
+            WHERE tag_code in
+            <foreach item="item" index="index" collection="codes" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+              and tag_attribute = 'FinalLabel'
+
+            UNION ALL
+
+            -- 向上递归
+            SELECT
+                t.id,
+                t.tag_parent_id,
+                t.tag_name,
+                t.tag_code,
+                t.level,
+                t.emotion,
+                c.tag_type,  -- 继承末级的tag_type
+                c.depth + 1 as depth,
+                c.leaf_id,
+                CONCAT(t.id, ' > ', c.hierarchy_path) as hierarchy_path
+            FROM ins_tag_client t
+                     INNER JOIN CTE c ON t.id = c.tag_parent_id
+        )
+        SELECT
+            tag_type as type,
+            leaf_id as last_level_id,
+
+            -- 使用PIVOT动态获取各层级信息
+            MAX(CASE WHEN depth = max_depth THEN id END) as first_id,
+            MAX(CASE WHEN depth = max_depth THEN tag_name END) as first_name,
+            MAX(CASE WHEN depth = max_depth THEN tag_code END) as first_code,
+
+            MAX(CASE WHEN depth = max_depth - 1 THEN id END) as second_id,
+            MAX(CASE WHEN depth = max_depth - 1 THEN tag_name END) as second_name,
+            MAX(CASE WHEN depth = max_depth - 1 THEN tag_code END) as second_code,
+
+            MAX(CASE WHEN depth = max_depth - 2 THEN id END) as third_id,
+            MAX(CASE WHEN depth = max_depth - 2 THEN tag_name END) as third_name,
+            MAX(CASE WHEN depth = max_depth - 2 THEN tag_code END) as third_code,
+
+            MAX(CASE WHEN depth = max_depth - 3 THEN id END) as fourth_id,
+            MAX(CASE WHEN depth = max_depth - 3 THEN tag_name END) as fourth_name,
+            MAX(CASE WHEN depth = max_depth - 3 THEN tag_code END) as fourth_code,
+
+            MAX(CASE WHEN depth = 1 THEN id END) as fifth_id,
+            MAX(CASE WHEN depth = 1 THEN tag_name END) as fifth_name,
+            MAX(CASE WHEN depth = 1 THEN tag_code END) as fifth_code,
+
+            -- 完整路径
+            GROUP_CONCAT(tag_name ORDER BY depth DESC SEPARATOR ' > ') as full_name_path,
+            GROUP_CONCAT(tag_code ORDER BY depth DESC SEPARATOR ' > ') as full_code_path,
+            GROUP_CONCAT(id ORDER BY depth DESC SEPARATOR ' > ') as full_id_path,
+
+            max_depth as total_levels
+        FROM (
+                 SELECT
+                     *,
+                     MAX(depth) OVER (PARTITION BY leaf_id) as max_depth
+                 FROM CTE
+             ) as t
+        GROUP BY leaf_id, tag_type, max_depth
+        ORDER BY tag_type, leaf_id
+    </select>
+    <select id="findMaxCode" resultType="java.lang.String">
+        select max(tag_code) from ins_tag_client
+    </select>
+</mapper>

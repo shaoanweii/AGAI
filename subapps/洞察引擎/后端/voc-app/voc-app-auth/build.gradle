@@ -1,0 +1,28 @@
+apply plugin: 'java-library'
+
+group = 'voc-app-auth'
+version = "1.0.0-SNAPSHOT"
+
+dependencies {
+
+    api project(':voc-service-security:voc-security-server')
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+
+    jar {
+        String someString = ''
+//        configurations.runtimeClasspath.each { someString = someString + " lib//" + it.name }
+
+        fileTree("$buildDir/libs/lib-voc").each { someString = someString + " lib-voc//" + it.name }
+        fileTree("$buildDir/libs/lib").each { someString = someString + " lib//" + it.name }
+
+        manifest {
+            attributes "Manifest-Version": 1.0
+            attributes "jdk": sourceCompatibility
+            attributes 'Main-Class': 'com.voc.VocAuthApplication'
+            attributes 'Class-Path': someString
+        }
+    }
+}

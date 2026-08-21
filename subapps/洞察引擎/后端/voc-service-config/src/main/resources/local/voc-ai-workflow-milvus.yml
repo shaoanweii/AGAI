@@ -1,0 +1,6 @@
+milvus:
+  host: 172.16.80.17
+  port: 31360
+  username: root
+  password: Milvus
+  database: default

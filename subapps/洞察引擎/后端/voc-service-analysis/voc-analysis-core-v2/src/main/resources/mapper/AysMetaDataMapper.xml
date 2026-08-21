@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.analysis.core.v2.mapper.AysMetaDataMapper">
+
+
+
+    <select id="findIincompleteData" resultType="com.voc.service.analysis.core.v2.entity.AysMetaDataEntity" >
+        with find_1 as (
+            select id, work_id
+            from ays_meta_data
+            where done = '0'
+              and CAST(retry AS SIGNED) &lt; 3
+            group by id,work_id
+            limit 1
+        )
+        select f.id, f.work_id, `data`, source, create_time, operator, done, tid
+        from ays_meta_data as f, find_1 as c
+        where c.id =f.id and c.work_id = f.work_id
+        limit 1
+    </select>
+
+
+    <insert id="copySourceData">
+        insert into  ays_meta_data
+            (id, work_id, `data`, source,  create_time, operator, done, tid)
+        select
+            uuid(), #{work_id} , `data`, source, create_time, operator, '0', #{tid}
+            from ays_meta_data
+        where id in
+        <foreach item="item" index="index" collection="ids" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </insert>
+
+    <update id="modifyByWorkId">
+        update ays_meta_data set done = '1' where work_id = #{work_id}
+
+    </update>
+
+    <update id="retryingRecords">
+        UPDATE ays_meta_data SET retry = CAST(retry AS SIGNED) + 1
+        where CAST(retry AS SIGNED) &lt; 3 and  id in
+        <foreach item="item" index="index" collection="ids" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
+
+    <delete id="removeHistoryData">
+        delete from ays_meta_data
+        where to_date(publish_time)  &lt;= to_date(DATE_SUB(now(), INTERVAL ${days} day))
+    </delete>
+</mapper>

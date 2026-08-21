@@ -1,0 +1,186 @@
+package com.voc.security.client.config;
+
+import cn.hutool.cache.CacheUtil;
+import cn.hutool.cache.impl.TimedCache;
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.crypto.digest.MD5;
+import com.alipay.sofa.rpc.common.RpcConstants;
+import com.alipay.sofa.rpc.context.RpcInvokeContext;
+import com.alipay.sofa.runtime.api.annotation.SofaReference;
+import com.alipay.sofa.runtime.api.annotation.SofaReferenceBinding;
+import exception.common.com.voc.service.CommonErrorEnum;
+import exception.common.com.voc.service.SecurityException;
+import model.common.com.voc.service.UserModel;
+import response.common.com.voc.service.Result;
+import util.common.com.voc.service.ServiceContextHolder;
+import api.security.com.voc.service.ISecurityService;
+import com.voc.security.service.IUserService;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.skywalking.apm.toolkit.trace.TraceContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.lang.NonNull;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
+import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.servlet.HandlerExceptionResolver;
+
+import java.io.IOException;
+import java.util.Enumeration;
+import java.util.Locale;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+//@Component("JwtAuthenticationFilter_client")
+//@RequiredArgsConstructor
+public class JwtAuthenticationCllientFilter extends OncePerRequestFilter {
+
+    public static final String ACCESS_TOKEN = "access_token";
+    public static final String BEARER_TYPE = "Bearer";
+    public static final String ACCESS_TOKEN_TYPE = "Authentication.ACCESS_TOKEN_TYPE";
+    static TimedCache<String, UsernamePasswordAuthenticationToken> token_user_cache = CacheUtil.newTimedCache(1000 * 60 * 60 * 24 * 5);  // 5天
+    @SofaReference(binding = @SofaReferenceBinding(bindingType = "bolt"))
+    ISecurityService iSecurityService;
+    @Autowired
+    StringRedisTemplate strRedisTemplate;
+    @Autowired
+    IUserService iUserService;
+    @Value("${system.appid:voc}")
+    String appid;
+    @Autowired
+    WhiteListClientProperties whiteListClientProperties;
+    @Autowired
+    @Qualifier("handlerExceptionResolver")
+    private HandlerExceptionResolver resolver;
+
+    @Override
+    protected void doFilterInternal(
+            @NonNull HttpServletRequest request,
+            @NonNull HttpServletResponse response,
+            @NonNull FilterChain filterChain
+    ) throws ServletException, IOException {
+        log.debug("--->>Invoking {} {}", this.getClass().getSimpleName(), request.getRequestURI());
+        try {
+            final String uri = request.getRequestURI();
+            if (this.match(whiteListClientProperties.getUrls(), uri)) {
+                // 如果是白名单直接放行
+                log.trace("白名单放行 {}", uri);
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            final String token = this.extractHeaderToken(request);
+            log.debug("token={}", token);
+            if (StrUtil.isBlank(token)) {
+                log.error("token cannot be empty {} ", token);
+                throw new SecurityException(CommonErrorEnum.NOTNULL_AUTH_TOKN);
+            }
+
+            //链路数据透传
+            RpcInvokeContext context = RpcInvokeContext.getContext();
+            context.putRequestBaggage(RpcConstants.HIDDEN_KEY_TOKEN, token);
+            context.putRequestBaggage(RpcConstants.INTERNAL_KEY_APP_NAME, appid);
+
+            //优先使用缓存中 UsernamePasswordAuthenticationToken
+            final String md5Token = MD5.create().digestHex(token);
+
+            if (token_user_cache.containsKey(md5Token)) {
+                UsernamePasswordAuthenticationToken authToken = token_user_cache.get(md5Token);
+                SecurityContextHolder.getContext().setAuthentication(authToken);
+                log.trace("使用缓存 {}", md5Token);
+            } else {
+                final Optional<Object> userIdRs;
+                try {
+                    //获取认证服务端的用户信息
+                    final Result<Object> getUserRs = iSecurityService.userinfo();
+                    userIdRs = Optional.ofNullable(getUserRs.getResult());
+                    if (!userIdRs.isPresent()) {
+                        log.error("security 服务获取用户信息失败! {} ", token);
+                        throw new SecurityException(CommonErrorEnum.LOGIN_USERNAME_ENCRYPT_EXECPTION);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    log.error(e.getMessage(), e);
+                    throw e;
+                }
+
+                final UserModel user = (UserModel) userIdRs.get();
+                if (StrUtil.isNotBlank(user.getUsername()) && SecurityContextHolder.getContext().getAuthentication() == null) {
+                    //加载本系统内的用户数据（包含前线信息）
+                    final Optional<UserModel> userModel = iUserService.findUserByUserId(user);
+                    if (userModel.isPresent() && !userModel.get().isEnabled()) {
+                        log.error("账号状态异常! {} ", token);
+                        throw new SecurityException(CommonErrorEnum.ACCOUNT_DISABLE);
+                    }
+
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                            userModel.get(),
+                            null,
+                            user.getRoles().stream().map(permission -> new SimpleGrantedAuthority(permission))
+                                    .collect(Collectors.toList())
+                    );
+                    authToken.setDetails(
+                            new WebAuthenticationDetailsSource().buildDetails(request)
+                    );
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                    ServiceContextHolder.setUser(authToken);
+                    ServiceContextHolder.setTraceId(TraceContext.traceId());
+                    ServiceContextHolder.setRequest(request);
+                    log.trace("设置用户token数据");
+                    //放入缓存 UsernamePasswordAuthenticationToken
+                    if (CollUtil.isNotEmpty(userModel.get().getAuthRoles())) {
+                        token_user_cache.put(md5Token, authToken);
+                    } else {
+                        log.info("用户权限数据为空，不放入缓存 {}", userModel);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            resolver.resolveException(request, response, null,
+                    new exception.common.com.voc.service.SecurityException(CommonErrorEnum.TOKEN_ERROR.getCode()
+                            , "调用服务异常"));
+            return;
+        }
+        log.trace("doFilter.start: {}", request.getRequestURI());
+        filterChain.doFilter(request, response);
+        log.trace("doFilter.end:");
+    }
+
+    protected String extractHeaderToken(HttpServletRequest request) {
+        Enumeration<String> headers = request.getHeaders("Authorization");
+        while (headers.hasMoreElements()) { // typically there is only one (most servers enforce that)
+            String value = headers.nextElement();
+            if ((value.toLowerCase(Locale.ENGLISH).startsWith(BEARER_TYPE.toLowerCase(Locale.ENGLISH)))) {
+                String authHeaderValue = value.substring(BEARER_TYPE.length()).trim();
+                // Add this here for the auth details later. Would be better to change the signature of this method.
+                request.setAttribute(ACCESS_TOKEN_TYPE,
+                        value.substring(0, BEARER_TYPE.length()).trim());
+                int commaIndex = authHeaderValue.indexOf(',');
+                if (commaIndex > 0) {
+                    authHeaderValue = authHeaderValue.substring(0, commaIndex);
+                }
+                return authHeaderValue;
+            }
+        }
+
+        return null;
+    }
+
+    private boolean match(Set<String> pathList, String uri) {
+        return pathList.stream().anyMatch(path -> new AntPathMatcher().match(path, uri));
+    }
+}

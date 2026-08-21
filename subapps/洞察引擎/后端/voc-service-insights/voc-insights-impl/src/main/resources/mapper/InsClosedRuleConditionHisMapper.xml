@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.insights.engine.mapper.InsClosedRuleConditionHisMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.voc.service.insights.engine.entity.InsClosedRuleConditionHisEntity">
+        <result column="condition_id" property="conditionId"/>
+        <result column="rule_id" property="ruleId"/>
+        <result column="condition_type" property="conditionType"/>
+        <result column="operator" property="operator"/>
+        <result column="option" property="option"/>
+        <result column="value_type" property="valueType"/>
+        <result column="value" property="value"/>
+        <result column="sort_order" property="sortOrder"/>
+        <result column="edit_user" property="editUser"
+                typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
+        <result column="edit_time" property="editTime"/>
+        <result column="version" property="version"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        condition_id, rule_id, condition_type, operator, `option`, value_type, `value`,
+        sort_order, edit_user, edit_time, version
+    </sql>
+
+    <insert id="insertBatch"
+            parameterType="java.util.List">
+        insert into ins_closed_rule_condition_his (
+        <include refid="Base_Column_List"/>
+        )
+        values
+        <foreach collection="list" item="entity" separator=",">
+            (
+            #{entity.conditionId}, #{entity.ruleId}, #{entity.conditionType},
+            #{entity.operator}, #{entity.option}, #{entity.valueType}, #{entity.value},
+            #{entity.sortOrder},
+            #{entity.editUser, typeHandler=com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler},
+            #{entity.editTime}, #{entity.version}
+            )
+        </foreach>
+    </insert>
+
+</mapper>

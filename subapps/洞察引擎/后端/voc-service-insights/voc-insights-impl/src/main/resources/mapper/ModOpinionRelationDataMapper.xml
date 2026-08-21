@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.insights.engine.mapper.ModOpinionRelationDataMapper">
+
+
+    <select id="queryModOpinionRelationList" resultType="com.voc.service.insights.engine.vo.ModOpinionRelationDataVo">
+        select mord.opinion,
+               mord.topic,
+               relation_label    as relationLabel,
+               mord.create_time  as createTime,
+               opinion_id        as opinionId,
+               label_type        as labelType,
+               mord.client_id  as clientId,
+               mord.channel_id as channelId
+        from mod_opinion_relation_data mord
+        where to_date(mord.create_time) BETWEEN to_date(#{startTime}) and to_date(now())
+    </select>
+
+</mapper>

@@ -1,0 +1,70 @@
+- main [ref=e2]:
+  - generic [ref=e3]:
+    - generic [ref=e4]:
+      - heading "AI 消费者 · 架构图集" [level=1] [ref=e5]
+      - paragraph [ref=e6]: 面向汽车产品、市场与设计团队的 AI 模拟调研工作台
+      - generic [ref=e7]: 蓝色实线：当前前端 Demo 已实现 紫色虚线：项目规划中的生产能力
+    - button "切换深色模式" [ref=e10] [cursor=pointer]: ☾
+  - tablist "图表导航" [ref=e11]:
+    - button "技术架构图" [ref=e12] [cursor=pointer]
+    - button "产品架构图" [ref=e13] [cursor=pointer]
+    - button "业务流程图" [active] [ref=e14] [cursor=pointer]
+  - generic [ref=e182]:
+    - generic [ref=e183]:
+      - generic [ref=e184]:
+        - heading "核心业务流程图" [level=2] [ref=e185]
+        - paragraph [ref=e186]: 从创建调研到输出决策建议；蓝色路径为当前 Demo 可操作链路，紫色节点为生产调研执行与质量闭环
+      - generic [ref=e187]:
+        - generic [ref=e188]: Demo 可操作
+        - generic [ref=e189]: 生产化补齐
+        - generic [ref=e190]: 数据支撑
+    - generic [ref=e191]:
+      - img "AI消费者核心业务流程图" [ref=e192]:
+        - generic [ref=e194]: 消费调研工作流
+        - generic [ref=e195]: 用户通过业务场景把人群、材料与问题转化为可解释的 AI 模拟调研结论
+        - generic [ref=e197] [cursor=pointer]:
+          - generic [ref=e199]: 准备数据资产
+          - generic [ref=e200]: 标签、人群、材料
+          - generic [ref=e201]: 场景与指标口径
+        - generic [ref=e202] [cursor=pointer]:
+          - generic [ref=e204]: 圈选 / 选择消费者
+          - generic [ref=e205]: 标签组合 → 消费者模板
+          - generic [ref=e206]: 展示命中用户与画像
+        - generic [ref=e207] [cursor=pointer]:
+          - generic [ref=e209]: 配置调研场景
+          - generic [ref=e210]: 标准模板 / 自定义问题
+          - generic [ref=e211]: 输入材料与目标指标
+        - generic [ref=e212] [cursor=pointer]:
+          - generic [ref=e214]: 创建调研任务
+          - generic [ref=e215]: 名称 · 样本量 · 置信度
+          - generic [ref=e216]: 任务配置与留痕
+        - generic [ref=e217] [cursor=pointer]:
+          - generic [ref=e219]: 发布与并行模拟
+          - generic [ref=e220]: 队列调度 · 问答执行
+          - generic [ref=e221]: 进度 · 异常 · 降级
+        - generic [ref=e222] [cursor=pointer]:
+          - generic [ref=e224]: 汇总与洞察生成
+          - generic [ref=e225]: 偏好 · 归因 · 切分 · 对比
+          - generic [ref=e226]: 自动报告 / 导出
+        - generic [ref=e227] [cursor=pointer]:
+          - generic [ref=e229]: 人工复核与决策
+          - generic [ref=e230]: 查看结论与证据
+          - generic [ref=e231]: 形成业务行动建议
+        - generic [ref=e232] [cursor=pointer]:
+          - generic [ref=e234]: 模拟问答与追问
+          - generic [ref=e235]: 会话式回答 · 历史记录
+          - generic [ref=e236]: 证据与归因层级
+        - generic [ref=e237] [cursor=pointer]:
+          - generic [ref=e239]: 效果评估与校准
+          - generic [ref=e240]: 真实调研 / 专家 / 市场反馈
+          - generic [ref=e241]: 稳定性与一致性评估
+        - generic [ref=e243]: 校准结果反哺：数据 · 提示词 · 模型 · 场景
+      - generic [ref=e244]:
+        - button "切换网格" [ref=e245] [cursor=pointer]: "#"
+        - button "放大" [ref=e246] [cursor=pointer]: +
+        - button "缩小" [ref=e247] [cursor=pointer]: −
+  - generic [ref=e102]:
+    - generic [ref=e103]:
+      - strong [ref=e104]: 依据：
+      - text: 当前代码、产品 Demo 预设场景与 7 个月交付计划
+    - generic [ref=e105]: 点击任一节点可高亮；拖动画布平移；# 隐藏网格。

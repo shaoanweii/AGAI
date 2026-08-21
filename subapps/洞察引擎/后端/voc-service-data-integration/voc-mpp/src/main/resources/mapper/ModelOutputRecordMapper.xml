@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.data.integration.mapper.ModelOutputRecordMapper">
+    <insert id="record"  >
+		INSERT
+			INTO
+			ods_channel_output_record (id,
+			channel,
+			create_time,
+			planned_execution_length,
+			estimated_execution_length)
+		select
+			uuid() as id,
+			f1.channel_code as channel,
+			now() as create_time,
+			ifnull(planned_execution_length, 0) as planned_execution_length ,
+			ifnull(estimated_execution_length, 0) as estimated_execution_length
+		from
+			(
+			select
+				count(*) as planned_execution_length,
+				channel_id as channel_code
+			from
+				ays_post_process_data
+			<where>
+				date(create_time) = date(date_sub(now(),1))
+                and channel_id in
+                <foreach item="item" index="index" collection="channelList" open="(" separator="," close=")">
+                        #{item}
+				</foreach>
+				and channel_id is not null
+			</where>
+			group by
+				channel_id )f1
+		left join (
+			select
+				count(*) as estimated_execution_length,
+            channel_id as channel_code
+			from
+				dwd_voc_platform_label_result_origin
+			<where>
+				date(create_time) = date(date_sub(now(),1))
+			    and channel_id in
+				<foreach item="item" index="index" collection="channelList" open="(" separator="," close=")">
+					#{item}
+				</foreach>
+				and channel_id is not null
+			</where>
+				group by channel_id
+		)f2 on f1.channel_code = f2.channel_code
+
+	
+	</insert>
+   <!-- <insert id="saveOutputData"  >
+        insert into dm_labeled_result_data
+        (id, one_id, channel_biz, channel_dc, data_id, original_id, create_time, biz_create_time, dc_create_time, content, customer_name, customer_sex, license_plate, car_series_code, dealership_code_delivery, dealership_code_purchase, dealership_code_return, ext_attrs, ext_attrs2, ext_attrs3, voc_attrs)
+        select
+            id, one_id, channel_biz, channel_dc, data_id, original_id, create_time, biz_create_time, dc_create_time, content, customer_name, customer_sex, license_plate, car_series_code, dealership_code_delivery, dealership_code_purchase, dealership_code_return, ext_attrs, ext_attrs2, ext_attrs3, voc_attrs
+        from sta_model_processed_data_out
+            <where>
+            date(create_time) = date(now())
+            and channel_dc in
+            <foreach item="item" index="index" collection="channelList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+            </where>
+    </insert>-->
+</mapper>

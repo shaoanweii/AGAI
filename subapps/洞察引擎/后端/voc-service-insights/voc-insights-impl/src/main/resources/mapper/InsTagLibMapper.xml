@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.insights.engine.mapper.InsTagLibMapper">
+    <resultMap id="BaseResultMap" type="com.voc.service.insights.engine.entity.InsTagLibEntity">
+        <result column="id" property="id" />
+        <result column="tag_parent_id" property="tagParentId" />
+        <result column="tag_name" property="tagName" />
+        <result column="tag_name_en" property="tagNameEn" />
+        <result column="tag_code" property="tagCode" />
+        <result column="tag_type" property="tagType" />
+        <result column="tag_attribute" property="tagAttribute" />
+        <result column="energy_type" property="energyType" typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
+        <result column="car_type" property="carType" typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
+        <result column="tag_status" property="tagStatus" />
+        <result column="tag_description" property="tagDescription" />
+        <result column="seriousness" property="seriousness" />
+        <result column="user_journey1" property="userJourney1" />
+        <result column="user_journey2" property="userJourney2" />
+        <result column="scenario_attr" property="scenarioAttr" />
+        <result column="event_clarity" property="eventClarity" />
+        <result column="d2c_responsible_dept" property="d2cResponsibleDept"/>
+        <result column="d2c_cc_dept" property="d2cCcDept" typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="create_user" property="createUser" />
+        <result column="update_user" property="updateUser" />
+        <result column="app_client" property="appClient" typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
+        <result column="level" property="level" />
+        <result column="emotion" property="emotion" />
+        <result column="intention" property="intention" />
+        <result column="sort" property="sort" />
+        <result column="d2c_accountable_dept" property="d2cAccountableDept"  typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
+        <result column="tag_accuracy" property="tagAccuracy" />
+        <result column="tag_customer_issue_classification" property="tagCustomerIssueClassification" />
+        <result column="tag_issue_severity" property="tagIssueSeverity" />
+        <result column="tag_code_status" property="tagCodeStatus" />
+        <result column="tag_business_domain" property="tagBusinessDomain" />
+        <result column="tag_high_value_flag" property="tagHighValueFlag" />
+        <result column="tag_complaint_flag_needing_reply" property="tagComplaintFlagNeedingReply" />
+        <result column="tag_high_quality_voc_flag" property="tagHighQualityVocFlag" />
+        <result column="tag_new_energy_or_fuel" property="tagNewEnergyOrFuel" />
+        <result column="tag_need_forvclosed_loop" property="tagNeedForvclosedLoop" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,
+                tag_parent_id,
+                tag_name,
+                tag_name_en,
+                tag_code,
+                tag_type,
+                tag_attribute,
+                energy_type,
+                car_type,
+                tag_status,
+                tag_description,
+                seriousness,
+                user_journey1,
+                user_journey2,
+                scenario_attr,
+                event_clarity,
+                d2c_responsible_dept,
+                d2c_cc_dept,
+                create_time,
+                update_time,
+                create_user,
+                update_user,
+                app_client,
+                level,
+                emotion,
+                intention,
+                sort,
+                d2c_accountable_dept,
+                tag_accuracy,
+                tag_customer_issue_classification,
+                tag_issue_severity,
+                tag_code_status,
+                tag_business_domain,
+                tag_high_value_flag,
+                tag_complaint_flag_needing_reply,
+                tag_high_quality_voc_flag,
+                tag_new_energy_or_fuel,
+                tag_need_forvclosed_loop
+    </sql>
+
+    <select id="checkTagLibName" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from ins_tag_info
+        where
+        tag_name = #{tagLibName}
+        <if test="tagParentId !=null and tagParentId !=''">
+            and tag_parent_id = #{tagParentId}
+        </if>
+
+    </select>
+
+    <select id="findTagLibList" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from ins_tag_info
+        where 1=1
+        <if test="tagLibModel.tagAttribute !=null and tagLibModel.tagAttribute !='' ">
+            and tag_attribute = #{tagLibModel.tagAttribute}
+        </if>
+
+        <if test="tagLibModel.tagParentIds != null and tagLibModel.tagParentIds.size()>0">
+            and tag_parent_id in
+            <foreach item="item" index="index" collection="tagLibModel.tagParentIds" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="tagLibModel.tagTypeList != null and tagLibModel.tagTypeList.size()>0">
+            and tag_type in
+            <foreach item="item" index="index" collection="tagLibModel.tagTypeList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="tagLibModel.tagType !=null and tagLibModel.tagType !='' ">
+            and tag_type = #{tagLibModel.tagType}
+        </if>
+        <if test="tagLibModel.energy != null and tagLibModel.energy != ''">
+            and
+            json_contains(energy_type,#{tagLibModel.energy,typeHandler=com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler})
+        </if>
+        <if test="tagLibModel.tagStatus != null and tagLibModel.tagStatus != ''">
+            and tag_status = #{tagLibModel.tagStatus}
+        </if>
+        <if test="tagLibModel.tagName != null and tagLibModel.tagName != ''">
+            and tag_name like concat('%',#{tagLibModel.tagName},'%')
+        </if>
+        <if test="tagLibModel.appClient !=null and tagLibModel.appClient !=''">
+            and
+            json_contains(app_client,#{tagLibModel.appClient,typeHandler=com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler})
+        </if>
+        <if test="tagLibModel.order !=null and tagLibModel.order !=''">
+            order by tag_type,${tagLibModel.order}
+        </if>
+        <if test="tagLibModel.order ==null or tagLibModel.order ==''">
+            order by create_time desc
+        </if>
+    </select>
+
+    <select id="findTagLibNameHierarchical" resultType="java.lang.String">
+        WITH RECURSIVE CTE AS (SELECT *
+                               FROM ins_tag_info
+                               WHERE id = #{tagLibId}
+                               UNION ALL
+                               SELECT t.*
+                               FROM ins_tag_info t
+                                        INNER JOIN CTE ON t.id = CTE.tag_parent_id)
+        SELECT GROUP_CONCAT(tag_name SEPARATOR '#') as tag_name
+        FROM CTE
+        where CTE.id != #{tagLibId}
+        group by tag_type
+        ORDER BY tag_code
+    </select>
+
+    <select id="findTagLibListByParentId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from ins_tag_info where tag_parent_id = #{tagLibId} and tag_attribute = 'FinalLabel'
+    </select>
+
+    <select id="findTagLibById" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from ins_tag_info where id = #{tagLibId}
+    </select>
+
+    <select id="UpwardFindTagLibHierarchical" resultMap="BaseResultMap">
+        WITH RECURSIVE CTE AS (
+        SELECT * FROM ins_tag_info
+        WHERE id in
+        <foreach item="item" index="index" collection="tagParentIds" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        UNION ALL
+        SELECT t.* FROM ins_tag_info t INNER JOIN CTE ON t.id = CTE.tag_parent_id
+        )
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM CTE group by id ORDER BY id
+    </select>
+
+    <update id="updateTagLibById">
+        UPDATE ins_tag_info
+        <set>
+            <if test="null != tagLibEntity.tagParentId and '' != tagLibEntity.tagParentId">tag_parent_id = #{tagLibEntity.tagParentId},</if>
+            <if test="null != tagLibEntity.tagName and '' != tagLibEntity.tagName">tag_name = #{tagLibEntity.tagName},</if>
+            tag_name_en = #{tagLibEntity.tagNameEn},
+            <if test="null != tagLibEntity.tagCode and '' != tagLibEntity.tagCode">tag_code = #{tagLibEntity.tagCode},</if>
+            <if test="null != tagLibEntity.tagType and '' != tagLibEntity.tagType">tag_type = #{tagLibEntity.tagType},</if>
+            <if test="null != tagLibEntity.tagAttribute and '' != tagLibEntity.tagAttribute">tag_attribute = #{tagLibEntity.tagAttribute},</if>
+            <if test="null != tagLibEntity.energyTypes ">energy_type = #{tagLibEntity.energyTypes},</if>
+            <if test="null != tagLibEntity.carTypes ">car_type =#{tagLibEntity.carTypes},</if>
+            <if test="null != tagLibEntity.tagStatus and '' != tagLibEntity.tagStatus">tag_status = #{tagLibEntity.tagStatus},</if>
+            tag_description = #{tagLibEntity.tagDescription},
+            <if test="null != tagLibEntity.seriousness and '' != tagLibEntity.seriousness">seriousness = #{tagLibEntity.seriousness},</if>
+            <if test="null != tagLibEntity.userJourneys ">user_journey =#{tagLibEntity.userJourneys},</if>
+            update_time = #{tagLibEntity.updateTime},
+            <if test="null != tagLibEntity.updateUser and '' != tagLibEntity.updateUser">update_user = #{tagLibEntity.updateUser},</if>
+            <if test="null != tagLibEntity.appClients">app_client = #{tagLibEntity.appClients}</if>
+        </set>
+        WHERE id = #{tagLibEntity.id}
+    </update>
+
+    <select id="findTagLibByIds" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from ins_tag_info where id in
+        <foreach item="item" index="index" collection="ids" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="findTagLibHierarchical" resultMap="BaseResultMap">
+        WITH RECURSIVE CTE AS (SELECT *
+                               FROM ins_tag_info
+                               WHERE  id in
+                                <foreach item="item" index="index" collection="ids" open="(" separator="," close=")">
+                                    #{item}
+                                </foreach>
+                               UNION ALL
+                               SELECT t.*
+                               FROM ins_tag_info t
+                                        INNER JOIN CTE ON t.id = CTE.tag_parent_id)
+        select * from CTE
+        group by tag_code,tag_type
+    </select>
+
+    <select id="findTagLibByCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from ins_tag_info where tag_code = #{code}
+    </select>
+</mapper>

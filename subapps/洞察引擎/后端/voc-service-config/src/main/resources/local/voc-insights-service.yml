@@ -1,0 +1,38 @@
+threadpool:
+  async:
+    executor:
+      enabled: true
+      corePoolSize: 100
+      maxPoolSize: 1000
+      queueCapacity: 3000
+      threadNamePrefix: ins-
+
+logging.level:
+  com.voc: debug
+  com.alicp: debug
+
+#初始化客户时 默认超管账户后缀 格式{0}_admin123   {0}客户code
+password.default.client: Q2m#yC18@Yo?
+username.default.client: admin
+ins.project.id: 4cb464bb8f604284dd83c92356fd62a4
+
+default:
+  common:
+    clientId: 764547797eb2e192763f5334028d49c9
+    #clientId: "e11ab369ea4d56a7a64ab0a3c491a2cc"
+
+
+xxl:
+  job:
+    admin:
+      addresses: http://172.16.80.16:32734/xxl-job-admin
+      username: admin
+      password: L7bzd1gmm+xxl-job
+    accessToken: default_token
+    executor:
+      appname: vdp-voc-data-insights
+      address:
+      ip:
+      port: 9999
+      logpath:
+      logretentiondays: 30

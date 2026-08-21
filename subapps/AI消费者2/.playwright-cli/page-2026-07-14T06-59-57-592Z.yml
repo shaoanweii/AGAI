@@ -1,0 +1,295 @@
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - complementary [ref=e4]:
+      - generic [ref=e5]:
+        - img "AI消费者洞察平台" [ref=e6]
+        - generic [ref=e7]:
+          - strong [ref=e8]: AI消费者洞察平台
+          - generic [ref=e9]: Consumer Insight OS
+      - navigation [ref=e10]:
+        - generic [ref=e11]:
+          - button "模拟问答" [ref=e12] [cursor=pointer]
+          - button "消费调研" [ref=e16] [cursor=pointer]
+        - generic [ref=e20]:
+          - generic [ref=e21]: 数据资产
+          - button "消费者库" [ref=e22] [cursor=pointer]
+          - button "调研场景" [ref=e27] [cursor=pointer]
+          - button "标签体系" [ref=e31] [cursor=pointer]
+          - button "用户数据" [ref=e36] [cursor=pointer]
+        - generic [ref=e41]:
+          - generic [ref=e42]: 问答记录
+          - generic [ref=e43]:
+            - button "20万定价接受度追问" [ref=e44] [cursor=pointer]
+            - button "后排娱乐屏必要性" [ref=e50] [cursor=pointer]
+            - button "智能座舱卖点验证" [ref=e56] [cursor=pointer]
+            - button "18.5万价格下探" [ref=e62] [cursor=pointer]
+      - generic [ref=e68]:
+        - generic [ref=e69]:
+          - generic [ref=e70]: 李
+          - generic [ref=e71]:
+            - strong [ref=e72]: 李建秋
+            - generic [ref=e73]: 产品经理
+        - button "系统设置" [ref=e74] [cursor=pointer]
+    - main [ref=e78]:
+      - generic [ref=e81]:
+        - generic [ref=e82]:
+          - heading "消费调研" [level=2] [ref=e83]
+          - generic [ref=e84]:
+            - tablist "任务状态筛选" [ref=e85]:
+              - button "全部" [ref=e86] [cursor=pointer]
+              - button "已完成" [ref=e87] [cursor=pointer]
+              - button "进行中" [ref=e88] [cursor=pointer]
+              - button "未开始" [ref=e89] [cursor=pointer]
+            - button "新建调研" [ref=e91] [cursor=pointer]
+        - generic [ref=e93]:
+          - generic [ref=e94]:
+            - generic [ref=e95]: 任务编号
+            - generic [ref=e96]: 任务名称
+            - generic [ref=e97]: 调研场景
+            - generic [ref=e98]: 消费者
+            - generic [ref=e99]: 创建人
+            - generic [ref=e100]: 创建时间
+            - generic [ref=e101]: 任务状态
+            - generic [ref=e102]: 操作
+          - generic [ref=e103]:
+            - article [ref=e104]:
+              - generic [ref=e105]: T-240718-001
+              - strong [ref=e106]: 2025款 智行 Compact EV SUV · 造型方向验证
+              - generic [ref=e107]: 造型方向验证
+              - generic [ref=e108]: 25-35岁新能源潜客
+              - generic [ref=e109]: 张明
+              - generic [ref=e110]: 今天 11:20
+              - generic [ref=e111]: 已完成
+              - generic [ref=e114]:
+                - button "查看报告" [ref=e115] [cursor=pointer]
+                - button "删除" [ref=e116] [cursor=pointer]
+            - article [ref=e117]:
+              - generic [ref=e118]: T-240718-002
+              - strong [ref=e119]: 中配版配置组合偏好测试
+              - generic [ref=e120]: 配置偏好验证
+              - generic [ref=e121]: 家庭首购换购人群
+              - generic [ref=e122]: 李倩
+              - generic [ref=e123]: 今天 10:06
+              - generic [ref=e124]: 进行中
+              - button "中止任务" [ref=e128] [cursor=pointer]
+            - article [ref=e129]:
+              - generic [ref=e130]: T-240717-009
+              - strong [ref=e131]: 上市前购买意愿与市占预测
+              - generic [ref=e132]: 购买意愿与市占预测
+              - generic [ref=e133]: 中高消费新能源潜客
+              - generic [ref=e134]: 王珂
+              - generic [ref=e135]: 昨天 18:42
+              - generic [ref=e136]: 已完成
+              - generic [ref=e139]:
+                - button "查看报告" [ref=e140] [cursor=pointer]
+                - button "删除" [ref=e141] [cursor=pointer]
+            - article [ref=e142]:
+              - generic [ref=e143]: T-240716-004
+              - strong [ref=e144]: 20万价格点敏感度复测
+              - generic [ref=e145]: 价格敏感度与定价优化
+              - generic [ref=e146]: 待配置
+              - generic [ref=e147]: 赵宁
+              - generic [ref=e148]: 昨天 15:30
+              - generic [ref=e149]: 未开始
+              - generic [ref=e152]:
+                - button "开始任务" [ref=e153] [cursor=pointer]
+                - button "编辑" [ref=e154] [cursor=pointer]
+                - button "删除" [ref=e155] [cursor=pointer]
+            - article [ref=e156]:
+              - generic [ref=e157]: T-240716-003
+              - strong [ref=e158]: 前脸贯穿灯带接受度复核
+              - generic [ref=e159]: 造型方向验证
+              - generic [ref=e160]: 科技尝鲜者
+              - generic [ref=e161]: 陈露
+              - generic [ref=e162]: 07-16 14:12
+              - generic [ref=e163]: 已完成
+              - generic [ref=e166]:
+                - button "查看报告" [ref=e167] [cursor=pointer]
+                - button "删除" [ref=e168] [cursor=pointer]
+            - article [ref=e169]:
+              - generic [ref=e170]: T-240715-011
+              - strong [ref=e171]: 后排娱乐屏选装价值评估
+              - generic [ref=e172]: 配置偏好验证
+              - generic [ref=e173]: 有孩家庭用户
+              - generic [ref=e174]: 周航
+              - generic [ref=e175]: 07-15 17:36
+              - generic [ref=e176]: 已完成
+              - generic [ref=e179]:
+                - button "查看报告" [ref=e180] [cursor=pointer]
+                - button "删除" [ref=e181] [cursor=pointer]
+            - article [ref=e182]:
+              - generic [ref=e183]: T-240715-006
+              - strong [ref=e184]: 18.5万价格点购买概率测试
+              - generic [ref=e185]: 价格敏感度与定价优化
+              - generic [ref=e186]: 预算15-25万潜客
+              - generic [ref=e187]: 赵宁
+              - generic [ref=e188]: 07-15 12:08
+              - generic [ref=e189]: 已完成
+              - generic [ref=e192]:
+                - button "查看报告" [ref=e193] [cursor=pointer]
+                - button "删除" [ref=e194] [cursor=pointer]
+            - article [ref=e195]:
+              - generic [ref=e196]: T-240714-014
+              - strong [ref=e197]: 智能座舱卖点吸引力测试
+              - generic [ref=e198]: 购买意愿与市占预测
+              - generic [ref=e199]: 汽车垂媒高活跃
+              - generic [ref=e200]: 王珂
+              - generic [ref=e201]: 07-14 19:20
+              - generic [ref=e202]: 进行中
+              - button "中止任务" [ref=e206] [cursor=pointer]
+            - article [ref=e207]:
+              - generic [ref=e208]: T-240714-008
+              - strong [ref=e209]: 悬浮式车顶审美分层分析
+              - generic [ref=e210]: 造型方向验证
+              - generic [ref=e211]: 一线城市年轻用户
+              - generic [ref=e212]: 陈露
+              - generic [ref=e213]: 07-14 10:46
+              - generic [ref=e214]: 已完成
+              - generic [ref=e217]:
+                - button "查看报告" [ref=e218] [cursor=pointer]
+                - button "删除" [ref=e219] [cursor=pointer]
+            - article [ref=e220]:
+              - generic [ref=e221]: T-240713-017
+              - strong [ref=e222]: 基础版配置减配风险评估
+              - generic [ref=e223]: 配置偏好验证
+              - generic [ref=e224]: 首次购车用户
+              - generic [ref=e225]: 李倩
+              - generic [ref=e226]: 07-13 16:24
+              - generic [ref=e227]: 未开始
+              - generic [ref=e230]:
+                - button "开始任务" [ref=e231] [cursor=pointer]
+                - button "编辑" [ref=e232] [cursor=pointer]
+                - button "删除" [ref=e233] [cursor=pointer]
+          - generic [ref=e234]:
+            - generic [ref=e235]: 共 20 条，每页 10 条
+            - generic [ref=e236]:
+              - button "上一页" [disabled] [ref=e237]
+              - button "1" [ref=e238] [cursor=pointer]
+              - button "2" [ref=e239] [cursor=pointer]
+              - button "下一页" [ref=e240] [cursor=pointer]
+      - generic [ref=e242]:
+        - generic [ref=e243]:
+          - generic [ref=e244]:
+            - strong [ref=e245]: 车型X 外观造型验证研究（定量调研）
+            - generic [ref=e246]: 报告编号：R-20240518-001 样本量：1,206 研究时间：2024.05.10 – 2024.05.16
+          - navigation [ref=e247]:
+            - button "概览" [ref=e248] [cursor=pointer]
+            - button "消费者画像" [ref=e249] [cursor=pointer]
+            - button "归因路径" [ref=e250] [cursor=pointer]
+            - button "校准优化" [ref=e251] [cursor=pointer]
+          - button "导出报告" [ref=e252] [cursor=pointer]
+          - button "关闭" [ref=e256] [cursor=pointer]
+        - region "校准优化" [ref=e587]:
+          - generic [ref=e588]:
+            - generic [ref=e589]:
+              - strong [ref=e590]: 2025款 智行 Compact EV SUV · 造型方向验证 · 校准优化
+              - generic [ref=e591]: 将真实反馈转化为可追溯的模型校准指令。
+            - button "清空" [ref=e592] [cursor=pointer]
+          - generic [ref=e593]:
+            - generic [ref=e594]:
+              - generic [ref=e595]:
+                - generic [ref=e596]:
+                  - strong [ref=e597]: 证据队列
+                  - generic [ref=e598]: 来自消费者的真实反馈（原话）
+                - combobox "筛选证据来源" [ref=e599]:
+                  - option "全部来源"
+                  - option "模拟访谈"
+                  - option "焦点小组"
+                  - option "在线评论" [selected]
+              - generic [ref=e600]:
+                - article [ref=e601]:
+                  - paragraph [ref=e602]: “虽然续航标称 600 公里，但高速开空调实际就 400 出头，长途还是有焦虑。”
+                  - button "已纳入指令" [ref=e603] [cursor=pointer]
+                  - generic [ref=e604]: 来源：模拟访谈 问题：续航表现满意度
+                  - emphasis [ref=e605]: 样本画像：男性 · 28 岁 · 一线城市 · 计划 3 个月内购车
+                - article [ref=e606]:
+                  - paragraph [ref=e607]: “充电桩有，但排队严重，尤其节假日服务区，体验很差。”
+                  - button "已纳入指令" [ref=e608] [cursor=pointer]
+                  - generic [ref=e609]: 来源：焦点小组 问题：补能体验
+                  - emphasis [ref=e610]: 样本画像：女性 · 32 岁 · 二线城市 · 已有家用车
+                - article [ref=e611]:
+                  - paragraph [ref=e612]: “智能化只是锦上添花，核心还是安全和可靠，不想当小白鼠。”
+                  - button "已纳入指令" [active] [ref=e696] [cursor=pointer]
+                  - generic [ref=e614]: 来源：模拟访谈 问题：智能化重要性
+                  - emphasis [ref=e615]: 样本画像：男性 · 35 岁 · 二线城市 · 计划 6 个月内购车
+                - article [ref=e616]:
+                  - paragraph [ref=e617]: “价格再降 1–2 万会更有考虑，现在落地要 20 万出头，还是有点犹豫。”
+                  - button "转为校准指令" [ref=e618] [cursor=pointer]
+                  - generic [ref=e619]: 来源：在线评论 问题：价格接受度
+                  - emphasis [ref=e620]: 样本画像：女性 · 26 岁 · 三线城市 · 比价阶段
+              - button "查看更多证据" [ref=e621] [cursor=pointer]
+            - generic [ref=e624]:
+              - generic [ref=e625]:
+                - generic [ref=e626]:
+                  - strong [ref=e627]: 校准指令
+                  - generic [ref=e628]: 让洞察更贴近真实消费者认知
+                - generic [ref=e629]: 3 条证据已引用
+              - generic [ref=e630]:
+                - generic [ref=e631]:
+                  - text: 期望调整
+                  - emphasis [ref=e632]: "*"
+                - textbox "期望调整 * 69/200" [ref=e697]: 提升对“实际续航与标称差异导致的长途焦虑”的敏感度，在续航满意度相关问题中更充分反映用户的负面体验。 纳入“智能化重要性”的真实反馈证据。
+                - generic: 69/200
+              - generic [ref=e634]:
+                - generic [ref=e635]:
+                  - text: 适用人群
+                  - emphasis [ref=e636]: "*"
+                - generic [ref=e637]:
+                  - generic [ref=e638]: 计划购车时间 ≤ 6个月 ×
+                  - generic [ref=e639]: 年龄：25–40岁 ×
+                  - generic [ref=e640]: 城市等级：一线/新一线/二线 ×
+              - generic [ref=e641]:
+                - generic [ref=e642]:
+                  - text: 约束条件
+                  - emphasis [ref=e643]: "*"
+                - textbox "约束条件 * 39/200" [ref=e644]: 仅针对高速工况下的续航与能耗相关反馈；不改变对城市通勤场景下续航满意度的判断。
+                - generic: 39/200
+              - generic [ref=e645]:
+                - strong [ref=e646]: 拟修改点 基于以上指令，模型将做如下调整
+                - generic [ref=e647]:
+                  - generic [ref=e648]: 影响维度
+                  - generic [ref=e649]: 当前策略（V1.2）
+                  - generic [ref=e650]: 拟修改策略（V1.3）
+                  - generic [ref=e651]: 预期影响
+                - generic [ref=e652]:
+                  - generic [ref=e653]: 续航满意度
+                  - generic [ref=e654]: 侧重标称续航与 CLTC 数据
+                  - generic [ref=e655]: 增加实际工况（高速+空调）续航偏差的负向权重
+                  - generic [ref=e656]: 负向判断 ↑
+                - generic [ref=e657]:
+                  - generic [ref=e658]: 长途出行信心
+                  - generic [ref=e659]: 较少考虑能耗波动与补能不便
+                  - generic [ref=e660]: 纳入能耗波动与服务区排队体验的影响
+                  - generic [ref=e661]: 负向判断 ↑
+                - generic [ref=e662]:
+                  - generic [ref=e663]: 购车决策意向
+                  - generic [ref=e664]: 价格与配置权重较高
+                  - generic [ref=e665]: 在 20 万以上区间，增加“续航焦虑”对决策的抑制权重
+                  - generic [ref=e666]: 转化率 ↓
+              - generic [ref=e667]:
+                - generic [ref=e668]:
+                  - text: 指令备注
+                  - emphasis [ref=e669]: （可选）
+                - textbox "指令备注 （可选）" [ref=e670]:
+                  - /placeholder: 选填，补充说明该指令的背景或适用场景…
+              - button "已生成待验证校准版本" [ref=e694] [cursor=pointer]
+          - generic [ref=e672]:
+            - generic [ref=e673]:
+              - generic [ref=e674]:
+                - strong [ref=e675]: 版本差异预览
+                - generic [ref=e676]: 候选版本已生成，可进入验证与发布流程。
+              - generic [ref=e695]: 校验通过
+            - generic [ref=e677]:
+              - article [ref=e678]:
+                - strong [ref=e679]: V1.2
+                - generic [ref=e680]: 当前版本（已启用）
+                - paragraph [ref=e681]: 续航满意度：中性偏正（权重 0.52）长途出行信心：中性（权重 0.48）购车决策意向：中性偏正（权重 0.56）
+              - article [ref=e684]:
+                - strong [ref=e685]: V1.3
+                - generic [ref=e686]: 待验证版本（基于本次校准）
+                - paragraph [ref=e687]: 续航满意度：中性偏负（权重 0.61）长途出行信心：中性偏负（权重 0.59）购车决策意向：中性（权重 0.49）
+              - generic [ref=e688]:
+                - strong [ref=e689]: 预期整体影响
+                - paragraph [ref=e690]: 预计提升对于“实际续航不足预期”相关负面反馈的识别能力，在续航满意度洞察中的占比提升约 8pp。
+                - button "保存草稿" [ref=e691] [cursor=pointer]
+  - generic [ref=e569]: 0%

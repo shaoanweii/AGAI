@@ -1,0 +1,29 @@
+druid.mysql.usePingMethod: false
+
+spring:
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    dynamic:
+      primary: master
+      strict: false
+      datasource:
+        master:
+          driverClassName: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://localhost:3306/vdp_ms_be?characterEncoding=UTF-8&useUnicode=true&useSSL=false&tinyInt1isBit=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true
+          username: root
+          password: root
+          hikari:
+            minimum-idle: 2
+            maximum-pool-size: 10
+            auto-commit: true
+            connection-timeout: 30000
+            idle-timeout: 600000
+            max-lifetime: 1800000
+            validation-timeout: 5000
+            pool-name: VocStandalonePool
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    call-setters-on-nulls: true
+    cache-enabled: true

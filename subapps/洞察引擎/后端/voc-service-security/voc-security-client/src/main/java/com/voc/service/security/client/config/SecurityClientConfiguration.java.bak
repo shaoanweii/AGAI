@@ -1,0 +1,72 @@
+package com.voc.security.client.config;
+
+import filter.client.security.com.voc.service.JwtFilter;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import java.util.stream.Stream;
+
+//@EnableWebSecurity
+//@EnableMethodSecurity
+//@Configuration
+public class SecurityClientConfiguration {
+    @Autowired
+    JwtFilter jwtAuthFilter;
+
+    @Autowired
+    WhiteListClientProperties whiteListClientProperties;
+
+    @Bean
+    SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+        if (whiteListClientProperties.isEnable()) {
+            Stream.of(whiteListClientProperties.getUrls().toArray(new String[]{})).forEach(e -> {
+                log.info("ignore:{}", e);
+            });
+        }
+
+        // 配置拦截规则
+        httpSecurity
+                // 前后端分离是无状态的，不需要session了，直接禁用。
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(authorizeHttpRequests -> {
+                    authorizeHttpRequests
+                            // 允许所有OPTIONS请求
+                            .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                            .requestMatchers(whiteListClientProperties.getUrls().toArray(new String[]{})).permitAll()
+                            .anyRequest().authenticated();
+                });
+        // 禁用默认的登录和退出
+        httpSecurity.formLogin(AbstractHttpConfigurer::disable);
+        httpSecurity.logout(AbstractHttpConfigurer::disable);
+        httpSecurity.httpBasic(AbstractHttpConfigurer::disable);
+        httpSecurity.csrf(AbstractHttpConfigurer::disable);
+
+        // 异常时认证处理流程
+        /*httpSecurity.exceptionHandling(exeConfig -> {
+            exeConfig.authenticationEntryPoint(authenticationEntryPoint());
+        });*/
+
+        // 添加过滤器
+        httpSecurity
+                .addFilterAt(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+        return httpSecurity.build();
+    }
+
+    /*@Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring()
+                .requestMatchers(HttpMethod.OPTIONS, "/**")
+                .requestMatchers(whiteListClientProperties.getUrls().toArray(new String[]{}))
+                ;
+    }*/
+}

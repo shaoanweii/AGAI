@@ -1,0 +1,15 @@
+server:
+  port: 9000
+  #vhost: 172.16.80.23
+  #vport: 30888
+
+spring:
+  cloud.nacos:
+    config:
+      enabled: false
+    discovery:
+      enabled: false
+  config:
+    location: classpath:${spring.profiles.active}/common.yml,classpath:${spring.profiles.active}/common-security-mysql.yml,classpath:${spring.profiles.active}/common-redis.yml,classpath:${spring.profiles.active}/common-swagger.yml,classpath:${spring.profiles.active}/voc-security-service.yml
+
+

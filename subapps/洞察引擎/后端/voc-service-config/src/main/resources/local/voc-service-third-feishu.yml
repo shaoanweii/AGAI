@@ -1,0 +1,2 @@
+#数据监控服务-报警信息发布地址
+third.feishu.send.msg.url: https://open.feishu.cn/open-apis/bot/v2/hook/c55f932b-7305-42f6-a1b6-32d6eaf7de71

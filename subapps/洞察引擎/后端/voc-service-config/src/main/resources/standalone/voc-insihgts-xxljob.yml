@@ -1,0 +1,12 @@
+xxl:
+  job:
+    accessToken: default_token
+    admin:
+      addresses:
+    executor:
+      appname: vdp-voc-data-insights-standalone
+      address:
+      ip:
+      port: 9999
+      logpath:
+      logretentiondays: 3

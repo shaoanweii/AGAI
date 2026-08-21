@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.insights.engine.mapper.InsBasicInfoMapper">
+
+
+    <select id="findProvinceAreaInfo" resultType="com.voc.service.insights.engine.entity.InsProvinceAreaInfoEntity">
+        select province_name                         as provinceName,
+               group_concat(area_name separator '、') as areaName
+        from ins_province_area
+        group by province_code
+    </select>
+
+    <select id="findAllProvinceAreaInfo" resultType="com.voc.service.insights.engine.entity.InsProvinceAreaInfoEntity">
+<!--        select province_code as  provinceCode,province_name as provinceName,-->
+<!--               big_area_sale as bigAreaSale,samll_area_sale as smallAreaSale,-->
+<!--               city_code as areaCode, city_name as areaName-->
+<!--        from sta_dealership_data_view where big_area_sale is not null-->
+        select
+<!--        city_code as areaCode,city_name as areaName,-->
+<!--        province_code as provinceCode,-->
+<!--        province_name as provinceName,-->
+        big_area_code as bigAreaSaleCode,
+        big_area_sale as bigAreaSale,
+        small_area_code as smallAreaSaleCode,
+        samll_area_sale as smallAreaSale
+        from
+        sta_dealership_data_view
+        where
+        big_area_sale is not null
+        <if test="brandName != null and brandName !='' ">
+            and brand = #{brandName}
+        </if>
+        group by  big_area_code, bigAreaSale, small_area_code, smallAreaSale
+        order by bigAreaSaleCode desc
+    </select>
+
+
+    <select id="findAllBrandInfo" resultType="com.voc.service.insights.engine.entity.InsBrandInfoEntity">
+        select *
+        from ins_brand_info
+    </select>
+
+    <select id="findAllProvinceAreaList" resultType="com.voc.service.insights.engine.entity.InsProvinceAreaInfoEntity">
+        select
+        city_code as areaCode,city_name as areaName,
+        province_code as provinceCode,
+        province_name as provinceName,
+        big_area_code as bigAreaSaleCode,
+        big_area_sale as bigAreaSale,
+        small_area_code as smallAreaSaleCode,
+        samll_area_sale as smallAreaSale
+        from
+        sta_dealership_data_view
+        where
+        big_area_sale is not null
+        group by  areaCode,areaName,provinceCode,provinceName,big_area_code, bigAreaSale, small_area_code, smallAreaSale
+        order by bigAreaSaleCode desc
+    </select>
+</mapper>

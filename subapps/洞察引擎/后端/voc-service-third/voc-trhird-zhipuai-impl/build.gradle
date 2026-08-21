@@ -1,0 +1,23 @@
+apply plugin: 'java-library'
+
+group = 'voc-trhird-zhipuai-impl'
+
+dependencies {
+    api project(':voc-service-common')
+    api project(':voc-service-third:voc-trhird-api')
+    implementation ('cn.bigmodel.openapi:oapi-java-sdk:release-V4-2.3.0'){
+        exclude group: ' com.fasterxml.jackson.core', module: 'jackson-databind'
+        exclude group: ' com.fasterxml.jackson.core', module: 'jackson-core'
+        exclude group: 'com.squareup.okio', module: 'okio'
+        exclude group: 'com.squareup.okhttp3', module: 'okhttp'
+    }
+    api ('com.google.code.gson:gson')
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
+    implementation ('com.theokanning.openai-gpt3-java:service:0.18.2'){
+        exclude group: ' com.fasterxml.jackson.core', module: 'jackson-databind'
+        exclude group: 'com.squareup.okio', module: 'okio'
+        exclude group: 'com.squareup.okhttp3', module: 'okhttp'
+    }
+
+//    api 'jakarta.servlet:jakarta.servlet-api'
+}

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.analysis.core.v2.mapper.AysModelResltAnalysisValidMapper">
+
+    <select id="validDataCondition" resultType="com.voc.service.analysis.core.v2.entity.AysModelResltDataAnalysisValidEntity">
+        select min(date(publish_time)) as startTime , max(date(publish_time)) as endTime
+        from  ays_api_reslt_data
+    </select>
+
+    <select id="find" resultType="com.voc.service.analysis.core.v2.entity.AysModelResltDataAnalysisValidEntity">
+        select
+            new_id, id, work_id, client_id, channel_id,content_type,input_data_id,original_id, sample_data_type, original_text_scene, brand_code_name, car_series_name,label_type,
+            label_type_level_first, label_type_level_second, label_type_level_three,
+            label_type_level_four, label_type_level_five, scenario, sentiment, intention_type, topic,
+            opinion, subject, fault_level, description, sentiment_score, keywords, publish_time,
+            create_time, update_time, hit_valid_rules, hit_rules, done
+        from ays_api_reslt_data_analysis_valid
+        where
+            work_id = #{workId}
+            and client_id = #{clientId}
+            and channel_id in
+            <foreach item="item" index="index" collection="channel" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        order by create_time desc
+    </select>
+    <select id="selectCount_" resultType="java.lang.Long">
+        SELECT
+            COUNT(*) AS total
+        FROM
+            ays_api_reslt_data_analysis
+        where
+            client_id = #{clientId}
+            and channel_id = #{channelId}
+            and date(publish_time) BETWEEN DATE(#{startTime})  and DATE(#{endTime})
+    </select>
+    <select id="findIincompleteData" resultType="java.lang.String">
+        with find_1 as (
+            select id, work_id
+            from ays_api_reslt_data_analysis
+            group by id,work_id
+            limit 1
+        )
+        select new_id
+        from ays_api_reslt_data_analysis as f, find_1 as c
+        where c.work_id = f.work_id
+        limit 100  
+    </select>
+
+    <delete id="removeHistoryData">
+        delete from ays_api_reslt_data_analysis_valid
+        where to_date(publish_time)  &lt;= to_date(DATE_SUB(now(), INTERVAL ${days} day))
+    </delete>
+</mapper>

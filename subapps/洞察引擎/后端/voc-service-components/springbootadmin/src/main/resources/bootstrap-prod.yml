@@ -1,0 +1,21 @@
+spring.application.name: springbootadmin
+
+
+spring.cloud.nacos.config.server-addr: ${NACOS_SERVER_ADDR_URLS:nacos-headless.voc.svc.cluster.local:8848}
+spring.cloud.nacos.config.file-extension: yml
+spring.cloud.nacos.config.group: ${NACOS_CONFIG_GROUP:DEFAULT_GROUP}
+spring.cloud.nacos.config.namespace: ${NACOS_CONFIG_NAMESPACE:7f2e5d1b-7460-4d23-b0fd-d81ffb9ca0f7}
+spring.cloud.nacos.config.username: ${NACOS_CONFIG_USER_NAME:nacos}
+spring.cloud.nacos.config.password: PBE(lHleTbae61UMROxImBJ1ury6kTd8GLZBra6GNQW1uaXlfyM1NgiqxwzZJvye1Rjb)
+spring.cloud.nacos.config.extension-configs[0].data-id: common-nacos.yml
+
+spring.cloud.loadbalancer.ribbon.enabled: false
+spring.cloud.nacos.config.enabled: ${NACOS_CONFIG_ENABLED:true}
+spring.cloud.nacos.discovery.enabled: ${NACOS_DISCOVERY_ENABLED:true}
+
+spring:
+  security:
+    user:
+      #admin Server端登录时用的账户密码
+      name: ${USERNAME:admin}
+      password: ${PASSWORD:Passw0rd}

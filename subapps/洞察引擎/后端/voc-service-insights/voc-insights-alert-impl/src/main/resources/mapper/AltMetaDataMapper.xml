@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.insights.engine.alert.mapper.AltMeteDataMapper">
+    <select id="pullData" resultType="com.voc.service.insights.engine.alert.entity.AltMonitoringDataEntity">
+        select
+            #{entity.workId}  as work_id,
+            channel_id,
+            client_id,
+            max(create_time) as meta_date_create_time,
+            count(*) as data_size,
+            #{entity.dataType}  as data_type,
+            #{entity.tid}  as tid
+        from
+            ays_meta_data_analysis
+        where
+            to_date(create_time) = #{todayTime}
+            and channel_id = #{entity.channelId} and client_id = #{entity.clientId}
+        group by
+            to_date(create_time),
+            channel_id,
+            client_id
+        limit 1
+    </select>
+    
+</mapper>
+

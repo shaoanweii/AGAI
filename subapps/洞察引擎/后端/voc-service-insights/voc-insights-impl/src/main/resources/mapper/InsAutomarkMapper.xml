@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.insights.engine.mapper.InsAutomarkMapper">
+    <resultMap id="BaseResultMap" type="com.voc.service.insights.engine.entity.InsAutomarkEntity" >
+        <result column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="name_en" property="nameEn" />
+        <result column="img" property="img" />
+        <result column="is_core" property="isCore" />
+        <result column="competitive_type" property="competitiveType" />
+        <result column="competitiveProduct" property="competitiveProduct" typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
+        <result column="status" property="status" />
+        <result column="operator" property="operator" />
+        <result column="update_operator" property="updateOperator" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,
+                name,
+                name_en,
+                img,
+                is_core,
+                competitive_type,
+                competitiveProduct,
+                status,
+                operator,
+                update_operator,
+                create_time,
+                update_time
+    </sql>
+    <select id="findAutomarkList" resultType="com.voc.service.insights.engine.entity.InsAutomarkEntity">
+        select
+            ia.id,
+            ia.name,
+            sd.item_text as isCoreName,
+            sdi.item_text as competitiveTypeName,
+            ia.status,
+            sd1.item_text as statusName,
+            ia.update_operator as operator,
+            ia.create_time,
+            ia.update_time
+        from ins_automark ia
+         left join (select sdi.item_text,sdi.item_value from ins_dict sd left join ins_dict_item sdi on sdi.dict_id = sd.id where sd.dict_code = 'competitive_type' ) sdi on sdi.item_value = ia.competitive_type
+         left join (select sdi.item_text,sdi.item_value from ins_dict sd left join ins_dict_item sdi on sdi.dict_id = sd.id where sd.dict_code = 'is_core' ) sd on sd.item_value = ia.is_core
+         left join (select sdi.item_text,sdi.item_value from ins_dict sd left join ins_dict_item sdi on sdi.dict_id = sd.id where sd.dict_code = 'enable_type' ) sd1 on sd1.item_value = ia.status
+        where 1=1
+        <if test="model.name !=null and model.name !=''">
+            and ia.name like concat('%', #{model.name}, '%')
+        </if>
+        <if test="model.isCore !=null">
+            and ia.is_core =#{model.isCore}
+        </if>
+        <if test="model.competitiveType !=null">
+            and ia.competitive_type = #{model.competitiveType}
+        </if>
+        <if test="model.status !=null">
+            and ia.status = #{model.status}
+        </if>
+        <if test="model.operator !=null and model.operator !=''">
+            and ia.operator like concat('%', #{model.operator}, '%')
+        </if>
+        <if test="model.order !=null and model.order !=''">
+            order by ia.${model.order}
+        </if>
+        <if test="model.order ==null or model.order ==''">
+            order by ia.competitive_type asc,ia.is_core desc
+        </if>
+
+    </select>
+</mapper>

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.insights.engine.mapper.InsTagClientMapper">
+    <sql id="Base_Column_List">
+        id,
+        client_id,
+        parent_id,
+        name,
+        name_en,
+        code,
+        type,
+        label_type,
+        energy,
+        stage,
+        association_status,
+        apply_number,
+        tagged_corpus,
+        enable,
+        source,
+        seriousness,
+        description,
+        tag_id,
+        create_time,
+        update_time
+    </sql>
+    <select id="queryInsTagClientInfo" resultType="com.voc.service.insights.engine.vo.InsTagClientVo">
+        SELECT
+        g4.id,
+        g4.type,
+        g1.name as firstDimensionName,
+        g1.NAME_EN as firstDimensionNameEn,
+        g1.code as firstDimensionCode,
+        g1.id as firstId,
+        g2.name as secondDimensionName,
+        g2.NAME_EN as secondDimensionNameEn,
+        g2.code as secondDimensionCode,
+        g2.id as secondId,
+        g3.name as thirdDimensionName,
+        g3.NAME_EN as thirdDimensionNameEn,
+        g3.code as thirdDimensionCode,
+        g3.id as thirdId,
+        g4.name,
+        g4.NAME_EN as nameEn,
+        g4.code as code,
+        g4.enable as enable,
+        g4.source,
+        g4.association_status as associationStatus,
+        g4.description,
+        g4.label_type as labelType,
+        g4.client_id as clientId,
+        g4.create_time
+        FROM
+        ins_tag_client g4
+        LEFT JOIN ins_tag_client g3 ON g4.parent_id=g3.ID
+        LEFT JOIN ins_tag_client g2 ON g3.parent_id=g2.ID
+        LEFT JOIN ins_tag_client g1 ON g2.parent_id=g1.ID
+        WHERE
+        1=1
+        AND g1.CODE IS NOT NULL
+        <if test="model.clientId != null and model.clientId !=''">
+            AND g4.client_id = #{model.clientId}
+        </if>
+        <if test="model.type != null and model.type !=''">
+            AND g4.type = #{model.type}
+        </if>
+        <if test="model.types != null and model.types.size()>0">
+            AND g4.type in
+            <foreach item="item" collection="model.types" separator="," open="(" close=")" index="">
+                #{item}
+            </foreach>
+        </if>
+        <if test="model.enable != null and model.enable !=''">
+            AND g4.enable = #{model.enable}
+        </if>
+        <if test="model.firstDimensionCodes != null and model.firstDimensionCodes.size()>0">
+            AND g1.code in
+            <foreach item="item" collection="model.firstDimensionCodes" separator="," open="(" close=")" index="">
+                #{item}
+            </foreach>
+        </if>
+        <if test="model.name != null and model.name != ''">
+            AND g4.NAME LIKE CONCAT('%', #{model.name} ,'%')
+        </if>
+        <if test="model.order !=null and model.order !=''">
+            order by ${model.order}
+        </if>
+        <if test="model.order ==null or model.order ==''">
+            order by create_time desc
+        </if>
+    </select>
+    <select id="queryInsTagClientVoById" resultType="com.voc.service.insights.engine.vo.InsTagClientVo">
+        SELECT g4.id,
+               g4.type,
+               g1.name               as firstDimensionName,
+               g1.NAME_EN            as firstDimensionNameEn,
+               g1.code               as firstDimensionCode,
+               g1.id                 as firstId,
+               g2.name               as secondDimensionName,
+               g2.NAME_EN            as secondDimensionNameEn,
+               g2.code               as secondDimensionCode,
+               g2.id                 as secondId,
+               g3.name               as thirdDimensionName,
+               g3.NAME_EN            as thirdDimensionNameEn,
+               g3.code               as thirdDimensionCode,
+               g3.id                 as thirdId,
+               g4.name,
+               g4.NAME_EN            as nameEn,
+               g4.code               as code,
+               g4.enable             as enable,
+               g4.source,
+               g4.association_status as associationStatus,
+               g4.description,
+               g4.label_type         as labelType,
+               g4.client_id          as clientId
+        FROM ins_tag_client g4
+                 LEFT JOIN ins_tag_client g3 ON g4.parent_id = g3.ID
+                 LEFT JOIN ins_tag_client g2 ON g3.parent_id = g2.ID
+                 LEFT JOIN ins_tag_client g1 ON g2.parent_id = g1.ID
+        WHERE g4.id = #{id}
+    </select>
+    <select id="queryTagClientCustomerVo" resultType="com.voc.service.insights.engine.vo.TagClientCustomerVo">
+        select
+        t.tag_id as tagId,
+        t.client_id as clientId,
+        t1.full_name as fullName,
+        t1.abbreviation as abbreviation,
+        t1.code
+        from
+        ins_tag_client t
+        left join ins_customer_info t1 on t.client_id = t1.id
+        where t.enable=1
+        <if test="codeList != null and codeList.size()>0">
+            AND t.tag_id in
+            <foreach item="item" collection="codeList" separator="," open="(" close=")" index="">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+</mapper>

@@ -1,0 +1,505 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.insights.engine.mapper.AysLabelPostprocessDataMapper">
+
+
+    <select id="refreshViewData" resultType="java.lang.String">
+        REFRESH MATERIALIZED VIEW sta_model_processed_data
+    </select>
+
+
+    <select id="querySoundsData" resultType="com.voc.service.insights.engine.vo.InsCqCaCorrectionDataVo">
+        SELECT
+        id,
+        brand_name,
+        car_series_name,
+        original_text_scene,
+        sentiment
+        FROM
+        voc_ms_td.voc_sentiment_annotations_results_v
+        WHERE
+        id IN
+        <foreach item="item" collection="list" separator="," open="(" close=")" index="">
+            #{item}
+        </foreach>
+        order by id
+    </select>
+
+
+    <select id="queryGroupData" resultType="com.voc.service.insights.engine.vo.InsCqCaCorrectionGroupDataVo">
+        WITH base_data AS (
+        SELECT
+        brand_code,
+        brand_name,
+        car_series_code,
+        car_series_name,
+        sentiment,
+        intention,
+        topic_text,
+        usage_scenario_first,
+        usage_scenario_second
+        FROM voc_sentiment_annotations_results_v
+        WHERE  id IN
+        <foreach item="item" collection="list" separator="," open="(" close=")" index="">
+            #{item}
+        </foreach>
+        )
+
+        -- 1. 单独统计 brand_code
+        SELECT
+        'brand_code' AS field_name,
+        brand_name AS group_value,
+        COUNT(*) AS count_num,
+        CASE WHEN COUNT(*) > 1 THEN '是' ELSE '否' END AS is_greater_than_1
+        FROM base_data
+        GROUP BY brand_name
+
+        UNION ALL
+
+        -- 2. 单独统计 car_series_code
+        SELECT
+        'car_series_code' AS field_name,
+        car_series_name AS group_value,
+        COUNT(*) AS count_num,
+        CASE WHEN COUNT(*) > 1 THEN '是' ELSE '否' END AS is_greater_than_1
+        FROM base_data
+        GROUP BY car_series_name
+
+        UNION ALL
+
+        -- 3. 单独统计 sentiment
+        SELECT
+        'sentiment' AS field_name,
+        sentiment AS group_value,
+        COUNT(*) AS count_num,
+        CASE WHEN COUNT(*) > 1 THEN '是' ELSE '否' END AS is_greater_than_1
+        FROM base_data
+        GROUP BY sentiment
+
+        UNION ALL
+
+        -- 4. 单独统计 intention
+        SELECT
+        'intention' AS field_name,
+        intention AS group_value,
+        COUNT(*) AS count_num,
+        CASE WHEN COUNT(*) > 1 THEN '是' ELSE '否' END AS is_greater_than_1
+        FROM base_data
+        GROUP BY intention
+
+        UNION ALL
+
+        -- 5. 单独统计 topic_text
+        SELECT
+        'topic_text' AS field_name,
+        topic_text AS group_value,
+        COUNT(*) AS count_num,
+        CASE WHEN COUNT(*) > 1 THEN '是' ELSE '否' END AS is_greater_than_1
+        FROM base_data
+        GROUP BY topic_text
+
+        UNION ALL
+
+        -- 6. 联合统计 usage_scenario_first 和 usage_scenario_second
+        SELECT
+        'usage_scenario' AS field_name,
+        CONCAT(usage_scenario_first, ' | ', usage_scenario_second) AS group_value,
+        COUNT(*) AS count_num,
+        CASE WHEN COUNT(*) > 1 THEN '是' ELSE '否' END AS is_greater_than_1
+        FROM base_data
+        GROUP BY usage_scenario_first, usage_scenario_second;
+    </select>
+    <select id="findResultDataIdsByBrandCode" resultType="java.lang.String">
+        select
+            id
+        from
+            voc_sentiment_annotations_results_v
+        where  1=1
+        <if test="cqCaDataQueryModel.brandCode != null and cqCaDataQueryModel.brandCode.size() > 0">
+           and brand_code in
+            <foreach collection="cqCaDataQueryModel.brandCode" item="item" index="index" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="cqCaDataQueryModel.carSeries != null and cqCaDataQueryModel.carSeries.size() > 0">
+            and car_series_code in
+            <foreach collection="cqCaDataQueryModel.carSeries" item="item" index="index" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="cqCaDataQueryModel.automarkList != null and cqCaDataQueryModel.automarkList.size() > 0">
+            and automark in
+            <foreach collection="cqCaDataQueryModel.automarkList" item="item" index="index" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="cqCaDataQueryModel.automark != null and cqCaDataQueryModel.automark != ''">
+            and automark = #{cqCaDataQueryModel.automark}
+        </if>
+        <if test="cqCaDataQueryModel.topicList != null and cqCaDataQueryModel.topicList.size() > 0">
+            and topic in
+            <foreach collection="cqCaDataQueryModel.topicList" item="item" index="index" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="cqCaDataQueryModel.tagCodeList != null and cqCaDataQueryModel.tagCodeList.size() > 0 and cqCaDataQueryModel.tagType != null and cqCaDataQueryModel.tagType != ''">
+            and (
+            <choose>
+                <when test="cqCaDataQueryModel.level != null">
+                    <choose>
+                        <when test="cqCaDataQueryModel.tagType == 'CA' and cqCaDataQueryModel.level == 1">
+                            dom_tag_first_code in
+                            <foreach collection="cqCaDataQueryModel.tagCodeList" item="item" open="(" close=")" separator=",">
+                                #{item}
+                            </foreach>
+                        </when>
+                        <when test="cqCaDataQueryModel.tagType == 'CA' and cqCaDataQueryModel.level == 2">
+                            dom_tag_second_code in
+                            <foreach collection="cqCaDataQueryModel.tagCodeList" item="item" open="(" close=")" separator=",">
+                                #{item}
+                            </foreach>
+                        </when>
+                        <when test="cqCaDataQueryModel.tagType == 'CA' and cqCaDataQueryModel.level == 3">
+                            dom_tag_three_code in
+                            <foreach collection="cqCaDataQueryModel.tagCodeList" item="item" open="(" close=")" separator=",">
+                                #{item}
+                            </foreach>
+                        </when>
+                        <when test="cqCaDataQueryModel.tagType == 'CA' and cqCaDataQueryModel.level == 4">
+                            dom_tag_four_code in
+                            <foreach collection="cqCaDataQueryModel.tagCodeList" item="item" open="(" close=")" separator=",">
+                                #{item}
+                            </foreach>
+                        </when>
+                        <when test="cqCaDataQueryModel.tagType == 'JOUR' and cqCaDataQueryModel.level == 1">
+                            ujy_tag_first_code in
+                            <foreach collection="cqCaDataQueryModel.tagCodeList" item="item" open="(" close=")" separator=",">
+                                #{item}
+                            </foreach>
+                        </when>
+                        <when test="cqCaDataQueryModel.tagType == 'JOUR' and cqCaDataQueryModel.level == 2">
+                            ujy_tag_second_code in
+                            <foreach collection="cqCaDataQueryModel.tagCodeList" item="item" open="(" close=")" separator=",">
+                                #{item}
+                            </foreach>
+                        </when>
+                        <when test="cqCaDataQueryModel.tagType == 'JOUR' and cqCaDataQueryModel.level == 3">
+                            ujy_tag_three_code in
+                            <foreach collection="cqCaDataQueryModel.tagCodeList" item="item" open="(" close=")" separator=",">
+                                #{item}
+                            </foreach>
+                        </when>
+                        <when test="cqCaDataQueryModel.tagType == 'JOUR' and cqCaDataQueryModel.level == 4">
+                            ujy_tag_four_code in
+                            <foreach collection="cqCaDataQueryModel.tagCodeList" item="item" open="(" close=")" separator=",">
+                                #{item}
+                            </foreach>
+                        </when>
+                        <when test="cqCaDataQueryModel.tagType == 'CPT' and cqCaDataQueryModel.level == 1">
+                            cpt_tag_first_code in
+                            <foreach collection="cqCaDataQueryModel.tagCodeList" item="item" open="(" close=")" separator=",">
+                                #{item}
+                            </foreach>
+                        </when>
+                        <when test="cqCaDataQueryModel.tagType == 'CPT' and cqCaDataQueryModel.level == 2">
+                            cpt_tag_second_code in
+                            <foreach collection="cqCaDataQueryModel.tagCodeList" item="item" open="(" close=")" separator=",">
+                                #{item}
+                            </foreach>
+                        </when>
+                        <when test="cqCaDataQueryModel.tagType == 'CPT' and cqCaDataQueryModel.level == 3">
+                            cpt_tag_three_code in
+                            <foreach collection="cqCaDataQueryModel.tagCodeList" item="item" open="(" close=")" separator=",">
+                                #{item}
+                            </foreach>
+                        </when>
+                        <when test="cqCaDataQueryModel.tagType == 'CPT' and cqCaDataQueryModel.level == 4">
+                            cpt_tag_four_code in
+                            <foreach collection="cqCaDataQueryModel.tagCodeList" item="item" open="(" close=")" separator=",">
+                                #{item}
+                            </foreach>
+                        </when>
+                        <when test="cqCaDataQueryModel.tagType == 'NPS' and cqCaDataQueryModel.level == 1">
+                            nps_tag_first_code in
+                            <foreach collection="cqCaDataQueryModel.tagCodeList" item="item" open="(" close=")" separator=",">
+                                #{item}
+                            </foreach>
+                        </when>
+                        <when test="cqCaDataQueryModel.tagType == 'NPS' and cqCaDataQueryModel.level == 2">
+                            nps_tag_second_code in
+                            <foreach collection="cqCaDataQueryModel.tagCodeList" item="item" open="(" close=")" separator=",">
+                                #{item}
+                            </foreach>
+                        </when>
+                        <when test="cqCaDataQueryModel.tagType == 'NPS' and cqCaDataQueryModel.level == 3">
+                            nps_tag_three_code in
+                            <foreach collection="cqCaDataQueryModel.tagCodeList" item="item" open="(" close=")" separator=",">
+                                #{item}
+                            </foreach>
+                        </when>
+                        <when test="cqCaDataQueryModel.tagType == 'NPS' and cqCaDataQueryModel.level == 4">
+                            nps_tag_four_code in
+                            <foreach collection="cqCaDataQueryModel.tagCodeList" item="item" open="(" close=")" separator=",">
+                                #{item}
+                            </foreach>
+                        </when>
+                        <when test="cqCaDataQueryModel.tagType == 'VRT' and cqCaDataQueryModel.level == 1">
+                            vtr_tag_first_code in
+                            <foreach collection="cqCaDataQueryModel.tagCodeList" item="item" open="(" close=")" separator=",">
+                                #{item}
+                            </foreach>
+                        </when>
+                        <when test="cqCaDataQueryModel.tagType == 'VRT' and cqCaDataQueryModel.level == 2">
+                            vtr_tag_second_code in
+                            <foreach collection="cqCaDataQueryModel.tagCodeList" item="item" open="(" close=")" separator=",">
+                                #{item}
+                            </foreach>
+                        </when>
+                        <when test="cqCaDataQueryModel.tagType == 'VRT' and cqCaDataQueryModel.level == 3">
+                            vtr_tag_three_code in
+                            <foreach collection="cqCaDataQueryModel.tagCodeList" item="item" open="(" close=")" separator=",">
+                                #{item}
+                            </foreach>
+                        </when>
+                        <when test="cqCaDataQueryModel.tagType == 'VRT' and cqCaDataQueryModel.level == 4">
+                            vtr_tag_four_code in
+                            <foreach collection="cqCaDataQueryModel.tagCodeList" item="item" open="(" close=")" separator=",">
+                                #{item}
+                            </foreach>
+                        </when>
+                        <when test="cqCaDataQueryModel.tagType == 'PRO' and cqCaDataQueryModel.level == 1">
+                            cma_tag_first_code in
+                            <foreach collection="cqCaDataQueryModel.tagCodeList" item="item" open="(" close=")" separator=",">
+                                #{item}
+                            </foreach>
+                        </when>
+                        <when test="cqCaDataQueryModel.tagType == 'PRO' and cqCaDataQueryModel.level == 2">
+                            cma_tag_second_code in
+                            <foreach collection="cqCaDataQueryModel.tagCodeList" item="item" open="(" close=")" separator=",">
+                                #{item}
+                            </foreach>
+                        </when>
+                        <when test="cqCaDataQueryModel.tagType == 'PRO' and cqCaDataQueryModel.level == 3">
+                            cma_tag_three_code in
+                            <foreach collection="cqCaDataQueryModel.tagCodeList" item="item" open="(" close=")" separator=",">
+                                #{item}
+                            </foreach>
+                        </when>
+                        <when test="cqCaDataQueryModel.tagType == 'PRO' and cqCaDataQueryModel.level == 4">
+                            cma_tag_four_code in
+                            <foreach collection="cqCaDataQueryModel.tagCodeList" item="item" open="(" close=")" separator=",">
+                                #{item}
+                            </foreach>
+                        </when>
+                        <otherwise>
+                            1 = 2
+                        </otherwise>
+                    </choose>
+                </when>
+                <otherwise>
+                    <choose>
+                        <when test="cqCaDataQueryModel.tagType == 'CA'">
+                            dom_tag_first_code in
+                            <foreach collection="cqCaDataQueryModel.tagCodeList" item="item" open="(" close=")" separator=",">
+                                #{item}
+                            </foreach>
+                            or dom_tag_second_code in
+                            <foreach collection="cqCaDataQueryModel.tagCodeList" item="item" open="(" close=")" separator=",">
+                                #{item}
+                            </foreach>
+                            or dom_tag_three_code in
+                            <foreach collection="cqCaDataQueryModel.tagCodeList" item="item" open="(" close=")" separator=",">
+                                #{item}
+                            </foreach>
+                            or dom_tag_four_code in
+                            <foreach collection="cqCaDataQueryModel.tagCodeList" item="item" open="(" close=")" separator=",">
+                                #{item}
+                            </foreach>
+                        </when>
+                        <when test="cqCaDataQueryModel.tagType == 'JOUR'">
+                            ujy_tag_first_code in
+                            <foreach collection="cqCaDataQueryModel.tagCodeList" item="item" open="(" close=")" separator=",">
+                                #{item}
+                            </foreach>
+                            or ujy_tag_second_code in
+                            <foreach collection="cqCaDataQueryModel.tagCodeList" item="item" open="(" close=")" separator=",">
+                                #{item}
+                            </foreach>
+                            or ujy_tag_three_code in
+                            <foreach collection="cqCaDataQueryModel.tagCodeList" item="item" open="(" close=")" separator=",">
+                                #{item}
+                            </foreach>
+                            or ujy_tag_four_code in
+                            <foreach collection="cqCaDataQueryModel.tagCodeList" item="item" open="(" close=")" separator=",">
+                                #{item}
+                            </foreach>
+                        </when>
+                        <when test="cqCaDataQueryModel.tagType == 'CPT'">
+                            cpt_tag_first_code in
+                            <foreach collection="cqCaDataQueryModel.tagCodeList" item="item" open="(" close=")" separator=",">
+                                #{item}
+                            </foreach>
+                            or cpt_tag_second_code in
+                            <foreach collection="cqCaDataQueryModel.tagCodeList" item="item" open="(" close=")" separator=",">
+                                #{item}
+                            </foreach>
+                            or cpt_tag_three_code in
+                            <foreach collection="cqCaDataQueryModel.tagCodeList" item="item" open="(" close=")" separator=",">
+                                #{item}
+                            </foreach>
+                            or cpt_tag_four_code in
+                            <foreach collection="cqCaDataQueryModel.tagCodeList" item="item" open="(" close=")" separator=",">
+                                #{item}
+                            </foreach>
+                        </when>
+                        <when test="cqCaDataQueryModel.tagType == 'NPS'">
+                            nps_tag_first_code in
+                            <foreach collection="cqCaDataQueryModel.tagCodeList" item="item" open="(" close=")" separator=",">
+                                #{item}
+                            </foreach>
+                            or nps_tag_second_code in
+                            <foreach collection="cqCaDataQueryModel.tagCodeList" item="item" open="(" close=")" separator=",">
+                                #{item}
+                            </foreach>
+                            or nps_tag_three_code in
+                            <foreach collection="cqCaDataQueryModel.tagCodeList" item="item" open="(" close=")" separator=",">
+                                #{item}
+                            </foreach>
+                            or nps_tag_four_code in
+                            <foreach collection="cqCaDataQueryModel.tagCodeList" item="item" open="(" close=")" separator=",">
+                                #{item}
+                            </foreach>
+                        </when>
+                        <when test="cqCaDataQueryModel.tagType == 'VRT'">
+                            vtr_tag_first_code in
+                            <foreach collection="cqCaDataQueryModel.tagCodeList" item="item" open="(" close=")" separator=",">
+                                #{item}
+                            </foreach>
+                            or vtr_tag_second_code in
+                            <foreach collection="cqCaDataQueryModel.tagCodeList" item="item" open="(" close=")" separator=",">
+                                #{item}
+                            </foreach>
+                            or vtr_tag_three_code in
+                            <foreach collection="cqCaDataQueryModel.tagCodeList" item="item" open="(" close=")" separator=",">
+                                #{item}
+                            </foreach>
+                            or vtr_tag_four_code in
+                            <foreach collection="cqCaDataQueryModel.tagCodeList" item="item" open="(" close=")" separator=",">
+                                #{item}
+                            </foreach>
+                        </when>
+                        <when test="cqCaDataQueryModel.tagType == 'PRO'">
+                            cma_tag_first_code in
+                            <foreach collection="cqCaDataQueryModel.tagCodeList" item="item" open="(" close=")" separator=",">
+                                #{item}
+                            </foreach>
+                            or cma_tag_second_code in
+                            <foreach collection="cqCaDataQueryModel.tagCodeList" item="item" open="(" close=")" separator=",">
+                                #{item}
+                            </foreach>
+                            or cma_tag_three_code in
+                            <foreach collection="cqCaDataQueryModel.tagCodeList" item="item" open="(" close=")" separator=",">
+                                #{item}
+                            </foreach>
+                            or cma_tag_four_code in
+                            <foreach collection="cqCaDataQueryModel.tagCodeList" item="item" open="(" close=")" separator=",">
+                                #{item}
+                            </foreach>
+                        </when>
+                        <otherwise>
+                            1 = 2
+                        </otherwise>
+                    </choose>
+                </otherwise>
+            </choose>
+            )
+        </if>
+    </select>
+
+    <!-- 批量更新：DTO集合，每条记录独立赋值，有值才更新 -->
+    <update id="batchUpdateByDtoList">
+        <!-- 先判断集合非空，避免WHERE IN空列表 -->
+        <if test="dtoList != null and dtoList.size() > 0">
+            UPDATE voc_ms_td.voc_anal_flow_model_tags_result_data_full
+            <set>
+                <!-- 1. 处理brand_code：增加兜底WHEN，确保CASE有至少一个分支 -->
+                brand_code = CASE
+                <!-- 兜底WHEN（永远不匹配），保证CASE语法合法 -->
+                WHEN id = -1 THEN brand_code
+                <foreach collection="dtoList" item="dto" separator="">
+                    <if test="dto.brandCode != null and dto.brandCode != ''">
+                        WHEN id = #{dto.id} THEN #{dto.brandCode}
+                    </if>
+                </foreach>
+                <!-- 无匹配时保留原值 -->
+                ELSE brand_code
+                END,
+
+                <!-- 2. 处理car_series_code -->
+                car_series_code = CASE
+                WHEN id = -1 THEN car_series_code
+                <foreach collection="dtoList" item="dto" separator="">
+                    <if test="dto.carSeriesCode != null and dto.carSeriesCode != ''">
+                        WHEN id = #{dto.id} THEN #{dto.carSeriesCode}
+                    </if>
+                </foreach>
+                ELSE car_series_code
+                END,
+
+                <!-- 3. 处理sentiment（数值类型） -->
+                sentiment = CASE
+                WHEN id = -1 THEN sentiment
+                <foreach collection="dtoList" item="dto" separator="">
+                    <if test="dto.sentiment != null">
+                        WHEN id = #{dto.id} THEN #{dto.sentiment}
+                    </if>
+                </foreach>
+                ELSE sentiment
+                END,
+
+                <!-- 4. 处理intention_type -->
+                intention_type = CASE
+                WHEN id = -1 THEN intention_type
+                <foreach collection="dtoList" item="dto" separator="">
+                    <if test="dto.intentionType != null and dto.intentionType != ''">
+                        WHEN id = #{dto.id} THEN #{dto.intentionType}
+                    </if>
+                </foreach>
+                ELSE intention_type
+                END,
+
+                <!-- 5. 处理topic -->
+                topic = CASE
+                WHEN id = -1 THEN topic
+                <foreach collection="dtoList" item="dto" separator="">
+                    <if test="dto.topic != null and dto.topic != ''">
+                        WHEN id = #{dto.id} THEN #{dto.topic}
+                    </if>
+                </foreach>
+                ELSE topic
+                END,
+
+                <!-- 6. 处理abandon（数值类型） -->
+                abandon = CASE
+                WHEN id = -1 THEN abandon
+                <foreach collection="dtoList" item="dto" separator="">
+                    <if test="dto.abandon != null">
+                        WHEN id = #{dto.id} THEN #{dto.abandon}
+                    </if>
+                </foreach>
+                ELSE abandon
+                END,
+
+                <!-- 兜底：更新时间 -->
+                update_time = NOW()
+            </set>
+            <!-- 限定更新范围：仅更新DTO集合中包含的id -->
+            WHERE id IN
+            <foreach collection="dtoList" item="dto" open="(" separator="," close=")">
+                #{dto.id}
+            </foreach>
+        </if>
+    </update>
+
+
+</mapper>

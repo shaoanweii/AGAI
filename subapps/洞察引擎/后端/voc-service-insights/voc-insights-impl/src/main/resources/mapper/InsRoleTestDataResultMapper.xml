@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.insights.engine.mapper.InsReportRuleTestDataInfoMapper">
+
+
+    <select id="selectPageList"
+            resultType="com.voc.service.insights.engine.entity.InsReportRuleTestDataResultEntity">
+
+        SELECT
+        rp.id,
+        rp.data_id,
+        rp.batch_id,
+        rp.channel_name,
+        rp.channel_code,
+        rp.brand_name,
+        rp.brand_code,
+        rp.car_series_name,
+        rp.car_series_code,
+        CASE
+        WHEN rp.content_type = 'consult' THEN '咨询'
+        WHEN rp.content_type = 'opinion' THEN '意见反馈'
+        WHEN rp.content_type = 'post_cmt' THEN '帖子回评'
+        WHEN rp.content_type = 'quest' THEN '问卷'
+        WHEN rp.content_type = 'order' THEN '工单'
+        ELSE rp.content_type
+        END AS content_type,
+        rp.is_main_post,
+        rp.title,
+        rp.content,
+        rp.sentiment,
+        rp.intention,
+        rp.publish_time,
+        rp.dom_tag_first_code,
+        rp.dom_tag_second_code,
+        rp.dom_tag_three_code,
+        rp.dom_tag_four_code,
+        rp.dom_tag_first,
+        rp.dom_tag_second,
+        rp.dom_tag_three,
+        rp.dom_tag_four,
+        rp.topic_id,
+        rp.topic_text,
+        rp.publish_user_id,
+        rp.publish_user_nickname,
+        rp.main_post_user_id,
+        rp.main_post_user_name,
+        rp.create_time,
+        rp.update_time,
+        COALESCE(rpi.rule_id, '-') AS rule_id,
+        COALESCE(rpi.rule_name, '-') AS rule_name
+        FROM
+        voc_ms_td.report_rule_test_data_risk_info  rp
+        LEFT JOIN
+        voc_ms_td.report_rule_test_data_risk_result rpi
+        ON
+        rp.data_id = rpi.data_id and rp.batch_id = rpi.batch_id
+        where rp.batch_id = #{batchId}
+        <if test="ruleName != null and ruleName != ''">
+            AND rpi.rule_name LIKE CONCAT('%', #{ruleName}, '%')
+        </if>
+        order by create_time desc
+    </select>
+
+</mapper>

@@ -1,0 +1,28 @@
+apply plugin: 'java-library'
+
+group = 'voc-service-common'
+version = "2.0.0-SNAPSHOT"
+
+dependencies {
+    api project(':voc-service-common')
+
+    api('com.baomidou:mybatis-plus-boot-starter') {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-jdbc'
+        exclude group: 'org.slf4j', module: 'slf4j-api'
+    }
+    api('com.baomidou:mybatis-plus-jsqlparser')
+    /* api('org.springframework.boot:spring-boot-starter-jdbc:3.3.13') {
+         exclude group: 'com.zaxxer', module: 'HikariCP'
+     }*/
+    api('com.baomidou:dynamic-datasource-spring-boot3-starter') {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-jdbc'
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-undertow'
+    }
+    /*api('com.alibaba:druid-spring-boot-3-starter:1.2.23'){
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-jdbc'
+    }*/
+    api('com.mysql:mysql-connector-j') {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-jdbc'
+    }
+
+}

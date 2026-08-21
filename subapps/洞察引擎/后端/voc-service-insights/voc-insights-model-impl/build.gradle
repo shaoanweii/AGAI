@@ -1,0 +1,25 @@
+apply plugin: 'java-library'
+
+group = 'voc-insights-model-impl'
+
+dependencies {
+    testImplementation  project(':voc-service-common').sourceSets.test.output
+    api project(':voc-service-common')
+    api project(':voc-service-components:voc-cmps-mybatis')
+    api project(':voc-service-components:voc-cmps-redis')
+    //api project(':voc-service-components:voc-cmps-swagger')
+    api project(':voc-service-insights:voc-insights-api')
+    api project(':voc-service-insights:voc-insights-common')
+    api project(':voc-service-security:voc-security-client')
+    api project(':voc-service-bizlogs:voc-bizlogs-api')
+    api project(':voc-service-config')
+//    api 'jakarta.servlet:jakarta.servlet-api'
+
+    compileOnlyApi project(':voc-service-insights:voc-insights-impl')
+
+    compileOnly('org.springframework.boot:spring-boot-starter-web')
+    api('org.springframework.cloud:spring-cloud-starter-bootstrap')
+    api ("com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-discovery")
+    api ("com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-config")
+    api('com.github.pagehelper:pagehelper-spring-boot-starter')
+}

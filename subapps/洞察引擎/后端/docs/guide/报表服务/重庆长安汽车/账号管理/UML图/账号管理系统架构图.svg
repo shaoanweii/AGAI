@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1200" height="800" viewBox="0 0 1200 800">
+  <defs>
+    <style>
+      .frontend { fill: #e1f5fe; stroke: #01579b; stroke-width: 2; }
+      .gateway { fill: #f3e5f5; stroke: #4a148c; stroke-width: 2; }
+      .service { fill: #e8f5e8; stroke: #1b5e20; stroke-width: 2; }
+      .business { fill: #fff3e0; stroke: #e65100; stroke-width: 2; }
+      .dao { fill: #fce4ec; stroke: #880e4f; stroke-width: 2; }
+      .storage { fill: #f1f8e9; stroke: #33691e; stroke-width: 2; }
+      .external { fill: #fff8e1; stroke: #ff6f00; stroke-width: 2; }
+      .text { font-family: Arial, sans-serif; font-size: 12px; text-anchor: middle; }
+      .title { font-family: Arial, sans-serif; font-size: 14px; font-weight: bold; text-anchor: middle; }
+      .layer-title { font-family: Arial, sans-serif; font-size: 16px; font-weight: bold; text-anchor: middle; }
+      .arrow { stroke: #333; stroke-width: 2; fill: none; marker-end: url(#arrowhead); }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#333" />
+    </marker>
+  </defs>
+  
+  <!-- 标题 -->
+  <text x="600" y="30" class="layer-title">账号管理系统架构图</text>
+  
+  <!-- 前端层 -->
+  <rect x="50" y="60" width="1100" height="80" fill="none" stroke="#666" stroke-dasharray="5,5"/>
+  <text x="100" y="80" class="layer-title">前端层</text>
+  
+  <rect x="200" y="90" width="120" height="40" class="frontend" rx="5"/>
+  <text x="260" y="115" class="text">管理后台</text>
+  
+  <rect x="350" y="90" width="120" height="40" class="frontend" rx="5"/>
+  <text x="410" y="115" class="text">用户界面</text>
+  
+  <rect x="500" y="90" width="120" height="40" class="frontend" rx="5"/>
+  <text x="560" y="115" class="text">权限管理界面</text>
+  
+  <rect x="650" y="90" width="120" height="40" class="frontend" rx="5"/>
+  <text x="710" y="115" class="text">部门管理界面</text>
+  
+  <!-- 网关层 -->
+  <rect x="50" y="160" width="1100" height="60" fill="none" stroke="#666" stroke-dasharray="5,5"/>
+  <text x="100" y="180" class="layer-title">网关层</text>
+  
+  <rect x="450" y="180" width="200" height="30" class="gateway" rx="5"/>
+  <text x="550" y="200" class="text">API Gateway (Spring Cloud Gateway)</text>
+  
+  <!-- 服务层 -->
+  <rect x="50" y="240" width="1100" height="80" fill="none" stroke="#666" stroke-dasharray="5,5"/>
+  <text x="100" y="260" class="layer-title">服务层</text>
+  
+  <rect x="150" y="270" width="180" height="40" class="service" rx="5"/>
+  <text x="240" y="285" class="text">账号管理服务</text>
+  <text x="240" y="300" class="text">InsReportAccountManagerController</text>
+  
+  <rect x="350" y="270" width="150" height="40" class="service" rx="5"/>
+  <text x="425" y="285" class="text">安全认证服务</text>
+  <text x="425" y="300" class="text">SecurityServiceClient</text>
+  
+  <rect x="520" y="270" width="150" height="40" class="service" rx="5"/>
+  <text x="595" y="285" class="text">角色权限服务</text>
+  <text x="595" y="300" class="text">IInsReportRoleService</text>
+  
+  <rect x="690" y="270" width="180" height="40" class="service" rx="5"/>
+  <text x="780" y="285" class="text">部门管理服务</text>
+  <text x="780" y="300" class="text">IInsReportStaSysDepartService</text>
+  
+  <!-- 业务逻辑层 -->
+  <rect x="50" y="340" width="1100" height="80" fill="none" stroke="#666" stroke-dasharray="5,5"/>
+  <text x="100" y="360" class="layer-title">业务逻辑层</text>
+  
+  <rect x="200" y="370" width="200" height="40" class="business" rx="5"/>
+  <text x="300" y="385" class="text">账号信息服务</text>
+  <text x="300" y="400" class="text">InsReportAccountInfoServiceImpl</text>
+  
+  <rect x="420" y="370" width="160" height="40" class="business" rx="5"/>
+  <text x="500" y="385" class="text">用户角色服务</text>
+  <text x="500" y="400" class="text">InsReportUserRoleService</text>
+  
+  <rect x="600" y="370" width="180" height="40" class="business" rx="5"/>
+  <text x="690" y="385" class="text">部门同步服务</text>
+  <text x="690" y="400" class="text">InsReportAccountDepartService</text>
+  
+  <!-- 数据访问层 -->
+  <rect x="50" y="440" width="1100" height="80" fill="none" stroke="#666" stroke-dasharray="5,5"/>
+  <text x="100" y="460" class="layer-title">数据访问层</text>
+  
+  <rect x="200" y="470" width="180" height="40" class="dao" rx="5"/>
+  <text x="290" y="485" class="text">账号信息DAO</text>
+  <text x="290" y="500" class="text">InsReportAccountInfoDao</text>
+  
+  <rect x="400" y="470" width="140" height="40" class="dao" rx="5"/>
+  <text x="470" y="485" class="text">用户角色DAO</text>
+  <text x="470" y="500" class="text">UserRoleDao</text>
+  
+  <rect x="560" y="470" width="140" height="40" class="dao" rx="5"/>
+  <text x="630" y="485" class="text">部门信息DAO</text>
+  <text x="630" y="500" class="text">DepartDao</text>
+  
+  <!-- 数据存储层 -->
+  <rect x="50" y="540" width="1100" height="80" fill="none" stroke="#666" stroke-dasharray="5,5"/>
+  <text x="100" y="560" class="layer-title">数据存储层</text>
+  
+  <ellipse cx="250" cy="590" rx="80" ry="25" class="storage"/>
+  <text x="250" y="585" class="text">MySQL数据库</text>
+  <text x="250" y="600" class="text">用户信息/认证信息</text>
+  
+  <ellipse cx="450" cy="590" rx="70" ry="25" class="storage"/>
+  <text x="450" y="585" class="text">Redis缓存</text>
+  <text x="450" y="600" class="text">会话/权限缓存</text>
+  
+  <ellipse cx="650" cy="590" rx="80" ry="25" class="storage"/>
+  <text x="650" y="585" class="text">Elasticsearch</text>
+  <text x="650" y="600" class="text">操作日志</text>
+  
+  <!-- 外部系统 -->
+  <rect x="50" y="640" width="1100" height="80" fill="none" stroke="#666" stroke-dasharray="5,5"/>
+  <text x="100" y="660" class="layer-title">外部系统</text>
+  
+  <rect x="200" y="670" width="120" height="40" class="external" rx="5"/>
+  <text x="260" y="685" class="text">企业AD域</text>
+  <text x="260" y="700" class="text">用户同步</text>
+  
+  <rect x="350" y="670" width="120" height="40" class="external" rx="5"/>
+  <text x="410" y="685" class="text">OA系统</text>
+  <text x="410" y="700" class="text">组织架构</text>
+  
+  <rect x="500" y="670" width="120" height="40" class="external" rx="5"/>
+  <text x="560" y="685" class="text">邮件系统</text>
+  <text x="560" y="700" class="text">通知服务</text>
+  
+  <!-- 连接线 -->
+  <!-- 前端到网关 -->
+  <line x1="410" y1="130" x2="550" y2="180" class="arrow"/>
+  
+  <!-- 网关到服务层 -->
+  <line x1="500" y1="210" x2="240" y2="270" class="arrow"/>
+  <line x1="520" y1="210" x2="425" y2="270" class="arrow"/>
+  <line x1="580" y1="210" x2="595" y2="270" class="arrow"/>
+  <line x1="600" y1="210" x2="780" y2="270" class="arrow"/>
+  
+  <!-- 服务层到业务层 -->
+  <line x1="240" y1="310" x2="300" y2="370" class="arrow"/>
+  <line x1="425" y1="310" x2="300" y2="370" class="arrow"/>
+  <line x1="595" y1="310" x2="500" y2="370" class="arrow"/>
+  <line x1="780" y1="310" x2="690" y2="370" class="arrow"/>
+  
+  <!-- 业务层到数据访问层 -->
+  <line x1="300" y1="410" x2="290" y2="470" class="arrow"/>
+  <line x1="500" y1="410" x2="470" y2="470" class="arrow"/>
+  <line x1="690" y1="410" x2="630" y2="470" class="arrow"/>
+  
+  <!-- 数据访问层到存储层 -->
+  <line x1="290" y1="510" x2="250" y2="565" class="arrow"/>
+  <line x1="290" y1="510" x2="450" y2="565" class="arrow"/>
+  <line x1="470" y1="510" x2="250" y2="565" class="arrow"/>
+  <line x1="630" y1="510" x2="250" y2="565" class="arrow"/>
+  
+  <!-- 业务层到日志系统 -->
+  <line x1="300" y1="410" x2="650" y2="565" class="arrow"/>
+  
+  <!-- 外部系统连接 -->
+  <line x1="690" y1="410" x2="260" y2="670" class="arrow"/>
+  <line x1="690" y1="410" x2="410" y2="670" class="arrow"/>
+  <line x1="300" y1="410" x2="560" y2="670" class="arrow"/>
+  
+</svg>

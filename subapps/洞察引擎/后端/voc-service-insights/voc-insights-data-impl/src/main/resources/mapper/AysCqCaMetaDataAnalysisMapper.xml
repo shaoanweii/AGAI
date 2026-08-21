@@ -1,0 +1,429 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.insights.engine.data.mapper.AysCqCaMetaDataAnalysisMapper">
+
+    <sql id="metaDataKeywordConditions">
+        <if test="title != null and title !=''">
+<!--            and (-->
+<!--            (-->
+<!--            <foreach item="item" index="index" collection="titleKeywordList" separator=" and ">-->
+<!--                title like concat('%',#{item},'%')-->
+<!--            </foreach>-->
+<!--            )-->
+<!--            or-->
+<!--            (-->
+<!--            <foreach item="item" index="index" collection="titleKeywordList" separator=" and ">-->
+<!--                content like concat('%',#{item},'%')-->
+<!--            </foreach>-->
+<!--            )-->
+<!--            )-->
+            and title MATCH_ALL REPLACE(#{title}, ',', ' ')
+        </if>
+
+        <if test="content != null and content!=''">
+<!--            and (-->
+<!--            (-->
+<!--            <foreach item="item" index="index" collection="contentKeywordList" separator=" and ">-->
+<!--                content like concat('%',#{item},'%')-->
+<!--            </foreach>-->
+<!--            )-->
+<!--            or-->
+<!--            (-->
+<!--            <foreach item="item" index="index" collection="contentKeywordList" separator=" and ">-->
+<!--                title like concat('%',#{item},'%')-->
+<!--            </foreach>-->
+<!--            )-->
+<!--            )-->
+            and content MATCH_ALL REPLACE(#{content}, ',', ' ')
+        </if>
+    </sql>
+
+    <sql id="metaDataWhereConditions">
+        date(data_create_time) BETWEEN DATE(#{startTime}) and DATE(#{endTime})
+        <if test="id != null and id !=''">
+            and data_id like concat('%',#{id},'%')
+        </if>
+
+        <include refid="metaDataKeywordConditions"/>
+
+        <if test="isWsaterArmy != null and isWsaterArmy !='' and isWsaterArmy ==1">
+            and (is_wsater_army = "1" or is_wsater_army = "Y")
+        </if>
+
+        <if test="isWsaterArmy != null and isWsaterArmy !='' and isWsaterArmy ==0">
+            and (is_wsater_army = "0" or is_wsater_army = "N")
+        </if>
+
+        <if test="isManagerFocused != null and isManagerFocused !='' and isManagerFocused ==1">
+            and is_manager_focused="1"
+        </if>
+
+        <if test="isManagerFocused != null and isManagerFocused !='' and isManagerFocused ==0">
+            and is_manager_focused ="0"
+        </if>
+
+        <if test="isBigV != null and isBigV !='' and isBigV ==1">
+            and is_big_v="1"
+        </if>
+
+        <if test="isBigV != null and isBigV !='' and isBigV ==0">
+            and is_big_v="0"
+        </if>
+
+        <if test="isMainPost != null and isMainPost !='' and isMainPost ==1">
+            and is_main_post="Y"
+        </if>
+
+        <if test="isMainPost != null and isMainPost !='' and isMainPost ==0">
+            and is_main_post="N"
+        </if>
+
+        <if test="workOrderId != null and workOrderId !=''">
+            and order_id like concat('%',#{workOrderId},'%')
+        </if>
+
+        <if test="questId != null and questId !=''">
+            and quest_id like concat('%',#{questId},'%')
+        </if>
+
+        <if test="questType != null and questType !=''">
+            and quest_type like concat('%',#{questType},'%')
+        </if>
+
+        <if test="authorId != null and authorId !=''">
+            and user_id like concat('%',#{authorId},'%')
+        </if>
+
+        <if test="authorNick != null and authorNick !=''">
+            and user_name like concat('%',#{authorNick},'%')
+        </if>
+
+        <if test="brandCode != null and brandCode.size()!=0 ">
+            and brand in
+            <foreach item="item" index="index" collection="brandCode" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="carSeries != null and carSeries.size()!=0 ">
+            and series in
+            <foreach item="item" index="index" collection="carSeries" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+
+        <if test="dataStatus != null and dataStatus.size()!=0">
+            and data_status in
+            <foreach item="item" index="index" collection="dataStatus" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="contentType != null and contentType !=''">
+            and content_type= #{contentType}
+        </if>
+
+        <if test="firstChannelCodeList != null and firstChannelCodeList.size() !=0 ">
+            and is_outer in
+            <foreach item="item" index="index" collection="firstChannelCodeList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+
+        <if test="threeChannelCodeList != null and threeChannelCodeList.size() !=0 ">
+            and channel_code in
+            <foreach item="item" index="index" collection="threeChannelCodeList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </sql>
+
+    <!-- 两阶段查询第一阶段：仅查id+data_create_time，避免跨时间段id重复 -->
+    <select id="pageMetaDataIdList"
+            resultType="com.voc.service.insights.engine.data.entity.AysCqCaMetaDataAnalysisEntity">
+        /**洞察引擎原始数据两阶段查询第一阶段：仅查id+data_create_time**/
+        select id, data_create_time from voc_anal_flow_mate_data_v
+--         select id, data_create_time from voc_anal_flow_mate_data_full_v
+        where
+        <include refid="metaDataWhereConditions"/>
+        order by data_create_time desc ,id desc
+        limit #{pageNum}, #{pageSize}
+    </select>
+
+    <!-- 两阶段查询第二阶段：根据id+data_create_time集合查询所需字段，避免跨时间段id重复 -->
+    <select id="getMetaDataByIds" resultType="com.voc.service.insights.engine.data.entity.AysCqCaMetaDataAnalysisEntity">
+        /**洞察引擎原始数据两阶段查询第二阶段：根据id+data_create_time集合查询所需字段**/
+        select
+        id,
+        create_time,
+        content_type,
+        data_create_time,
+        data_id,
+        channel_code,
+        brand,
+        series,
+        model,
+        is_outer,
+        one_id,
+        id_car_no,
+        mobile,
+        email,
+        global_id,
+        user_id,
+        user_name,
+        vhl_id,
+        vhl_vin,
+        dlr_id,
+        dlr_code,
+        dlr_type,
+        market_id,
+        title,
+        content,
+        is_wsater_army,
+        weight,
+        is_manager_focused as isManagerFocused,
+        is_big_v as isBigV,
+        author_id as authorId,
+        author_nick as authorNick,
+        is_main_post as isMainPost,
+        url as url,
+        view_count as viewCount,
+        comment_count as commentCount,
+        like_count as likeCount,
+        share_count as shareCount,
+        favorite_count as favoriteCount,
+        order_id as orderId,
+        quest_id as questId,
+        quest_type as questType,
+        quest_answer_score as questAnswerScore,
+        quest_business_type as questBusinessType,
+        quest_business_scenario as questBusinessScenario,
+        work_id,
+        done,
+        model_type,
+        ds,
+        data_status
+        from voc_anal_flow_mate_data_v
+        where id IN
+        <foreach item="item" collection="idList" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+        <if test="startTime != null and startTime != ''">
+            AND data_create_time &gt;= #{startTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            AND data_create_time &lt;= #{endTime}
+        </if>
+        order by data_create_time desc ,id desc
+        </select>
+
+    <select id="pageMetaDataAnalysisList"  resultType="com.voc.service.insights.engine.data.entity.AysCqCaMetaDataAnalysisEntity" >
+        /**洞察引擎获取原始数据列表0305优化**/
+        select
+        f1.id,
+        create_time,
+        content_type,
+        data_create_time,
+        data_id,
+        channel_code,
+        brand,
+        series,
+        model,
+        is_outer,
+        one_id,
+        id_car_no,
+        mobile,
+        email,
+        global_id,
+        user_id,
+        user_name,
+        vhl_id,
+        vhl_vin,
+        dlr_id,
+        dlr_code,
+        dlr_type,
+        market_id,
+        title,
+        content,
+        is_wsater_army,
+        weight,
+        is_manager_focused as isManagerFocused,
+        is_big_v as isBigV,
+        author_id as authorId,
+        author_nick as authorNick,
+        is_main_post as isMainPost,
+        url as url,
+        view_count as viewCount,
+        comment_count as commentCount,
+        like_count as likeCount,
+        share_count as shareCount,
+        favorite_count as favoriteCount,
+        order_id as orderId,
+        quest_id as questId,
+        quest_type as questType,
+        quest_answer_score as questAnswerScore,
+        quest_business_type as questBusinessType,
+        quest_business_scenario as questBusinessScenario,
+        work_id,
+        done,
+        model_type,
+        ds,
+        data_status
+        from
+        (select id from voc_anal_flow_mate_data_v
+        where
+        <include refid="metaDataWhereConditions"/>
+        order by data_create_time desc,id desc
+        limit #{pageNum},#{pageSize}
+        ) f1
+        left join voc_anal_flow_mate_data_v f2 on f1.id = f2.id
+        where
+        <include refid="metaDataWhereConditions"/>
+        order by f2.data_create_time desc,f1.id desc
+    </select>
+
+
+
+
+
+
+
+
+    <select id="findMateDataAnalysisList"
+            resultType="com.voc.service.insights.engine.data.entity.AysCqCaMetaDataAnalysisEntity">
+/**洞察引擎获取原始数据明细0305优化**/
+        with model_data as (
+        select data_id  from voc_ins_model_new_words_mv
+        where id = #{model.id}
+        order by data_id desc
+        limit #{model.pageNum}, #{model.pageSize}
+        )
+        select
+        v.id,
+        v.create_time,
+        v.content_type,
+        v.data_create_time,
+        v.data_update_time,
+        v.data_id,
+        v.channel_code,
+        v.brand,
+        v.series,
+        v.model,
+        v.is_outer,
+        v.one_id,
+        v.id_car_no,
+        v.mobile,
+        v.email,
+        v.global_id,
+        v.user_id,
+        v.user_name,
+        v.vhl_id,
+        v.vhl_vin,
+        v.dlr_id,
+        v.dlr_code,
+        v.dlr_type,
+        v.market_id,
+        v.title,
+        v.content,
+        v.is_wsater_army,
+        v.weight,
+        v.is_manager_focused as isManagerFocused,
+        v.is_big_v as isBigV,
+        v.author_id as authorId,
+        v.author_nick as authorNick,
+        v.is_main_post as isMainPost,
+        v.url as url,
+        v.view_count as viewCount,
+        v.comment_count as commentCount,
+        v.like_count as likeCount,
+        v.share_count as shareCount,
+        v.favorite_count as favoriteCount,
+        v.order_id as orderId,
+        v.quest_id as questId,
+        v.quest_type as questType,
+        v.quest_answer_score as questAnswerScore,
+        v.quest_business_type as questBusinessType,
+        v.quest_business_scenario as questBusinessScenario,
+        v.work_id,
+        v.done,
+        v.model_type,
+        v.ds,
+        v.data_status
+        from
+        model_data f1
+        left join voc_anal_flow_mate_data_v as v on f1.data_id = v.data_id
+        where v.data_id is not null
+        <if test="model.channelCodeList != null and model.channelCodeList.size() !=0 ">
+            and v.channel_code in
+            <foreach item="item" index="index" collection="model.channelCodeList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="model.keywords != null and model.keywords !='' ">
+            and (v.data_id like concat('%',#{model.keywords},'%')
+            or v.title like concat('%',#{model.keywords},'%')
+            or v.content like concat('%',#{model.keywords},'%')
+            or v.user_name like concat('%',#{model.keywords},'%')
+            or author_nick like concat('%',#{model.keywords},'%')
+            or work_order_id like concat('%',#{model.keywords},'%')
+            or quest_id like concat('%',#{model.keywords},'%')
+            )
+        </if>
+        <if test="model.brandCode !=null and model.brandCode.size()!=0">
+            and v.brand in
+            <foreach item="item" index="index" collection="model.brandCode" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="model.carSeries !=null and model.carSeries.size()!=0">
+            and v.series in
+            <foreach item="item" index="index" collection="model.carSeries" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        order by v.id desc
+    </select>
+    <select id="countMetaDataAnalysisList" resultType="java.lang.Integer">
+        select count(1) from voc_anal_flow_mate_data_v
+        where
+        <include refid="metaDataWhereConditions"/>
+    </select>
+    <select id="countMateDataAnalysisDetailList" resultType="java.lang.Integer">
+        with model_data as (
+        select data_id  from voc_ins_model_new_words_mv
+        where id = #{model.id}
+        )
+        select
+        count(1)
+        from
+        model_data f1
+        left join voc_anal_flow_mate_data_v as v on f1.data_id = v.data_id
+        where v.data_id is not null
+        <if test="model.channelCodeList != null and model.channelCodeList.size() !=0 ">
+            and v.channel_code in
+            <foreach item="item" index="index" collection="model.channelCodeList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="model.keywords != null and model.keywords !='' ">
+            and (v.data_id like concat('%',#{model.keywords},'%')
+            or v.title like concat('%',#{model.keywords},'%')
+            or v.content like concat('%',#{model.keywords},'%')
+            or v.user_name like concat('%',#{model.keywords},'%')
+            or v.author_nick like concat('%',#{model.keywords},'%')
+            or v.work_order_id like concat('%',#{model.keywords},'%')
+            or v.quest_id like concat('%',#{model.keywords},'%')
+            )
+        </if>
+        <if test="model.brandCode !=null and model.brandCode.size()!=0">
+            and v.brand in
+            <foreach item="item" index="index" collection="model.brandCode" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="model.carSeries !=null and model.carSeries.size()!=0">
+            and v.series in
+            <foreach item="item" index="index" collection="model.carSeries" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+</mapper>

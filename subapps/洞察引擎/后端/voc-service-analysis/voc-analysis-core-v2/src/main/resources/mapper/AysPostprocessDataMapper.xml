@@ -1,0 +1,618 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.analysis.core.v2.mapper.AysPostprocessDataMapper">
+
+    <select id="findByDistinctByAttr" resultType="java.lang.Long">
+        select count(*) from dwd_voc2_post_rules_result_data
+        WHERE
+            data->&apos;${attr}&apos; = #{value}
+          and
+            to_date(publish_time )  BETWEEN to_date(#{startTime}) and to_date(now())
+    </select>
+
+
+
+    <select id="pagePostprocessDataList" resultType="com.voc.service.analysis.core.v2.entity.AysPostprocessDataEntity" >
+        SELECT
+        new_id,
+        id,
+        work_id,
+        client_id,
+        channel_id,
+        original_id,
+        content_type,
+        input_data_id,
+        sample_data_type,
+        original_text_scene,
+        brand_code_name,
+        car_series_name,
+        label_type,
+        label_type_level_first,
+        label_type_level_second,
+        label_type_level_three,
+        label_type_level_four,
+        label_type_level_five,
+        scenario,
+        sentiment,
+        intention_type,
+        topic,
+        opinion,
+        subject,
+        fault_level,
+        description,
+        sentiment_score,
+        keywords,
+        publish_time,
+        create_time,
+        abandon,
+        hit_rules,
+        done,
+        ext_fields,
+        biz_ext_attrs,
+        biz_ext_attrs2,
+        biz_ext_attrs3
+        FROM
+        dwd_voc2_post_rules_result_data
+        where
+        client_id = #{clientId}
+        <if test="workIdList != null and workIdList.size!=0 ">
+            and work_id in
+            <foreach item="item" index="index" collection="workIdList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="dataStatus != null and dataStatus.size!=0">
+            and abandon in
+            <foreach item="item" index="index" collection="dataStatus" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="startTime != null and startTime !=''">
+            and date(publish_time) BETWEEN DATE(#{startTime}) and DATE(#{endTime})
+        </if>
+        <if test="date != null and date !=''">
+            and date(create_time) BETWEEN DATE(#{date}) and DATE(#{date})
+        </if>
+        <if test="sentiment != null and sentiment.size!=0">
+            and sentiment in
+            <foreach item="item" index="index" collection="sentiment" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="intention != null and intention.size!=0 ">
+            and intention_type in
+            <foreach item="item" index="index" collection="intention" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="brandCode != null and brandCode.size!=0 ">
+            and brand_code_name in
+            <foreach item="item" index="index" collection="brandCode" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="carSeries != null and carSeries.size!=0 ">
+            and car_series_name in
+            <foreach item="item" index="index" collection="carSeries" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="businessEndTag != null and businessEndTag.size!=0 ">
+            and label_type_level_four in
+            <foreach item="item" index="index" collection="businessEndTag" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="channelIdList != null and channelIdList.size !=0 ">
+            and channel_id in
+            <foreach item="item" index="index" collection="channelIdList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="keywords != null and keywords !='' ">
+            and (
+            trim(biz_ext_attrs -> '$.category_1') like concat('%',#{keywords},'%')
+            or trim(biz_ext_attrs -> '$.category_2') like concat('%',#{keywords},'%')
+            or trim(biz_ext_attrs -> '$.category_3') like concat('%',#{keywords},'%')
+            or trim(biz_ext_attrs -> '$.category_4') like concat('%',#{keywords},'%')
+            or trim(biz_ext_attrs -> '$.category_5') like concat('%',#{keywords},'%')
+            or trim(biz_ext_attrs -> '$.abstract') like concat('%',#{keywords},'%')
+            or trim(biz_ext_attrs -> '$.serverorder') like concat('%',#{keywords},'%')
+            or original_text_scene like concat('%',#{keywords},'%')
+            )
+        </if>
+        <if test="showType != null and showType !=''">
+            and ext_fields->'$.showType' = #{showType}
+        </if>
+        order by new_id desc
+    </select>
+
+    <select id="pagePostprocessMetaDataList"
+            resultType="com.voc.service.analysis.core.v2.entity.AysPostprocessDataEntity">
+        SELECT
+        prod.new_id,
+        prod.id,
+        prod.work_id,
+        prod.client_id,
+        prod.channel_id,
+        prod.original_id,
+        prod.content_type,
+        prod.input_data_id,
+        prod.sample_data_type,
+        prod.original_text_scene,
+        prod.brand_code_name,
+        prod.car_series_name,
+        label_type,
+        label_type_level_first,
+        label_type_level_second,
+        label_type_level_three,
+        label_type_level_four,
+        label_type_level_five,
+        prod.scenario,
+        prod.sentiment,
+        prod.intention_type,
+        prod.topic,
+        prod.opinion,
+        prod.subject,
+        prod.fault_level,
+        prod.description,
+        prod.sentiment_score,
+        prod.keywords,
+        prod.publish_time,
+        prod.create_time,
+        prod.update_time,
+        prod.abandon,
+        prod.hit_rules,
+        prod.done,
+        ext_fields,
+        biz_ext_attrs,
+        biz_ext_attrs2,
+        biz_ext_attrs3,
+        meta.data -> '$.uRL' as url
+        FROM
+        dwd_voc2_post_rules_result_data prod
+        left join ays_meta_data_analysis meta on prod.original_id = meta.new_id
+        where
+        prod.client_id = #{paramModel.clientId}
+        <if test="paramModel.startTime != null and paramModel.startTime !=''">
+            and date(prod.publish_time) BETWEEN DATE(#{paramModel.startTime}) and DATE(#{paramModel.endTime})
+        </if>
+        <if test="paramModel.sentiment != null and paramModel.sentiment.size()!=0">
+            and prod.sentiment in
+            <foreach item="item" index="index" collection="paramModel.sentiment" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="paramModel.intention != null and paramModel.intention.size()!=0 ">
+            and prod.intention_type in
+            <foreach item="item" index="index" collection="paramModel.intention" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="paramModel.brandCode != null and paramModel.brandCode.size()!=0 ">
+            and prod.brand_code_name in
+            <foreach item="item" index="index" collection="paramModel.brandCode" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="paramModel.carSeries != null and paramModel.carSeries.size()!=0 ">
+            and prod.car_series_name in
+            <foreach item="item" index="index" collection="paramModel.carSeries" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="paramModel.businessEndTag != null and paramModel.businessEndTag.size()!=0 ">
+            and prod.label_type_level_four in
+            <foreach item="item" index="index" collection="paramModel.businessEndTag" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="paramModel.channelIdList != null and paramModel.channelIdList.size() !=0 ">
+            and prod.channel_id in
+            <foreach item="item" index="index" collection="paramModel.channelIdList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="paramModel.keywords != null and paramModel.keywords !='' ">
+            and (prod.original_text_scene like concat('%',#{paramModel.keywords},'%')
+            or prod.input_data_id like concat('%',#{paramModel.keywords},'%'))
+        </if>
+        <if test="paramModel.modelType !=null and paramModel.modelType !=''">
+            and prod.model_type = #{paramModel.modelType}
+        </if>
+        <if test="paramModel.metaDataType !=null and paramModel.metaDataType.size()!=0 ">
+            and prod.content_type in
+            <foreach item="item" index="index" collection="paramModel.metaDataType" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        order by prod.create_time desc
+    </select>
+
+
+    <select id="pageProjectPostDataList" resultType="com.voc.service.analysis.core.v2.entity.AysPostprocessDataEntity" >
+        SELECT
+        new_id,
+        id,
+        work_id,
+        client_id,
+        channel_id,
+        original_id,
+        content_type,
+        input_data_id,
+        sample_data_type,
+        original_text_scene,
+        brand_code_name,
+        car_series_name,
+        label_type,
+        label_type_level_first,
+        label_type_level_second,
+        label_type_level_three,
+        label_type_level_four,
+        label_type_level_five,
+        scenario,
+        sentiment,
+        intention_type,
+        topic,
+        opinion,
+        subject,
+        fault_level,
+        description,
+        sentiment_score,
+        keywords,
+        publish_time,
+        create_time,
+        update_time,
+        abandon,
+        hit_rules,
+        ext_fields,
+        biz_ext_attrs,
+        biz_ext_attrs2,
+        biz_ext_attrs3,
+        done,
+        mention_car_series as mentionCarSeries
+        FROM
+        ins_ays_post_process_data
+        where
+        client_id = #{clientId} and showType ="2"
+        <if test="startTime != null and startTime !=''">
+            and date(publish_time) BETWEEN DATE(#{startTime}) and DATE(#{endTime})
+        </if>
+        <if test="sentiment != null and sentiment.size!=0">
+            and sentiment in
+            <foreach item="item" index="index" collection="sentiment" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="labelTypeList != null and labelTypeList.size!=0">
+            and label_type in
+            <foreach item="item" index="index" collection="labelTypeList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+
+        <if test="cityCodeList != null and cityCodeList.size!=0">
+            and small_area_code in
+            <foreach item="item" index="index" collection="cityCodeList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="labelTypeLevelFourDisableList !=null and labelTypeLevelFourDisableList.size() >0">
+            and  label_type_level_four_code not in
+            <foreach item="item" index="index" collection="labelTypeLevelFourDisableList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="intention != null and intention.size!=0 ">
+            and intention_type in
+            <foreach item="item" index="index" collection="intention" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="brandCode != null and brandCode.size!=0 ">
+            and brand_code_name in
+            <foreach item="item" index="index" collection="brandCode" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="businessEndTag != null and businessEndTag.size!=0 ">
+            and label_type_level_four_code in
+            <foreach item="item" index="index" collection="businessEndTag" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="channelIdList != null and channelIdList.size !=0 ">
+            and channel_id in
+            <foreach item="item" index="index" collection="channelIdList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="ownCarSeries != null and ownCarSeries.size !=0 ">
+            and car_series_name in
+            <foreach item="item" index="index" collection="ownCarSeries" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="competitorsCarSeries != null and competitorsCarSeries.size !=0 ">
+            and car_series_name in
+            <foreach item="item" index="index" collection="competitorsCarSeries" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="mentionCarSeriesString != null and mentionCarSeriesString !='' ">
+            and mention_car_series IS  not null and mention_car_series!="[]"
+            and array_length(array_intersect(cast(trim(mention_car_series)  as  <![CDATA[array<STRING>]]> ) ,split(#{mentionCarSeriesString} ,','))) > 0
+        </if>
+        <if test="keywords != null and keywords !='' ">
+            and (category_1 like concat('%',#{keywords},'%')
+            or category_2 like concat('%',#{keywords},'%')
+            or category_3 like concat('%',#{keywords},'%')
+            or category_4 like concat('%',#{keywords},'%')
+            or category_5 like concat('%',#{keywords},'%')
+            or abstract like concat('%',#{keywords},'%')
+            or trim(biz_ext_attrs -> '$.serverorder') like concat('%',#{keywords},'%')
+            or original_text_scene like concat('%',#{keywords},'%')
+            )
+        </if>
+        order by new_id desc
+        <if test="pageType ==1 ">
+         limit #{pageNum},#{pageSize}
+        </if>
+    </select>
+
+
+
+
+    <select id="pageProjectPostDataCount" resultType="java.lang.Long" >
+        SELECT
+        count(*)
+        FROM
+        ins_ays_post_process_data
+        where
+        client_id = #{clientId} and showType ="2"
+        <if test="startTime != null and startTime !=''">
+            and date(publish_time) BETWEEN DATE(#{startTime}) and DATE(#{endTime})
+        </if>
+
+        <if test="cityCodeList != null and cityCodeList.size!=0">
+            and small_area_code in
+            <foreach item="item" index="index" collection="cityCodeList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+
+        <if test="labelTypeList != null and labelTypeList.size!=0">
+            and label_type in
+            <foreach item="item" index="index" collection="labelTypeList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+
+        <if test="labelTypeLevelFourDisableList !=null and labelTypeLevelFourDisableList.size() >0">
+            and  label_type_level_four_code not in
+            <foreach item="item" index="index" collection="labelTypeLevelFourDisableList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+
+        <if test="sentiment != null and sentiment.size!=0">
+            and sentiment in
+            <foreach item="item" index="index" collection="sentiment" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="intention != null and intention.size!=0 ">
+            and intention_type in
+            <foreach item="item" index="index" collection="intention" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="brandCode != null and brandCode.size!=0 ">
+            and brand_code_name in
+            <foreach item="item" index="index" collection="brandCode" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="businessEndTag != null and businessEndTag.size!=0 ">
+            and label_type_level_four_code in
+            <foreach item="item" index="index" collection="businessEndTag" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="channelIdList != null and channelIdList.size !=0 ">
+            and channel_id in
+            <foreach item="item" index="index" collection="channelIdList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="ownCarSeries != null and ownCarSeries.size !=0 ">
+            and car_series_name in
+            <foreach item="item" index="index" collection="ownCarSeries" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="competitorsCarSeries != null and competitorsCarSeries.size !=0 ">
+            and car_series_name in
+            <foreach item="item" index="index" collection="competitorsCarSeries" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="mentionCarSeriesString != null and mentionCarSeriesString !='' ">
+            and mention_car_series IS  not null and mention_car_series!="[]"
+            and array_length(array_intersect(cast(trim(mention_car_series)  as  <![CDATA[array<STRING>]]> ) ,split(#{mentionCarSeriesString} ,','))) > 0
+        </if>
+        <if test="keywords != null and keywords !='' ">
+            and (category_1 like concat('%',#{keywords},'%')
+            or category_2 like concat('%',#{keywords},'%')
+            or category_3 like concat('%',#{keywords},'%')
+            or category_4 like concat('%',#{keywords},'%')
+            or category_5 like concat('%',#{keywords},'%')
+            or abstract like concat('%',#{keywords},'%')
+            or trim(biz_ext_attrs -> '$.serverorder') like concat('%',#{keywords},'%')
+            or original_text_scene like concat('%',#{keywords},'%')
+            )
+        </if>
+    </select>
+
+    <select id="projectPostData" resultType="com.voc.service.analysis.core.v2.entity.AysPostprocessDataEntity">
+        SELECT
+        max(publish_time) as maxTime,
+        min(publish_time) as minTime
+        FROM
+        ins_ays_post_process_data
+        where
+        client_id = #{clientId}
+        <if test="workIdList != null and workIdList.size !=0 and dateType != null and dateType !=''">
+            and (work_id in
+            <foreach item="item" index="index" collection="workIdList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+            or showType ="2")
+        </if>
+
+        <if test="workIdList == null or workIdList.size ==0 and dateType != null and dateType !=''">
+            and showType ="2"
+        </if>
+
+        <if test="workIdList != null and workIdList.size !=0 and dateType == null or dateType ==''">
+            and work_id in
+            <foreach item="item" index="index" collection="workIdList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="startTime != null and startTime !=''">
+            and date(publish_time) BETWEEN DATE(#{startTime}) and DATE(#{endTime})
+        </if>
+        <if test="sentiment != null and sentiment.size!=0">
+            and sentiment in
+            <foreach item="item" index="index" collection="sentiment" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="intention != null and intention.size!=0 ">
+            and intention_type in
+            <foreach item="item" index="index" collection="intention" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="brandCode != null and brandCode.size!=0 ">
+            and brand_code_name in
+            <foreach item="item" index="index" collection="brandCode" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="businessEndTag != null and businessEndTag.size!=0 ">
+            and label_type_level_four_code in
+            <foreach item="item" index="index" collection="businessEndTag" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="channelIdList != null and channelIdList.size !=0 ">
+            and channel_id in
+            <foreach item="item" index="index" collection="channelIdList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="ownCarSeries != null and ownCarSeries.size !=0 ">
+            and car_series_name in
+            <foreach item="item" index="index" collection="ownCarSeries" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="competitorsCarSeries != null and competitorsCarSeries.size !=0 ">
+            and car_series_name in
+            <foreach item="item" index="index" collection="competitorsCarSeries" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="mentionCarSeriesString != null and mentionCarSeriesString !='' ">
+            and mention_car_series IS  not null and mention_car_series!="[]"
+            and  array_length(array_intersect(cast(trim(mention_car_series)  as  <![CDATA[array<STRING>]]> ) ,split(#{mentionCarSeriesString} ,','))) > 0
+        </if>
+        <if test="keywords != null and keywords !='' ">
+            and (category_1 like concat('%',#{keywords},'%')
+            or category_2 like concat('%',#{keywords},'%')
+            or category_3 like concat('%',#{keywords},'%')
+            or category_4 like concat('%',#{keywords},'%')
+            or category_5 like concat('%',#{keywords},'%')
+            or abstract like concat('%',#{keywords},'%')
+            or trim(biz_ext_attrs -> '$.serverorder') like concat('%',#{keywords},'%')
+            or original_text_scene like concat('%',#{keywords},'%')
+            )
+        </if>
+    </select>
+
+
+
+
+    <select id="projectMentionCarSeries" resultType="java.lang.String">
+        select
+        ARRAY_UNIQUE_AGG(array_remove(ARRAY_DISTINCT(cast(mention_car_series as <![CDATA[array<STRING>]]> )),
+        car_series_name)) as mentionCarSeries
+        from
+        ins_ays_post_process_data
+        where
+        client_id = #{clientId} and showType ="2"
+        <if test="startTime != null and startTime !=''">
+            and date(publish_time) BETWEEN DATE(#{startTime}) and DATE(#{endTime})
+        </if>
+        <if test="cityCodeList != null and cityCodeList.size!=0">
+            and small_area_code in
+            <foreach item="item" index="index" collection="cityCodeList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="labelTypeList != null and labelTypeList.size!=0">
+            and label_type in
+            <foreach item="item" index="index" collection="labelTypeList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+
+        <if test="labelTypeLevelFourDisableList !=null and labelTypeLevelFourDisableList.size() >0">
+            and  label_type_level_four_code not in
+            <foreach item="item" index="index" collection="labelTypeLevelFourDisableList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+
+        <if test="channelIdList != null and channelIdList.size !=0 ">
+            and channel_id in
+            <foreach item="item" index="index" collection="channelIdList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+
+        <if test="brandCode != null and brandCode.size!=0 ">
+            and brand_code_name in
+            <foreach item="item" index="index" collection="brandCode" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+    <select id="checkData"  >
+        select count(*) from dwd_voc2_post_rules_result_data
+        where  date(publish_time) &lt; date_sub(date(now()),#{days})
+    </select>
+    <select id="checkHistoryData"  >
+        select count(*) from ays_post_process_data_history
+        where date(back_time) = date(now())
+    </select>
+    <select id="moveToHistoryData"  >
+        insert into ays_post_process_data_history(new_id, id, one_id, work_id, client_id, channel_id, original_id, content_type, input_data_id, sample_data_type, original_text_scene, brand_code_name, car_series_name, label_type, label_type_level_first, label_type_level_second, label_type_level_three, label_type_level_four, label_type_level_five, scenario, sentiment, intention_type, topic, opinion, subject, fault_level, description, sentiment_score, keywords, model_type, ext_fields, biz_ext_attrs, biz_ext_attrs2, biz_ext_attrs3, publish_time, create_time, update_time, abandon, hit_rules, done, back_time)
+        select new_id, id, one_id, work_id, client_id, channel_id, original_id, content_type, input_data_id, sample_data_type, original_text_scene, brand_code_name, car_series_name, label_type, label_type_level_first, label_type_level_second, label_type_level_three, label_type_level_four, label_type_level_five, scenario, sentiment, intention_type, topic, opinion, subject, fault_level, description, sentiment_score, keywords, model_type, ext_fields, biz_ext_attrs, biz_ext_attrs2, biz_ext_attrs3, publish_time, create_time, update_time, abandon, hit_rules, done,now()
+        from dwd_voc2_post_rules_result_data
+        where date(publish_time ) &lt; date_sub(date(now()), #{days})
+    </select>
+    <select id="deleteHistoryData"  >
+        delete from dwd_voc2_post_rules_result_data
+        where date(publish_time) &lt; date_sub(date(now()),#{days})
+    </select>
+
+
+    <select id="selectErrorData" resultType="com.voc.service.analysis.core.v2.entity.AysPostprocessDataEntity">
+        select * from dwd_voc2_post_rules_result_data where date(publish_time ) BETWEEN
+            date('2024-11-01') and date('2024-12-31') and ext_fields->'$.big_area_code'='' and ext_fields->'$.samll_area_sale'=''
+    </select>
+</mapper>

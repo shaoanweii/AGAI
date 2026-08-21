@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.insights.engine.mapper.InsBusinessTagMapper">
+    <update id="updateTreeNodeStatus" parameterType="java.lang.String">
+        update ins_business_tag
+        set has_child = #{status}
+        where id = #{id}
+    </update>
+
+    <sql id="querySelectFeild">
+        g4.id, g4.name, g4.tag_code as tagCode,  g4.related_description as relatedDescription, g4.yndel, g4.pid
+    </sql>
+    <select id="queryByPage" resultType="com.voc.service.insights.engine.vo.InsBusinessTagListVo">
+        SELECT
+        g1.name as firstDimensionName,
+        g1.NAME_EN as firstDimensionNameEn,
+        g1.tag_code as firstDimensionCode,
+        g2.name as secondDimensionName,
+        g2.NAME_EN as secondDimensionNameEn,
+        g2.tag_code as secondDimensionCode,
+        g3.name as thirdDimensionName,
+        g3.NAME_EN as thirdDimensionNameEn,
+        g3.tag_code as thirdDimensionCode,
+        g4.name as topicName,
+        g4.NAME_EN as nameEn,
+        g4.tag_code as topicCode,
+        g4.enable as enable,
+        <include refid="querySelectFeild"/>
+        FROM
+        VOC_BUSINESS_TAG g4
+        LEFT JOIN VOC_BUSINESS_TAG g3 ON g4.PID=g3.ID
+        LEFT JOIN VOC_BUSINESS_TAG g2 ON g3.PID=g2.ID
+        LEFT JOIN VOC_BUSINESS_TAG g1 ON g2.PID=g1.ID
+        WHERE
+        1=1
+        and g4.OTHER=0
+        AND g1.TAG_CODE IS NOT NULL
+        <if test="model.pid != null">
+            AND g1.PID = #{model.pid}
+        </if>
+        <if test="model.searchKeyword != null and model.searchKeyword != ''">
+            AND
+            (
+            g1.NAME LIKE CONCAT('%', #{model.searchKeyword} ,'%') OR
+            g2.NAME LIKE CONCAT('%', #{model.searchKeyword} ,'%') OR
+            g3.NAME LIKE CONCAT('%', #{model.searchKeyword} ,'%') OR
+            g4.NAME LIKE CONCAT('%', #{model.searchKeyword} ,'%')
+            )
+        </if>
+
+    </select>
+    <!-- <select id="relationBusinessTag" resultType="com.voc.service.insights.engine.vo.auth.RoleAuthTree">
+         select *
+         from VOC_BUSINESS_TAG
+
+     </select>-->
+
+</mapper>

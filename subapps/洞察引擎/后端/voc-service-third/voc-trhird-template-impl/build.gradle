@@ -1,0 +1,9 @@
+apply plugin: 'java-library'
+
+group = 'voc-trhird-template-impl'
+
+dependencies {
+    api project(':voc-service-common')
+
+//    api 'jakarta.servlet:jakarta.servlet-api'
+}

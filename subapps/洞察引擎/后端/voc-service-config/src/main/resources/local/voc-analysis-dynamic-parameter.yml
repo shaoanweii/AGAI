@@ -1,0 +1,31 @@
+pushData:
+  attrs:
+    id: 'id'
+    clientId: 'clientId'
+    channelId: 'channelId'
+    type: 'type'
+    content: 'content'
+    title: 'title'
+    user_name: 'user_name'
+    publish_time: 'publish_time'
+
+
+model_params_size: 4
+invoke_model: true
+discard_data_items: true
+validDataSplitSize: 1000
+historyDataDays: 30
+metaDatahistoryDays: 90
+metaDataAnalysisHistoryDays: 90
+preProcessDataHistoryDays: 90
+postProcessDataHistoryDays: 90
+modelApiResltDataHistoryDays: 180
+modelApiResltDataAnalysisHistoryDays: 180
+validPostProcessDataHistoryDays: 999999
+validModelApiResltDataAnalysisHistoryDays: 90
+runPreRulesScheduled: true
+runPostRulesScheduled: true
+runCallModelScheduled: true
+modelMergeDataSwitch: true
+enbaledMQPush: true
+

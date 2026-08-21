@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.insights.engine.mapper.InsCarSeriesInfoMapper">
+
+    <sql id="insCarSeriesInfoEntityDbMap">
+        t.id,
+        t.name,
+        t.name_en,
+        t.brand_id,
+        t.brand_code,
+        t.alias,
+        t.exclusion_words,
+        t.code,
+        t.order_by,
+        t.car_name,
+        t.car_code,
+        t.factory,
+        t.car_level1,
+        t.car_level2,
+        t.energy_type1,
+        t.energy_type2,
+        t.level_name,
+        t.competitive_type,
+        t.competitive_product,
+        t.preheat_start_time,
+        t.preheat_end_time,
+        t.launch_start_time,
+        t.launch_end_time,
+        t.stable_start_time,
+        t.stable_end_time,
+        t.update_user,
+        t.is_core,
+        t.operator,
+        t.create_time,
+        t.update_time,
+        t.del_flag,
+        t.img,
+        t.app_id,
+        t.country,
+        t.is_new_car,
+        t.status
+    </sql>
+
+    <resultMap id="BaseResultMap" type="com.voc.service.insights.engine.entity.InsCarSeriesInfoEntity" >
+        <result column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="name_en" property="nameEn" />
+        <result column="brand_id" property="brandId" />
+        <result column="brand_code" property="brandCode" />
+        <result column="alias" property="alias" />
+        <result column="exclusion_words" property="exclusionWords" />
+        <result column="code" property="code" />
+        <result column="order_by" property="orderBy" />
+        <result column="car_name" property="carName" />
+        <result column="car_code" property="carCode" />
+        <result column="factory" property="factory" />
+        <result column="car_level1" property="carLevel1" />
+        <result column="car_level2" property="carLevel2" />
+        <result column="energy_type1" property="energyType1" />
+        <result column="energy_type2" property="energyType2" />
+        <result column="level_name" property="levelName" />
+        <result column="competitive_type" property="competitiveType" />
+        <result column="competitive_product" property="competitiveProduct" typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler" />
+        <result column="preheat_start_time" property="preheatStartTime" />
+        <result column="preheat_end_time" property="preheatEndTime" />
+        <result column="launch_start_time" property="launchStartTime" />
+        <result column="launch_end_time" property="launchEndTime" />
+        <result column="stable_start_time" property="stableStartTime" />
+        <result column="stable_end_time" property="stableEndTime" />
+        <result column="update_user" property="updateUser" />
+        <result column="is_core" property="isCore" />
+        <result column="operator" property="operator" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="del_flag" property="delFlag" />
+        <result column="img" property="img" />
+        <result column="app_id" property="appId" />
+        <result column="country" property="country" />
+        <result column="is_new_car" property="isNewCar" />
+        <result column="status" property="status" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,
+                name,
+                name_en,
+                brand_id,
+                brand_code,
+                alias,
+                exclusion_words,
+                code,
+                order_by,
+                car_name,
+                car_code,
+                factory,
+                car_level1,
+                car_level2,
+                energy_type1,
+                energy_type2,
+                level_name,
+                competitive_type,
+                competitive_product,
+                preheat_start_time,
+                preheat_end_time,
+                launch_start_time,
+                launch_end_time,
+                stable_start_time,
+                stable_end_time,
+                update_user,
+                is_core,
+                operator,
+                create_time,
+                update_time,
+                del_flag,
+                img,
+                app_id,
+                country,
+                is_new_car,
+                status
+    </sql>
+
+    <insert id="insertInsCarSeriesInfoEntity"
+            parameterType="com.voc.service.insights.engine.entity.InsCarSeriesInfoEntity"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO ins_car_series_info
+        (id, name, name_en, brand_id, alias, exclusion_words, code, order_by, car_level1, car_level2, energy_type1,
+         energy_type2, preheat_start_time, preheat_end_time, launch_start_time, launch_end_time, stable_start_time,
+         stable_end_time, is_new_car, operator, create_time, update_time, del_flag, img, app_id)
+        VALUES (#{id}, #{name}, #{nameEn}, #{brandId}, #{alias}, #{exclusionWords}, #{code}, #{orderBy}, #{carLevel1},
+                #{carLevel2}, #{energyType1}, #{energyType2}, #{preheatStartTime}, #{preheatEndTime},
+                #{launchStartTime}, #{launchEndTime}, #{stableStartTime}, #{stableEndTime}, #{isNewCar},
+                #{operator}, #{createTime}, #{updateTime}, #{delFlag}, #{img}, #{appId})
+    </insert>
+
+    <update id="updateInsCarSeriesInfoEntity"
+            parameterType="com.voc.service.insights.engine.entity.InsCarSeriesInfoEntity">
+        <if test="id != null">
+            UPDATE
+            ins_car_series_info t
+            <set>
+                <if test="name != null">
+                    t.name = #{name},
+                </if>
+                <if test="nameEn != null">
+                    t.name_en = #{nameEn},
+                </if>
+                <if test="brandId != null">
+                    t.brand_id = #{brandId},
+                </if>
+                <if test="alias != null">
+                    t.alias = #{alias},
+                </if>
+                <if test="exclusionWords != null">
+                    t.exclusion_words = #{exclusionWords},
+                </if>
+                <if test="code != null">
+                    t.code = #{code},
+                </if>
+                <if test="orderBy != null">
+                    t.order_by = #{orderBy},
+                </if>
+                <if test="carLevel1 != null">
+                    t.car_level1 = #{carLevel1},
+                </if>
+                <if test="carLevel2 != null">
+                    t.car_level2 = #{carLevel2},
+                </if>
+                <if test="energyType1 != null">
+                    t.energy_type1 = #{energyType1},
+                </if>
+                <if test="energyType2 != null">
+                    t.energy_type2 = #{energyType2},
+                </if>
+                <if test="preheatStartTime != null">
+                    t.preheat_start_time = #{preheatStartTime},
+                </if>
+                <if test="preheatEndTime != null">
+                    t.preheat_end_time = #{preheatEndTime},
+                </if>
+                <if test="launchStartTime != null">
+                    t.launch_start_time = #{launchStartTime},
+                </if>
+                <if test="launchEndTime != null">
+                    t.launch_end_time = #{launchEndTime},
+                </if>
+                <if test="stableStartTime != null">
+                    t.stable_start_time = #{stableStartTime},
+                </if>
+                <if test="stableEndTime != null">
+                    t.stable_end_time = #{stableEndTime},
+                </if>
+                <if test="isNewCar != null">
+                    t.is_new_car = #{isNewCar},
+                </if>
+                <if test="operator != null">
+                    t.operator = #{operator},
+                </if>
+                <if test="createTime != null">
+                    t.create_time = #{createTime},
+                </if>
+                <if test="updateTime != null">
+                    t.update_time = #{updateTime},
+                </if>
+                <if test="delFlag != null">
+                    t.del_flag = #{delFlag},
+                </if>
+                <if test="img != null">
+                    t.img = #{img},
+                </if>
+                <if test="appId != null">
+                    t.app_id = #{appId},
+                </if>
+            </set>
+            WHERE
+            t.id = #{id}
+        </if>
+    </update>
+
+    <update id="delInsCarSeriesInfoEntity" parameterType="String">
+        <if test="id != null">
+            UPDATE
+            ins_car_series_info t
+            <set>
+                t.del_flag = 1
+            </set>
+            WHERE
+            t.id = #{id}
+        </if>
+    </update>
+
+
+    <select id="selectMultiPagingInsCarSeriesInfoEntity"
+            parameterType="com.voc.service.insights.engine.model.InsCarSeriesInfoModel"
+            resultType="com.voc.service.insights.engine.entity.InsCarSeriesInfoEntity">
+        SELECT
+        <include refid="insCarSeriesInfoEntityDbMap"/>
+        FROM
+        ins_car_series_info t
+        where 1
+        <if test="name != null and name != '' ">
+            and t.name = #{name}
+        </if>
+        <if test="nameEn != null and nameEn != '' ">
+            and t.name_en = #{nameEn}
+        </if>
+        <if test="brandId != null and brandId != '' ">
+            and t.brand_id = #{brandId}
+        </if>
+        <if test="alias != null and alias != '' ">
+            and t.alias = #{alias}
+        </if>
+        <if test="exclusionWords != null and exclusionWords != '' ">
+            and t.exclusion_words = #{exclusionWords}
+        </if>
+        <if test="code != null and code != '' ">
+            and t.code = #{code}
+        </if>
+        <if test="orderBy != null and orderBy != '' ">
+            and t.order_by = #{orderBy}
+        </if>
+        <if test="carLevel1 != null and carLevel1 != '' ">
+            and t.car_level1 = #{carLevel1}
+        </if>
+        <if test="carLevel2 != null and carLevel2 != '' ">
+            and t.car_level2 = #{carLevel2}
+        </if>
+        <if test="energyType1 != null and energyType1 != '' ">
+            and t.energy_type1 = #{energyType1}
+        </if>
+        <if test="energyType2 != null and energyType2 != '' ">
+            and t.energy_type2 = #{energyType2}
+        </if>
+        <if test="operator != null and operator != '' ">
+            and t.operator = #{operator}
+        </if>
+        <if test="createTime != null and createTime != '' ">
+            and t.create_time = #{createTime}
+        </if>
+        <if test="updateTime != null and updateTime != '' ">
+            and t.update_time = #{updateTime}
+        </if>
+        <if test="delFlag != null and delFlag != '' ">
+            and t.del_flag = #{delFlag}
+        </if>
+        <if test="img != null and img != '' ">
+            and t.img = #{img}
+        </if>
+        <if test="appId != null and appId != '' ">
+            and t.app_id = #{appId}
+        </if>
+        order by update_time desc
+        limit #{start},#{pagesize}
+    </select>
+
+    <select id="selectMultiInsCarSeriesInfoEntity"
+            parameterType="com.voc.service.insights.engine.model.InsCarSeriesInfoModel"
+            resultMap="BaseResultMap">
+        SELECT
+        <include refid="insCarSeriesInfoEntityDbMap"/>
+        FROM
+        ins_car_series_info t
+        where 1 = 1
+        <if test="name != null and name != '' ">
+            and t.name = #{name}
+        </if>
+        <if test="nameEn != null and nameEn != '' ">
+            and t.name_en = #{nameEn}
+        </if>
+        <if test="brandId != null and brandId != '' ">
+            and t.brand_id = #{brandId}
+        </if>
+        <if test="brandCode != null and brandCode != '' ">
+            and t.brand_code = #{brandCode}
+        </if>
+        <if test="alias != null and alias != '' ">
+            and t.alias = #{alias}
+        </if>
+        <if test="exclusionWords != null and exclusionWords != '' ">
+            and t.exclusion_words = #{exclusionWords}
+        </if>
+        <if test="code != null and code != '' ">
+            and t.code = #{code}
+        </if>
+        <if test="status != null and status != '' ">
+            and t.status = #{status}
+        </if>
+        <if test="orderBy != null and orderBy != '' ">
+            and t.order_by = #{orderBy}
+        </if>
+        <if test="operator != null and operator != '' ">
+            and t.operator = #{operator}
+        </if>
+        <if test="competitiveType != null and competitiveType != '' ">
+            and t.competitive_type = #{competitiveType}
+        </if>
+        <if test="brandCodes !=null and brandCodes.size()>0">
+            and t.brand_code in
+            <foreach item="item" index="index" collection="brandCodes" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        order by case when name like '%非指代%' then 0 else 1 end,code asc
+    </select>
+    <select id="findInsCarSeriesInfoList"
+            resultType="com.voc.service.insights.engine.entity.InsCarSeriesInfoEntity">
+        select
+        icsi.id,
+        icsi.name,
+        icsi.competitive_type,
+--         sdi.item_text as competitiveTypeName,
+        icsi.update_user as operator,
+        icsi.is_core,
+--         sd.item_text as isCoreName,
+        icsi.create_time,
+        icsi.update_time,
+        icsi.status,
+--         sd1.item_text as statusName,
+        ibi.name as brandName,
+        icsi.is_new_car,
+        icsi.preheat_start_time,
+        icsi.preheat_end_time,
+        icsi.launch_start_time,
+        icsi.launch_end_time,
+        icsi.stable_start_time,
+        icsi.stable_end_time
+        from ins_car_series_info icsi
+        left join ins_brand_info ibi on ibi.code = icsi.brand_code
+        where 1=1
+        <if test="carSeriesModel.name != null and carSeriesModel.name != '' ">
+            and icsi.name like concat('%',#{carSeriesModel.name},'%')
+        </if>
+        <if test="carSeriesModel.brandCode != null and carSeriesModel.brandCode != '' ">
+            and icsi.brand_code = #{carSeriesModel.brandCode}
+        </if>
+        <if test="carSeriesModel.status != null and carSeriesModel.status != '' ">
+            and icsi.status = #{carSeriesModel.status}
+        </if>
+        <if test="carSeriesModel.isCore != null">
+            and icsi.is_core = #{carSeriesModel.isCore}
+        </if>
+        <if test="carSeriesModel.competitiveType != null and carSeriesModel.competitiveType != '' ">
+            and icsi.competitive_type = #{carSeriesModel.competitiveType}
+        </if>
+        <if test="carSeriesModel.operator !=null and carSeriesModel.operator != ''">
+            and icsi.update_user like concat('%',#{carSeriesModel.operator},'%')
+        </if>
+        <if test="carSeriesModel.brandCodes !=null and carSeriesModel.brandCodes.size()>0">
+            and icsi.brand_code in
+            <foreach item="item" index="index" collection="carSeriesModel.brandCodes" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="carSeriesModel.isNewCar !=null">
+            and icsi.is_new_car = #{carSeriesModel.isNewCar}
+        </if>
+        <if test="carSeriesModel.order !=null and carSeriesModel.order !=''">
+            order by icsi.${carSeriesModel.order}
+        </if>
+        <if test="carSeriesModel.order ==null or carSeriesModel.order ==''">
+            order by icsi.competitive_type asc,icsi.is_core desc,icsi.code asc
+        </if>
+
+    </select>
+
+</mapper>

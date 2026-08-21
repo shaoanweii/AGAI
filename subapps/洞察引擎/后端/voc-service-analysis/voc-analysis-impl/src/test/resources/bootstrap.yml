@@ -1,0 +1,5 @@
+spring.application.name: voc-app-analysis
+system.appid: analysis
+
+spring.profiles.active: local
+

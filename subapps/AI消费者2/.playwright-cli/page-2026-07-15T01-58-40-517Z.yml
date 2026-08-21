@@ -1,0 +1,85 @@
+- main [ref=e2]:
+  - generic [ref=e3]:
+    - generic [ref=e4]:
+      - heading "AI 消费者 · 架构图集" [level=1] [ref=e5]
+      - paragraph [ref=e6]: 面向汽车产品、市场与设计团队的 AI 模拟调研工作台
+      - generic [ref=e7]: 蓝色实线：当前前端 Demo 已实现 紫色虚线：项目规划中的生产能力
+    - button "切换深色模式" [ref=e10] [cursor=pointer]: ☾
+  - tablist "图表导航" [ref=e11]:
+    - button "技术架构图" [ref=e12] [cursor=pointer]
+    - button "产品架构图" [ref=e13] [cursor=pointer]
+    - button "业务流程图" [ref=e14] [cursor=pointer]
+  - generic [ref=e15]:
+    - generic [ref=e16]:
+      - generic [ref=e17]:
+        - heading "技术架构图" [level=2] [ref=e18]
+        - paragraph [ref=e19]: 现有 React 单页演示的实现边界，以及 7 个月交付计划定义的生产化演进
+      - generic [ref=e20]:
+        - generic [ref=e21]: 当前前端 Demo
+        - generic [ref=e22]: 规划中服务
+        - generic [ref=e23]: 数据资产
+        - generic [ref=e24]: 用户 / 管理
+    - generic [ref=e25]:
+      - img "AI消费者技术架构图" [ref=e26]:
+        - generic [ref=e28]: 业务使用层
+        - generic [ref=e29]: 设计 / 产品 / 市场 / 管理员
+        - generic [ref=e31]: 当前应用层
+        - generic [ref=e32]: React 19 · Vite 6 · 单页本地状态
+        - generic [ref=e34]: 规划中服务层
+        - generic [ref=e35]: 第 2–7 月逐步建设 · 生产化边界
+        - generic [ref=e37]: 数据与外部依赖层
+        - generic [ref=e38]: 需完成字段、权限、质量和授权确认
+        - generic [ref=e39] [cursor=pointer]:
+          - generic [ref=e41]: 产品 / 设计 / 市场
+          - generic [ref=e42]: 创建、执行与解读调研
+        - generic [ref=e43] [cursor=pointer]:
+          - generic [ref=e45]: 系统管理员
+          - generic [ref=e46]: 账号、角色、审计
+        - generic [ref=e47] [cursor=pointer]:
+          - generic [ref=e49]: 业务工作台
+          - generic [ref=e50]: 浏览器访问入口
+        - generic [ref=e51] [cursor=pointer]:
+          - generic [ref=e53]: Web 前端应用
+          - generic [ref=e54]: React 19 · Vite · lucide-react · Recharts
+          - generic [ref=e55]: src/main.jsx + styles.css
+        - generic [ref=e56] [cursor=pointer]:
+          - generic [ref=e58]: 页面与本地状态
+          - generic [ref=e59]: 标签体系 · 用户数据 · 消费者库
+          - generic [ref=e60]: 调研场景 · 模拟问答 · 系统设置
+        - generic [ref=e61] [cursor=pointer]:
+          - generic [ref=e63]: 交互与展示组件
+          - generic [ref=e64]: 列表工具 · 表单弹窗 · 图表 · 导出入口
+          - generic [ref=e65]: 静态演示数据 / 本地更新
+        - generic [ref=e66] [cursor=pointer]:
+          - generic [ref=e68]: 身份、组织与权限服务
+          - generic [ref=e69]: 认证 · RBAC · 数据权限 · 审计
+        - generic [ref=e70] [cursor=pointer]:
+          - generic [ref=e72]: 业务 API 与持久化
+          - generic [ref=e73]: 消费者 / 任务 / 报告 / 操作记录
+        - generic [ref=e74] [cursor=pointer]:
+          - generic [ref=e76]: AI 消费者与调研编排
+          - generic [ref=e77]: 生成策略 · 任务队列 · 会话上下文
+        - generic [ref=e78] [cursor=pointer]:
+          - generic [ref=e80]: 模型服务与质量校准
+          - generic [ref=e81]: LLM / RAG · 评估 · 稳定性 · 监控
+        - generic [ref=e82] [cursor=pointer]:
+          - generic [ref=e84]: 是通科技标签库
+          - generic [ref=e85]: 人口 / 车主 / 意向 / 行为 / 兴趣标签
+        - generic [ref=e86] [cursor=pointer]:
+          - generic [ref=e88]: 车型与竞品知识库
+          - generic [ref=e89]: 品牌、车系、配置、竞品关系
+        - generic [ref=e90] [cursor=pointer]:
+          - generic [ref=e92]: VOC / 历史调研数据
+          - generic [ref=e93]: 观点库 · 真实样本 · 校准基准
+        - generic [ref=e94] [cursor=pointer]:
+          - generic [ref=e96]: 监控、告警与运营保障
+          - generic [ref=e97]: 可追溯 · 失败降级 · UAT · SOP
+      - generic [ref=e98]:
+        - button "切换网格" [ref=e99] [cursor=pointer]: "#"
+        - button "放大" [ref=e100] [cursor=pointer]: +
+        - button "缩小" [ref=e101] [cursor=pointer]: −
+  - generic [ref=e102]:
+    - generic [ref=e103]:
+      - strong [ref=e104]: 依据：
+      - text: 当前代码、产品 Demo 预设场景与 7 个月交付计划
+    - generic [ref=e105]: 点击任一节点可高亮；拖动画布平移；# 隐藏网格。

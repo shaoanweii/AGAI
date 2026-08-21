@@ -1,0 +1,4 @@
+spring.application.name: voc-app-analysis
+system.appid: voc-app-analysis
+
+spring.main.allow-bean-definition-overriding: true

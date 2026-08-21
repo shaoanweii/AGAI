@@ -1,0 +1,81 @@
+spring:
+  data:
+    redis:
+      type: cluster
+      #      host: 172.16.80.17
+      #      port: 30886
+      password: PBE(FDPUDqpkY6ma7uxZwTOkMjsCuSPogIw+YXrhQmir16V4ddozD5OihC+f8VOhRn9H)
+      database: 1
+      cluster:
+        nodes:
+          - 172.16.80.17:30886
+          - 172.16.80.17:32638
+          - 172.16.80.17:31916
+      #      sentinel:
+      #        master: mymaster
+      #        nodes:
+      #        - 172.16.80.22:30345
+      #        - 172.16.80.22:30147
+      lettuce:
+        pool:
+          min-idle: 1
+          max-idle: 5
+          max-active: 100
+          max-wait: 2000
+
+jetcache:
+  statIntervalMinutes: 15
+  areaInCacheName: true
+  #hidePackages: VDP
+  local:
+    default:
+      type: caffeine
+      limit: 10000
+      keyConvertor: bean:myFastjson2KeyConvertor #其他可选：fastjson/jackson
+      #keyConvertor: fastjson #其他可选：fastjson/jackson
+      expireAfterWriteInMillis: 100000
+    VDP:
+      type: caffeine
+      limit: 10000
+      keyConvertor: bean:myFastjson2KeyConvertor #其他可选：fastjson/jackson
+      #keyConvertor: fastjson #其他可选：fastjson/jackson
+      expireAfterWriteInMillis: 100000
+  remote:
+    default:
+      type: redis
+      valueEncoder: bean:cacheJackson2 #其他可选：java/kryo/kryo5
+      valueDecoder: bean:cacheJackson2 #其他可选：java/kryo/kryo5
+      keyConvertor: bean:myFastjson2KeyConvertor #其他可选：fastjson/jackson
+      #keyConvertor: fastjson
+      broadcastChannel: ${spring.application.name}
+      poolConfig:
+        minIdle: ${spring.data.redis.lettuce.pool.min-idle}
+        maxIdle: ${spring.data.redis.lettuce.pool.max-idle}
+        maxTotal: ${spring.data.redis.lettuce.pool.max-wait}
+      #      host: ${spring.data.redis.host}
+      #      port: ${spring.data.redis.port}
+      password: ${spring.data.redis.password}
+      database: ${spring.data.redis.database}
+      cluster:
+        - 172.16.80.17:30886
+        - 172.16.80.17:32638
+        - 172.16.80.17:31916
+    VDP:
+      type: redis
+      valueEncoder: bean:cacheJackson2 #其他可选：java/kryo/kryo5
+      valueDecoder: bean:cacheJackson2 #其他可选：java/kryo/kryo5
+      keyConvertor: bean:myFastjson2KeyConvertor #其他可选：fastjson/jackson
+      #keyConvertor: fastjson
+      broadcastChannel: ${spring.application.name}
+      poolConfig:
+        minIdle: ${spring.data.redis.lettuce.pool.min-idle}
+        maxIdle: ${spring.data.redis.lettuce.pool.max-idle}
+        maxTotal: ${spring.data.redis.lettuce.pool.max-wait}
+      #      host: ${spring.data.redis.host}
+      #      port: ${spring.data.redis.port}
+      password: ${spring.data.redis.password}
+      database: ${spring.data.redis.database}
+      cluster:
+        - 172.16.80.17:30886
+        - 172.16.80.17:32638
+        - 172.16.80.17:31916

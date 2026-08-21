@@ -1,0 +1,1 @@
+import{d as a}from"./pinia-BHl5GboC.1787284365533.js";const e=a("app",{state:()=>({showPaginationMinLength:10,fileData:null}),getters:{isDownloadFlag(){return!["0","1"].includes(this.fileData.status)||!this.fileData.status&&!this.fileData.taskId}},actions:{setFileData(t){this.fileData=t}}});export{e as u};

@@ -1,0 +1,766 @@
+.shell {
+  --blue: #0967f7;
+  --ink: #06163f;
+  --muted: #647599;
+  min-height: 100svh;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 52% 54%, rgba(63, 123, 240, 0.07), transparent 34%),
+    linear-gradient(180deg, #fbfcff 0%, #f7faff 57%, #fbfcff 100%);
+}
+
+.header {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 50;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  padding: 0 clamp(28px, 2.8vw, 48px);
+  border-bottom: 1px solid rgba(77, 109, 171, 0.15);
+  background: rgba(252, 253, 255, 0.9);
+  box-shadow: 0 8px 32px rgba(32, 72, 145, 0.035);
+  backdrop-filter: blur(18px) saturate(145%);
+  -webkit-backdrop-filter: blur(18px) saturate(145%);
+}
+
+.brand,
+.profile,
+.card {
+  border: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.brand {
+  padding: 0;
+  background: transparent;
+  color: #1763ea;
+  font-size: clamp(32px, 2.35vw, 40px);
+  font-weight: 900;
+  letter-spacing: -0.06em;
+  line-height: 1;
+}
+
+.divider {
+  width: 1px;
+  height: 30px;
+  margin: 0 34px;
+  background: #d2dcef;
+}
+
+.title {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.accountActions {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-left: auto;
+}
+
+.accountMenu {
+  position: absolute;
+  z-index: 70;
+  top: calc(100% + 12px);
+  right: 0;
+  width: 142px;
+  padding: 7px;
+  border: 1px solid rgba(68, 112, 194, 0.18);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 18px 42px rgba(23, 61, 128, 0.16);
+  opacity: 0;
+  transform: translateY(-6px) scale(0.98);
+  transform-origin: top right;
+  pointer-events: none;
+  transition: opacity 160ms ease, transform 160ms ease;
+  backdrop-filter: blur(18px);
+}
+
+.accountMenuOpen {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+.accountMenu button {
+  width: 100%;
+  padding: 11px 13px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: #183665;
+  font: inherit;
+  font-size: 15px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.accountMenu button:hover,
+.accountMenu button:focus-visible {
+  outline: none;
+  background: #eef4ff;
+  color: var(--blue);
+}
+
+.profile {
+  background: transparent;
+}
+
+.profile svg,
+.action svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.upcoming {
+  color: #8190aa;
+  font-weight: 600;
+}
+
+.cardUpcoming:hover,
+.cardUpcoming.cardActive {
+  filter: saturate(0.92);
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 17px;
+}
+
+.profile i {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #d6e1f4;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #f8fbff, #eaf1fc);
+  color: var(--blue);
+}
+
+.profile i svg {
+  width: 25px;
+  height: 25px;
+}
+
+.profile > svg {
+  width: 17px;
+  height: 17px;
+  margin-left: 6px;
+}
+
+.workspace {
+  width: min(100%, 1672px);
+  min-height: 100svh;
+  margin: 0 auto;
+  padding: 100px clamp(28px, 3.1vw, 52px) clamp(28px, 3.5vh, 36px);
+}
+
+.welcome {
+  height: clamp(70px, 9.8vh, 92px);
+}
+
+.welcome h1 {
+  margin: 0 0 7px;
+  font-size: clamp(24px, 1.6vw, 28px);
+  font-weight: 750;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+}
+
+.welcome p {
+  margin: 0;
+  color: #627296;
+  font-size: clamp(15px, 1.05vw, 18px);
+}
+
+.cardGrid {
+  height: min(698px, calc(100svh - 218px));
+  min-height: 580px;
+  display: grid;
+  grid-template-rows: 2.76fr 1fr;
+  gap: clamp(13px, 1.15vw, 19px);
+}
+
+.upperMatrix {
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 4.18fr 1fr;
+  gap: clamp(16px, 1.3vw, 22px);
+}
+
+.upperLeft {
+  min-width: 0;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: 1.28fr 1fr;
+  gap: clamp(13px, 1.15vw, 19px);
+}
+
+.topRow,
+.middleRow,
+.bottomRow {
+  min-width: 0;
+  min-height: 0;
+  display: grid;
+}
+
+.topRow {
+  grid-template-columns: 1.05fr 1fr 1.07fr;
+  gap: clamp(16px, 1.85vw, 31px);
+}
+
+.middleRow {
+  grid-template-columns: 3fr 1fr;
+  gap: clamp(16px, 1.85vw, 31px);
+}
+
+.bottomRow {
+  grid-template-columns: 0.93fr 1fr;
+  gap: clamp(16px, 1.65vw, 28px);
+}
+
+.card {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  display: block;
+  overflow: hidden;
+  padding: 0;
+  border: 1px solid rgba(75, 129, 231, 0.29);
+  border-radius: clamp(24px, 2vw, 34px);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.84), rgba(240, 246, 255, 0.56) 63%, rgba(225, 238, 255, 0.5)),
+    rgba(249, 252, 255, 0.62);
+  box-shadow:
+    0 18px 38px rgba(45, 83, 153, 0.075),
+    inset 0 0 0 5px rgba(255, 255, 255, 0.63),
+    inset 0 1px 0 rgba(255, 255, 255, 0.98),
+    inset 0 -6px 0 rgba(59, 121, 239, 0.06);
+  text-align: left;
+  isolation: isolate;
+  transition:
+    transform 240ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    border-color 240ms ease,
+    box-shadow 240ms ease,
+    filter 240ms ease;
+}
+
+.card::before,
+.card::after,
+.glassEdge {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+
+.card::before {
+  z-index: 0;
+  inset: 8px;
+  border: 1px solid rgba(137, 172, 232, 0.28);
+  border-radius: calc(clamp(24px, 2vw, 34px) - 8px);
+  box-shadow: inset 0 1px 0 white;
+}
+
+.card::after {
+  z-index: 1;
+  top: 0;
+  left: -55%;
+  width: 42%;
+  height: 100%;
+  background: linear-gradient(105deg, transparent, rgba(255, 255, 255, 0.76), transparent);
+  opacity: 0;
+  transform: skewX(-12deg);
+  transition: left 620ms ease, opacity 160ms ease;
+}
+
+.glassEdge {
+  z-index: 1;
+  right: 6%;
+  bottom: 4px;
+  left: 6%;
+  height: 3px;
+  border-radius: 50%;
+  background: linear-gradient(90deg, transparent, #6aa9ff 16%, #dff5ff 45%, #31d0e2 69%, #438fff 86%, transparent);
+  box-shadow: 0 0 12px rgba(52, 132, 255, 0.32);
+  opacity: 0.66;
+}
+
+.cardCopy {
+  position: absolute;
+  z-index: 4;
+  top: clamp(25px, 2.4vh, 31px);
+  left: clamp(28px, 2vw, 38px);
+  display: grid;
+  justify-items: start;
+  gap: 7px;
+}
+
+.cardCopy strong {
+  font-size: clamp(18px, 1.42vw, 24px);
+  font-weight: 750;
+  letter-spacing: -0.025em;
+}
+
+.description {
+  max-width: 370px;
+  color: var(--muted);
+  font-size: clamp(12px, 0.95vw, 16px);
+  line-height: 1.5;
+}
+
+.action {
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+  color: var(--blue);
+  font-size: clamp(14px, 1vw, 17px);
+  font-weight: 600;
+}
+
+.action svg {
+  width: 23px;
+  height: 23px;
+  transition: transform 200ms ease;
+}
+
+.visual {
+  position: absolute;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+}
+
+.visual::after {
+  content: "";
+  position: absolute;
+  right: 8%;
+  bottom: 5%;
+  left: 8%;
+  height: 14%;
+  border-radius: 50%;
+  background: rgba(40, 105, 218, 0.14);
+  filter: blur(18px);
+  transform: scaleX(0.82);
+}
+
+.visual img {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  user-select: none;
+  transition: transform 280ms cubic-bezier(0.2, 0.8, 0.2, 1), filter 280ms ease;
+}
+
+.cardApplication .visual {
+  inset: 39% 12% 6%;
+}
+
+.cardApplication .cardCopy {
+  right: clamp(28px, 2vw, 38px);
+  gap: 6px;
+}
+
+.cardApplication .description {
+  width: 100%;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.areaConsumer .visual {
+  inset: 42% 18% 7%;
+}
+
+.areaLead .visual {
+  inset: 35% 10% 10%;
+}
+
+.areaQuery .visual {
+  inset: 43% 20% 8%;
+}
+
+.cardPlatform .cardCopy {
+  top: 18%;
+  left: 5.1%;
+  gap: 10px;
+}
+
+.cardPlatform .cardCopy strong {
+  font-size: clamp(24px, 1.95vw, 33px);
+}
+
+.cardPlatform .visual {
+  top: 9%;
+  right: 4%;
+  bottom: 3%;
+  width: 49%;
+}
+
+.circuit {
+  position: absolute;
+  z-index: 1;
+  top: 16%;
+  right: 3%;
+  width: 56%;
+  height: 64%;
+  opacity: 0.34;
+  background:
+    linear-gradient(90deg, transparent 0 8%, rgba(97, 143, 219, 0.45) 8% 8.2%, transparent 8.2% 100%),
+    repeating-linear-gradient(0deg, transparent 0 18px, rgba(122, 161, 222, 0.34) 18px 19px, transparent 19px 36px);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 24%, #000 78%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 24%, #000 78%, transparent);
+}
+
+.cardEngine .cardCopy {
+  top: 18%;
+  left: 5.6%;
+  gap: 8px;
+}
+
+.cardEngine .visual {
+  top: 2%;
+  right: 4%;
+  bottom: 2%;
+  width: 51%;
+}
+
+.card:hover,
+.cardActive {
+  border-color: rgba(27, 106, 249, 0.48);
+  box-shadow:
+    0 24px 52px rgba(39, 88, 181, 0.14),
+    inset 0 0 0 5px rgba(255, 255, 255, 0.76),
+    inset 0 1px 0 white,
+    inset 0 -7px 0 rgba(33, 113, 255, 0.11);
+  filter: saturate(1.05);
+  transform: translateY(-4px);
+}
+
+.card:hover::after,
+.cardActive::after {
+  left: 116%;
+  opacity: 0.62;
+}
+
+.card:hover .visual img,
+.cardActive .visual img {
+  filter: drop-shadow(0 16px 18px rgba(23, 93, 205, 0.15));
+  transform: scale(1.025);
+}
+
+.card:hover .action svg,
+.cardActive .action svg {
+  transform: translateX(4px);
+}
+
+.toast {
+  position: fixed;
+  right: 28px;
+  bottom: 28px;
+  z-index: 80;
+  padding: 13px 19px;
+  border: 1px solid rgba(49, 105, 206, 0.18);
+  border-radius: 13px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 18px 44px rgba(25, 61, 128, 0.16);
+  color: #143a7b;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 180ms ease, transform 180ms ease;
+  pointer-events: none;
+  backdrop-filter: blur(14px);
+}
+
+.toastVisible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (max-width: 1180px) and (min-width: 721px) {
+  .header {
+    height: 68px;
+    padding-inline: 26px;
+  }
+
+  .brand {
+    font-size: 33px;
+  }
+
+  .divider {
+    margin-inline: 22px;
+  }
+
+  .title {
+    font-size: 19px;
+  }
+
+  .workspace {
+    padding: 87px 24px 0;
+  }
+
+  .welcome {
+    height: 82px;
+  }
+
+  .cardGrid {
+    height: calc(100svh - 171px);
+    min-height: 610px;
+    gap: 14px;
+  }
+
+  .upperMatrix,
+  .upperLeft,
+  .topRow,
+  .middleRow,
+  .bottomRow {
+    gap: 14px;
+  }
+
+  .card {
+    border-radius: 25px;
+  }
+
+  .cardCopy {
+    top: 21px;
+    left: 23px;
+  }
+
+  .cardApplication .cardCopy {
+    right: 23px;
+  }
+
+  .cardCopy strong {
+    font-size: clamp(16px, 2vw, 21px);
+  }
+
+  .action {
+    font-size: 14px;
+  }
+
+  .cardPlatform .cardCopy,
+  .cardEngine .cardCopy {
+    left: 4.7%;
+  }
+}
+
+@media (max-height: 820px) and (min-width: 721px) {
+  .workspace {
+    padding-top: 88px;
+    padding-bottom: 0;
+  }
+
+  .welcome {
+    height: 64px;
+  }
+
+  .cardGrid {
+    height: calc(100svh - 152px);
+    min-height: 0;
+  }
+
+  .cardCopy {
+    top: 20px;
+  }
+
+  .cardPlatform .cardCopy,
+  .cardEngine .cardCopy {
+    top: 16%;
+  }
+}
+
+@media (max-width: 720px) {
+  .shell {
+    min-height: 100svh;
+  }
+
+  .header {
+    height: 64px;
+    padding: 0 17px;
+  }
+
+  .brand {
+    font-size: 28px;
+  }
+
+  .divider {
+    height: 26px;
+    margin: 0 14px;
+  }
+
+  .title {
+    font-size: 16px;
+  }
+
+  .accountActions {
+    gap: 0;
+  }
+
+  .profile span,
+  .profile > svg {
+    display: none;
+  }
+
+  .profile i {
+    width: 38px;
+    height: 38px;
+  }
+
+  .workspace {
+    min-height: 100svh;
+    padding: 88px 16px 28px;
+  }
+
+  .welcome {
+    height: 76px;
+  }
+
+  .welcome h1 {
+    font-size: 24px;
+  }
+
+  .welcome p {
+    font-size: 14px;
+  }
+
+  .cardGrid {
+    height: auto;
+    min-height: 0;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: none;
+    grid-template-areas:
+      "voc consumer"
+      "koc lead"
+      "platform platform"
+      "query query"
+      "voice voice"
+      "user user";
+    grid-auto-rows: 250px;
+    gap: 14px;
+  }
+
+  .upperMatrix,
+  .upperLeft,
+  .topRow,
+  .middleRow,
+  .bottomRow {
+    display: contents;
+  }
+
+  .areaQuery { grid-area: query; }
+  .areaVoc { grid-area: voc; }
+  .areaKoc { grid-area: koc; }
+  .areaLead { grid-area: lead; }
+  .areaConsumer { grid-area: consumer; }
+  .areaPlatform { grid-area: platform; }
+  .areaUser { grid-area: user; }
+  .areaVoice { grid-area: voice; }
+
+  .card {
+    border-radius: 24px;
+  }
+
+  .cardCopy {
+    top: 20px;
+    left: 20px;
+  }
+
+  .cardApplication .cardCopy {
+    right: 20px;
+  }
+
+  .cardCopy strong {
+    font-size: 18px;
+  }
+
+  .cardApplication .visual {
+    inset: 40% 18% 10%;
+  }
+
+  .areaConsumer .visual {
+    inset: 42% 21% 10%;
+  }
+
+  .areaLead .visual {
+    inset: 39% 19% 10%;
+  }
+
+  .areaQuery .visual {
+    inset: 42% 22% 10%;
+  }
+
+  .cardPlatform .visual,
+  .cardEngine .visual {
+    width: 52%;
+  }
+
+  .cardPlatform .cardCopy,
+  .cardEngine .cardCopy {
+    top: 20%;
+    left: 6%;
+  }
+
+  .cardPlatform .cardCopy strong {
+    font-size: 24px;
+  }
+
+  .description {
+    max-width: 44vw;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 460px) {
+  .title {
+    max-width: 68px;
+    line-height: 1.15;
+  }
+
+  .cardGrid {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "voc"
+      "consumer"
+      "koc"
+      "lead"
+      "platform"
+      "query"
+      "voice"
+      "user";
+    grid-auto-rows: 265px;
+  }
+
+  .cardPlatform,
+  .cardEngine {
+    min-height: 240px;
+  }
+
+  .description {
+    max-width: 47%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .card::after,
+  .visual img,
+  .action svg,
+  .toast {
+    transition: none;
+  }
+}

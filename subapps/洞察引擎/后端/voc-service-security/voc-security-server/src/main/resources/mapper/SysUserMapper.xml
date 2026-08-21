@@ -1,0 +1,519 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.security.impl.mapper.UserMapper">
+
+    <resultMap id="UserAndCredentialsMap" type="com.voc.service.security.impl.entity.UserEntity">
+        <result column="user_id" property="userId"></result>
+        <result column="non_expired" property="nonExpired"></result>
+        <result column="expire_date" property="expireDate"></result>
+        <result column="start_expire_date" property="startExpireDate"></result>
+        <result column="enabled" property="enabled"></result>
+        <result column="non_locked" property="nonLocked"></result>
+        <result column="username" property="username"></result>
+        <result column="email" property="email"></result>
+        <result column="firstname" property="firstname"></result>
+        <result column="lastname" property="labelstudToken"></result>
+        <result column="phone" property="phone"></result>
+        <result column="operator" property="operator"></result>
+        <result column="create_time" property="createTime"></result>
+        <result column="update_time" property="updateTime"></result>
+        <result column="labelstud_token" property="labelstudToken"></result>
+        <result column="client_id" property="clientId"></result>
+        <result column="employee_id" property="employeeId"></result>
+        <result column="position" property="position"></result>
+        <result column="remark" property="remark"></result>
+        <result column="office_phone" property="officePhone"></result>
+        <result column="home_phone" property="homePhone"></result>
+        <result column="ca" property="admin"></result>
+        <result column="loginCompleteRate" property="loginCompleteRate"></result>
+        <collection property="credentials" ofType="com.voc.service.security.impl.entity.CredentialsEntity">
+            <result column="cid" property="id"></result>
+            <result column="cuid" property="userId"></result>
+            <result column="cai" property="appId"></result>
+            <result column="cit" property="identityType"></result>
+            <result column="ci" property="identifier"></result>
+            <result column="cc" property="credential"></result>
+            <result column="ce" property="enabled"></result>
+            <result column="cnl" property="nonLocked"></result>
+            <result column="ct" property="createTime"></result>
+            <result column="cut" property="updateTime"></result>
+            <result column="ced" property="expireDate"></result>
+            <result column="csed" property="startExpireDate"></result>
+            <result column="co" property="operator"></result>
+            <result column="ca" property="admin"></result>
+            <result column="non_expireds" property="nonExpired"></result>
+            <result column="lastLoginTime" property="lastLoginTime"></result>
+            <result column="loginCounts" property="loginCounts"></result>
+        </collection>
+    </resultMap>
+
+
+    <sql id="user_select_attrs">
+        u.username,
+        u.email,u.firstname,u.lastname,u.phone,u.operator ,
+        u.create_time,u.update_time,u.labelstud_token,u.client_id,u.employee_id
+    </sql>
+
+    <sql id="byIdentityType">
+        <if test="identityType != null and identityType == 'base'">
+            username = #{identifier}
+        </if>
+        <if test="identityType != null and identityType == 'phone'">
+            phone = #{identifier}
+        </if>
+        <if test="identityType != null and identityType == 'sms'">
+            phone = #{identifier}
+        </if>
+        <if test="identityType != null and identityType == 'email'">
+            email = #{identifier}
+        </if>
+    </sql>
+
+    <select id="selectByIdentifier" resultType="com.voc.service.security.impl.entity.UserEntity">
+        select
+            ca.id as id,
+            ca.identifier as username,
+            ca.credential as password ,
+            ca.identity_type,
+            ca.non_expired,
+            ca.non_locked,
+            ca.enabled,
+            ca.app_id,
+            ca.admin,
+            u.user_id,
+            ca.expire_date,
+            ca.start_expire_date,
+            <include refid="user_select_attrs"/>
+        from
+        (
+        select
+            u.id as user_id,
+            <include refid="user_select_attrs"/>
+        from
+            sys_users u
+        where
+            <include refid="byIdentityType"/>
+        ) u
+        left join (
+        select
+            id, user_id,identity_type,identifier,credential,enabled,non_locked,admin,
+            create_time,update_time,operator,app_id,if(expire_date &lt; CURDATE() ,0,1) non_expired,
+            expire_date, start_expire_date
+        from
+            sys_credentials
+        where
+            identity_type =#{identityType} and app_id =#{appId} and identifier = #{identifier}
+        )ca on u.user_id = ca.user_id
+    </select>
+
+    <select id="selectByUserId" resultType="com.voc.service.security.impl.entity.UserEntity">
+        select
+            ca.id as id,
+            ca.identifier as username,
+            ca.credential as password ,
+            ca.identity_type,
+            ca.non_expired,
+            ca.non_locked,
+            ca.enabled,
+            ca.app_id,
+            ca.admin,
+            u.user_id,
+            ca.expire_date,
+            ca.start_expire_date,
+            <include refid="user_select_attrs"/>
+        from
+        (
+        select
+            u.id as user_id,
+            <include refid="user_select_attrs"/>
+        from
+            sys_users u
+        where
+            username =  #{userId}
+        ) u
+        left join (
+        select
+            id, user_id,identity_type,identifier,credential,enabled,non_locked,admin,
+            create_time,update_time,operator,app_id,if(expire_date &lt; CURDATE() ,0,1) non_expired,
+            expire_date, start_expire_date
+        from
+            sys_credentials
+        where
+            app_id =#{appId} and identifier = #{userId}
+            order by create_time
+            limit 1
+        )ca on u.user_id = ca.user_id
+    </select>
+
+
+    <select id="selectAll" resultType="com.voc.service.security.impl.entity.UserEntity">
+        select
+            u.id as user_id,
+            if(expire_date &lt; CURDATE() ,0,1) non_expired,
+            u.expire_date,
+            u.start_expire_date,
+            u.enabled,
+            u.non_locked,
+            <include refid="user_select_attrs"/>
+        from
+            sys_users u
+        <where>
+            <if test="userId != null">
+                and id = #{userId}
+            </if>
+            <if test="clientId != null">
+                and client_id = #{clientId}
+            </if>
+        </where>
+    </select>
+
+    <update id="lock">
+        UPDATE sys_users
+        SET non_locked=0
+        WHERE
+        <include refid="byIdentityType"/>
+    </update>
+
+    <update id="enable">
+        UPDATE sys_users
+        SET enabled=1
+        WHERE
+        <include refid="byIdentityType"/>
+    </update>
+
+    <update id="disable">
+        UPDATE sys_users
+        SET enabled=0
+        WHERE
+        <include refid="byIdentityType"/>
+    </update>
+
+    <select id="getRemoveTestUsers" resultType="com.voc.service.security.impl.entity.UserEntity">
+        select id from sys_users
+        where id in (select id
+        from sys_users
+        where
+        <include refid="byIdentityType"/>
+    </select>
+
+    <delete id="removeTestUsers">
+        delete from sys_users where id in
+        <foreach collection="list" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectByConditional" resultMap="UserAndCredentialsMap">
+        select t.*
+        from (
+        with login_log as (
+        select max(login_time) as lastLoginTime,user_id,credential_id,app_id,login_type
+        from sys_login_histroy
+        <where>
+            <if test="userModel.appId !=null and userModel.appId !=''">
+                and app_id = #{userModel.appId}
+            </if>
+        </where>
+        group by user_id, credential_id, app_id, login_type),
+        login_count as (
+        select count(login_time) as loginCounts,user_id,credential_id,app_id,login_type
+        from sys_login_histroy
+        <where>
+            <if test="userModel.appId !=null and userModel.appId !=''">
+                and app_id = #{userModel.appId}
+            </if>
+            <if test="userModel.startTime !=null">
+                and login_time >= #{userModel.startTime}
+            </if>
+            <if test="userModel.endTime !=null">
+                and login_time &lt;= #{userModel.endTime}
+            </if>
+        </where>
+        group by user_id, credential_id, app_id, login_type
+        ),
+        user_data as (
+        select u.id                as user_id,
+        u.expire_date,
+        u.start_expire_date,
+        u.enabled,
+        u.non_locked,
+        u.username,
+        u.email,
+        u.firstname,
+        u.lastname,
+        u.phone,
+        u.operator,
+        u.create_time,
+        u.update_time,
+        u.labelstud_token,
+        u.client_id,
+        u.employee_id,
+        u.remark,
+        c.id                as cid,
+        c.user_id           as cuid,
+        c.app_id            as cai,
+        c.identity_type     as cit,
+        c.identifier        as ci,
+        c.credential        as cc,
+        c.enabled           as ce,
+        c.non_locked        as cnl,
+        c.create_time       as ct,
+        c.update_time       as cut,
+        c.expire_Date       as ced,
+        c.start_expire_date as csed,
+        c.operator          as co,
+        c.admin             as ca,
+        case
+        when u.expire_date &lt; CURDATE() then 0
+        else 1
+        end             as non_expired
+        from sys_users as u
+        left join sys_credentials as c on c.user_id = u.id
+        <where>
+            <if test="userModel.appId !=null and userModel.appId !=''">
+                and c.app_id = #{userModel.appId}
+            </if>
+            <if test="userModel.userId != null">
+                and u.username = #{userModel.userId}
+            </if>
+            <if test="userModel.clientId != null">
+                and u.client_id = #{userModel.clientId}
+            </if>
+            <if test="userModel.admin !=null">
+                and c.admin = #{userModel.admin}
+            </if>
+            <if test="userModel.status !=null">
+                and u.enabled = #{userModel.status}
+            </if>
+            <if test="userModel.username !=null">
+                and (u.username like concat('%',#{userModel.username},'%') or u.firstname like concat('%',#{userModel.username},'%'))
+            </if>
+            <if test="userModel.clientIds !=null and userModel.clientIds.size()>0">
+                and u.client_id in
+                <foreach collection="userModel.clientIds" item="clientId" open="(" separator="," close=")">
+                    #{clientId}
+                </foreach>
+            </if>
+            <if test="userModel.userIds !=null and userModel.userIds.size()>0">
+                and (u.id in
+                <foreach collection="userModel.userIds" item="userId" open="(" separator="," close=")">
+                    #{userId}
+                </foreach>
+                or u.username in
+                <foreach collection="userModel.userIds" item="username" open="(" separator="," close=")">
+                    #{username}
+                </foreach>
+                )
+            </if>
+        </where>
+        )
+        select f1.*,
+        lastLoginTime as lastLoginTime,
+        ifnull(loginCounts, 0)              as loginCounts,
+        if(loginCounts is not null, 100, 0) as loginCompleteRate -- 完成率
+        from user_data as f1
+        left join login_log as f2 on f1.user_id = f2.user_id and f1.user_id = f2.user_id and f1.cid = f2.credential_id and f1.cai = f2.app_id and f1.cit = f2.login_type
+        left join login_count as f3 on f1.user_id = f3.user_id and f1.user_id = f3.user_id and f1.cid = f3.credential_id and f1.cai = f3.app_id and f1.cit = f3.login_type
+        ) t
+        where 1=1
+        <if test="userModel.loginCompleteRate !=null">
+            and t.loginCompleteRate = #{userModel.loginCompleteRate}
+        </if>
+    </select>
+
+    <select id="selectUserByUserId" resultMap="UserAndCredentialsMap">
+        with login_log as (
+        select
+        user_id,
+        count(l.login_time) as loginCounts,
+        credential_id,
+        app_id,
+        login_type
+        from  sys_login_histroy as l
+        <where>
+            <if test="userModel.appId !=null and userModel.appId !=''">
+                and l.app_id = #{userModel.appId}
+            </if>
+        </where>
+        group by user_id,credential_id,app_id,login_type
+        ),
+        user_data as (
+        select
+        u.id as user_id,
+        u.expire_date,u.start_expire_date,u.enabled,u.non_locked,u.username,
+        u.email,u.firstname,u.lastname,u.phone,	u.operator,	u.create_time,	u.update_time,
+        u.labelstud_token,	u.client_id,u.employee_id,	u.remark,
+        c.id as cid,c.user_id as cuid,c.app_id as cai,c.identity_type as cit,c.identifier as ci,
+        c.credential as cc,	c.enabled as ce,c.non_locked as cnl,c.create_time as ct,
+        c.update_time as cut,c.expire_Date as ced,
+        c.start_expire_date as csed,c.operator as co,
+        c.admin as ca,
+        case
+        when u.expire_date &lt; CURDATE() then 0
+        else 1
+        end as non_expired
+        from sys_users as u
+        left join sys_credentials as c on c.user_id = u.id
+        <where>
+            <if test="userModel.appId !=null and userModel.appId !=''">
+                and c.app_id = #{userModel.appId}
+            </if>
+            <if test="userModel.userId != null">
+                and u.username = #{userModel.userId}
+            </if>
+            <if test="userModel.clientId != null">
+                and u.client_id = #{userModel.clientId}
+            </if>
+            <if test="userModel.admin !=null">
+                and c.admin = #{userModel.admin}
+            </if>
+            <if test="userModel.status !=null">
+                and u.enabled = #{userModel.status}
+            </if>
+            <if test="userModel.username !=null">
+                and (u.username like concat('%',#{userModel.username},'%') or u.firstname like concat('%',#{userModel.username},'%'))
+            </if>
+            <if test="userModel.clientIds !=null and userModel.clientIds.size()>0">
+                and u.client_id in
+                <foreach collection="userModel.clientIds" item="clientId" open="(" separator="," close=")">
+                    #{clientId}
+                </foreach>
+            </if>
+            <if test="userModel.userIds !=null and userModel.userIds.size()>0">
+                and (u.id in
+                <foreach collection="userModel.userIds" item="userId" open="(" separator="," close=")">
+                    #{userId}
+                </foreach>
+                or u.username in
+                <foreach collection="userModel.userIds" item="username" open="(" separator="," close=")">
+                    #{username}
+                </foreach>
+            )
+            </if>
+        </where>
+        )
+        select
+        f1.*,
+        ifnull(loginCounts, 0) as loginCounts,
+        if(loginCounts is not null, 100, 0) as loginCompleteRate -- 完成率
+        from user_data as f1
+        left join login_log as f2 on f1.user_id = f2.user_id and f1.user_id = f2.user_id and f1.cid = f2.credential_id and f1.cai = f2.app_id and f1.cit = f2.login_type
+    </select>
+    <select id="selectCountByConditional" resultType="java.lang.Integer">
+        select count(1)
+        from (
+        with login_log as (
+        select max(login_time) as lastLoginTime,user_id,credential_id,app_id,login_type
+        from sys_login_histroy
+        <where>
+            <if test="userModel.appId !=null and userModel.appId !=''">
+                and app_id = #{userModel.appId}
+            </if>
+        </where>
+        group by user_id, credential_id, app_id, login_type),
+        login_count as (
+        select count(login_time) as loginCounts,user_id,credential_id,app_id,login_type
+        from sys_login_histroy
+        <where>
+            <if test="userModel.appId !=null and userModel.appId !=''">
+                and app_id = #{userModel.appId}
+            </if>
+            <if test="userModel.startTime !=null">
+                and login_time >= #{userModel.startTime}
+            </if>
+            <if test="userModel.endTime !=null">
+                and login_time &lt;= #{userModel.endTime}
+            </if>
+        </where>
+        group by user_id, credential_id, app_id, login_type
+        ),
+        user_data as (
+        select u.id                as user_id,
+        u.expire_date,
+        u.start_expire_date,
+        u.enabled,
+        u.non_locked,
+        u.username,
+        u.email,
+        u.firstname,
+        u.lastname,
+        u.phone,
+        u.operator,
+        u.create_time,
+        u.update_time,
+        u.labelstud_token,
+        u.client_id,
+        u.employee_id,
+        u.remark,
+        c.id                as cid,
+        c.user_id           as cuid,
+        c.app_id            as cai,
+        c.identity_type     as cit,
+        c.identifier        as ci,
+        c.credential        as cc,
+        c.enabled           as ce,
+        c.non_locked        as cnl,
+        c.create_time       as ct,
+        c.update_time       as cut,
+        c.expire_Date       as ced,
+        c.start_expire_date as csed,
+        c.operator          as co,
+        c.admin             as ca,
+        case
+        when u.expire_date &lt; CURDATE() then 0
+        else 1
+        end             as non_expired
+        from sys_users as u
+        left join sys_credentials as c on c.user_id = u.id
+        <where>
+            <if test="userModel.appId !=null and userModel.appId !=''">
+                and c.app_id = #{userModel.appId}
+            </if>
+            <if test="userModel.userId != null">
+                and u.username = #{userModel.userId}
+            </if>
+            <if test="userModel.clientId != null">
+                and u.client_id = #{userModel.clientId}
+            </if>
+            <if test="userModel.admin !=null">
+                and c.admin = #{userModel.admin}
+            </if>
+            <if test="userModel.status !=null">
+                and u.enabled = #{userModel.status}
+            </if>
+            <if test="userModel.username !=null">
+                and (u.username like concat('%',#{userModel.username},'%') or u.firstname like concat('%',#{userModel.username},'%'))
+            </if>
+            <if test="userModel.clientIds !=null and userModel.clientIds.size()>0">
+                and u.client_id in
+                <foreach collection="userModel.clientIds" item="clientId" open="(" separator="," close=")">
+                    #{clientId}
+                </foreach>
+            </if>
+            <if test="userModel.userIds !=null and userModel.userIds.size()>0">
+                and (u.id in
+                <foreach collection="userModel.userIds" item="userId" open="(" separator="," close=")">
+                    #{userId}
+                </foreach>
+                or u.username in
+                <foreach collection="userModel.userIds" item="username" open="(" separator="," close=")">
+                    #{username}
+                </foreach>
+                )
+            </if>
+        </where>
+        )
+        select f1.*,
+        lastLoginTime as lastLoginTime,
+        ifnull(loginCounts, 0)              as loginCounts,
+        if(loginCounts is not null, 100, 0) as loginCompleteRate -- 完成率
+        from user_data as f1
+        left join login_log as f2 on f1.user_id = f2.user_id and f1.user_id = f2.user_id and f1.cid = f2.credential_id and f1.cai = f2.app_id and f1.cit = f2.login_type
+        left join login_count as f3 on f1.user_id = f3.user_id and f1.user_id = f3.user_id and f1.cid = f3.credential_id and f1.cai = f3.app_id and f1.cit = f3.login_type
+        ) t
+        where 1=1
+        <if test="userModel.loginCompleteRate !=null">
+            and t.loginCompleteRate = #{userModel.loginCompleteRate}
+        </if>
+    </select>
+</mapper>

@@ -1,0 +1,87 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <title>AGAI Intelligent Data Engine</title>
+  <defs>
+    <linearGradient id="agai-ribbon-a" x1="112" y1="120" x2="398" y2="390" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#20D4FF"/>
+      <stop offset="0.42" stop-color="#4B86FF"/>
+      <stop offset="1" stop-color="#7C63FF"/>
+    </linearGradient>
+    <linearGradient id="agai-ribbon-b" x1="394" y1="92" x2="118" y2="410" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#C8D3FF"/>
+      <stop offset="0.52" stop-color="#EEF5FF"/>
+      <stop offset="1" stop-color="#66D5FF"/>
+    </linearGradient>
+    <linearGradient id="agai-ribbon-c" x1="116" y1="388" x2="390" y2="114" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#3BCBFF"/>
+      <stop offset="0.45" stop-color="#6178FF"/>
+      <stop offset="1" stop-color="#A18CFF"/>
+    </linearGradient>
+    <radialGradient id="agai-core-shade" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(256 252) rotate(90) scale(128 126)">
+      <stop offset="0" stop-color="#F4F8FF" stop-opacity="0.72"/>
+      <stop offset="0.54" stop-color="#C8DDFF" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#07142A" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="agai-soft-glow" x="54" y="54" width="404" height="404" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="13"/>
+    </filter>
+    <filter id="agai-depth-shadow" x="58" y="58" width="396" height="396" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="14" stdDeviation="13" flood-color="#152963" flood-opacity="0.24"/>
+    </filter>
+  </defs>
+
+  <g filter="url(#agai-soft-glow)" opacity="0.34">
+    <path d="M116 256C116 178.68 178.68 116 256 116C333.32 116 396 178.68 396 256C396 333.32 333.32 396 256 396C178.68 396 116 333.32 116 256Z" stroke="#5FA8FF" stroke-width="54"/>
+  </g>
+
+  <g filter="url(#agai-depth-shadow)">
+    <path
+      d="M128 256C128 181.89 188.28 122 262.39 122C313.12 122 356.66 148.88 380.58 188.24C391.44 206.11 385.35 229.42 367.15 239.72L286.69 285.25C267.49 296.11 243.14 290.74 230.2 272.89L170.41 190.45C159.47 175.36 164.32 154.02 180.67 145.1"
+      stroke="url(#agai-ribbon-a)"
+      stroke-width="62"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+
+    <path
+      d="M382.14 186.23C420.58 249.66 400.31 332.24 336.88 370.68C293.47 396.99 241.42 396.59 199.6 374.48C181.1 364.7 174.56 341.1 185.3 323.14L232.72 243.82C244.05 224.88 268.27 217.8 288.03 227.64L379.33 273.13C396.02 281.45 402.28 302.21 392.59 318.16"
+      stroke="url(#agai-ribbon-b)"
+      stroke-width="62"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+
+    <path
+      d="M197.86 374.48C131.01 338.42 106.05 254.97 142.12 188.12C166.18 143.52 209.67 117.3 256.37 114.02C277.24 112.56 294.63 129.75 294.43 150.68L293.55 243.04C293.34 265.09 276.12 283.24 254.12 284.61L154.65 290.81C136.03 291.97 120.38 276.32 121.54 257.7"
+      stroke="url(#agai-ribbon-c)"
+      stroke-width="62"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </g>
+
+  <path
+    d="M171.6 255.9C171.6 208.95 209.65 170.9 256.6 170.9C303.55 170.9 341.6 208.95 341.6 255.9C341.6 302.85 303.55 340.9 256.6 340.9C209.65 340.9 171.6 302.85 171.6 255.9Z"
+    fill="url(#agai-core-shade)"
+  />
+
+  <path
+    d="M196.5 182.3C228.84 136.88 296.57 136.88 328.91 182.3L391.07 269.6C421.72 312.66 390.93 372.3 338.09 372.3H173.32C120.48 372.3 89.69 312.66 120.34 269.6L196.5 182.3Z"
+    stroke="#F3F7FF"
+    stroke-opacity="0.68"
+    stroke-width="12"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+
+  <path
+    d="M200.57 207.7C226.62 171.11 281.2 171.11 307.25 207.7L355.05 274.86C379.75 309.57 354.93 357.65 312.33 357.65H195.49C152.89 357.65 128.07 309.57 152.77 274.86L200.57 207.7Z"
+    fill="#07111F"
+    fill-opacity="0.88"
+  />
+
+  <path
+    d="M219.8 238.84C236.79 215.77 271.21 215.77 288.2 238.84L315.29 275.62C331.66 297.84 315.79 329.25 288.19 329.25H219.81C192.21 329.25 176.34 297.84 192.71 275.62L219.8 238.84Z"
+    fill="#FFFFFF"
+    fill-opacity="0.05"
+  />
+</svg>

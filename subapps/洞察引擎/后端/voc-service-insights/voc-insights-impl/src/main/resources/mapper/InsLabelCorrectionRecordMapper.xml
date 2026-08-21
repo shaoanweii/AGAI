@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.insights.engine.mapper.InsLabelCorrectionRecordMapper">
+
+
+    <select id="queryLabelCorrectionList"
+            resultType="com.voc.service.insights.engine.entity.InsLabelCorrectionRecordEntity">
+        select
+        id,
+        error_type,
+        correction_count,
+        correction_time,
+        correction_info,
+        audit_status,
+        if(audit_status = 1,
+        '已通过',
+        if(audit_status = 2,'已拒绝', if(audit_status = 0,'待审核', '已撤销'))) as auditStatusText,
+        audit_user,
+        audit_user_id,
+        audit_time,
+        operate_time,
+        operate_user,
+        operate_user_id,
+        update_time
+        from
+        report_label_correction_record
+        where 1=1
+        <if test="startTime != null and startTime !=''">
+            and date(operate_time) BETWEEN DATE(#{startTime}) and DATE(#{endTime})
+        </if>
+        <if test="auditStatus != null and auditStatus.size()!=0 ">
+            and audit_status in
+            <foreach item="item" index="index" collection="auditStatus" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="createUserName != null and createUserName.size()!=0 ">
+            and operate_user in
+            <foreach item="item" index="index" collection="createUserName" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        order by operate_time desc
+    </select>
+
+</mapper>

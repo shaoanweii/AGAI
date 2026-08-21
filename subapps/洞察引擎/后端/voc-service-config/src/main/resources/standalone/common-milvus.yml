@@ -1,0 +1,6 @@
+milvus:
+  host: localhost
+  port: 19530
+  username: root
+  password: Milvus
+  database: default

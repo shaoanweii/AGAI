@@ -1,0 +1,145 @@
+.main-table {
+  height: 100%;
+  header {
+    padding: 16px 24px;
+    margin-bottom: 24px;
+    background-color: #fff;
+    border-radius: 4px;
+    h3 {
+      margin: 0 -24px;
+      padding: 0 24px 16px;
+      border-bottom: var(--border);
+    }
+    .select-wrapper {
+      padding-top: 24px;
+      display: flex;
+      .left {
+        flex: 1;
+      }
+    }
+  }
+
+  .main-tabs.el-tabs {
+    .el-tabs__header {
+      margin: 0;
+    }
+    .el-tabs__nav-wrap {
+      padding: 0 8px 0;
+      background-color: #fff;
+      border-radius: 4px 4px 0 0;
+      box-sizing: border-box;
+    }
+    // .el-tabs__item {
+    //   padding: 16px 0;
+    //   font-size: 16px;
+    //   line-height: 24px;
+    //   box-sizing: border-box;
+    // }
+    .el-tabs__item.is-active,
+    .el-tabs__item.is-active:hover {
+      font-weight: 600;
+    }
+    .el-tabs__content {
+      padding-top: 0;
+      header {
+        border-radius: 0 0 4px 4px;
+        padding-top: 0;
+      }
+    }
+  }
+
+  .table-wrapper {
+    .main-list {
+      .el-list-header {
+        padding: 9px 16px;
+        font-size: 14px;
+        box-sizing: border-box;
+        background-color: #f2f3f5;
+      }
+      .el-list {
+        border-radius: 0;
+      }
+      .el-list-item-action {
+        display: none;
+      }
+      .list-title {
+        cursor: pointer;
+        &.active {
+          color: var(--color-primary);
+        }
+      }
+      .el-list-item {
+        padding: 10px 16px 9px !important;
+        box-sizing: border-box !important;
+        &:hover,
+        &.tap {
+          .el-list-item-action {
+            display: flex;
+          }
+        }
+        &.active {
+          background-color: var(--el-color-primary-light-9);
+        }
+
+        .list-item {
+          cursor: pointer;
+          line-height: 22px;
+          &:hover {
+            color: var(--color-primary);
+          }
+        }
+      }
+    }
+    .table-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      h3 {
+        color: var(--color-high);
+        font-weight: bold;
+      }
+    }
+    .table {
+      min-height: 200px;
+      .el-table__header-wrapper th {
+        font-weight: 600;
+      }
+    }
+    .pagination {
+      margin-top: 24px;
+      display: flex;
+      justify-content: flex-end;
+    }
+  }
+}
+// 重置抽屉样式
+.el-drawer__header {
+  line-height: 48px;
+  margin-bottom: 0 !important;
+  padding: 0 24px !important;
+  border-bottom: 1px solid #e5e6eb !important;
+}
+.el-drawer__body {
+  padding: 12px 16px !important;
+}
+
+.el-drawer__header .el-drawer__title {
+  font-weight: 600 !important;
+}
+
+// 重置table样式
+.el-table {
+  thead {
+    th.el-table__cell {
+      background-color: #f2f3f5 !important;
+    }
+  }
+}
+
+.el-virtual-list {
+  .el-cascader-option,
+  .el-cascader-search-option {
+    padding-left: 7px !important;
+  }
+}

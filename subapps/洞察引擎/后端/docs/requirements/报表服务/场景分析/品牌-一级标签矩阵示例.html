@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>品牌-一级标签矩阵</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --text: #2b2f36;
+      --muted: #6b7280;
+      --line: #e5e7eb;
+      --head: #f0f3f8;
+      --accent: #4f46e5;
+      --hot: #ffeaea;
+    }
+    body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,PingFang SC,Microsoft YaHei,Helvetica Neue,Arial,sans-serif; }
+    .page { padding: 20px; }
+    .card { background: var(--card); border-radius: 10px; box-shadow: 0 1px 2px rgba(0,0,0,.04); padding: 16px; }
+    h1 { margin: 0 0 12px; font-size: 18px; }
+    .hint { color: var(--muted); font-size: 12px; margin-bottom: 10px; }
+
+    table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+    th, td { border: 1px solid var(--line); padding: 10px 8px; text-align: center; }
+    thead th { background: var(--head); font-weight: 600; }
+    .w-brand { width: 100px; }
+    .w-metric { width: 70px; }
+    .percent { white-space: nowrap; }
+    .hot { background: var(--hot); }
+    .tag1 { font-weight: 700; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="card">
+      <h1>品牌-一级标签矩阵（品牌、一级标签合并展示）</h1>
+      <div class="hint">说明：左侧品牌列按需求合并两行（负面率/提及量）。表头一级标签按去重后合并显示；同品牌下、同一级标签下、同二级标签名称的数据会自动合并（value1 取均值，value2 取合计）。</div>
+      <div style="overflow:auto">
+        <table id="matrix"></table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  // 输入数据（按要求可直接替换）
+  const rows = [
+
+      {
+          "brandName": "长安",
+          "brandCode": "CA",
+          "brandImageUrl": null,
+          "tag1Name": "服务",
+          "tag1Code": "ADB001",
+          "tag2Name": "售后",
+          "tag2Code": "ADB001001",
+          "value1": 33.26,
+          "value2": 5193
+      },
+      {
+          "brandName": "长安",
+          "brandCode": "CA",
+          "brandImageUrl": null,
+          "tag1Name": "服务",
+          "tag1Code": "ADB001",
+          "tag2Name": "售后",
+          "tag2Code": "ADB001002",
+          "value1": 32.86,
+          "value2": 5110
+      },
+      {
+          "brandName": "长安",
+          "brandCode": "CA",
+          "brandImageUrl": null,
+          "tag1Name": "服务",
+          "tag1Code": "ADB001",
+          "tag2Name": "售后2",
+          "tag2Code": "ADB001002",
+          "value1": 31.91,
+          "value2": 445
+      },
+      {
+          "brandName": "长安",
+          "brandCode": "CA",
+          "brandImageUrl": null,
+          "tag1Name": "服务",
+          "tag1Code": "ADB001",
+          "tag2Name": "售后1",
+          "tag2Code": "ADB001001",
+          "value1": 32.28,
+          "value2": 443
+      },
+      {
+          "brandName": "长安",
+          "brandCode": "CA",
+          "brandImageUrl": null,
+          "tag1Name": "营销",
+          "tag1Code": "ADB003",
+          "tag2Name": "活动",
+          "tag2Code": "ADB003001",
+          "value1": 33.64,
+          "value2": 5666
+      },
+      {
+          "brandName": "长安",
+          "brandCode": "CA",
+          "brandImageUrl": null,
+          "tag1Name": "营销",
+          "tag1Code": "ADB003",
+          "tag2Name": "渠道",
+          "tag2Code": "ADB003002",
+          "value1": 33.59,
+          "value2": 5620
+      },
+      {
+          "brandName": "欧尚",
+          "brandCode": "OS",
+          "brandImageUrl": null,
+          "tag1Name": "服务",
+          "tag1Code": "ADB001",
+          "tag2Name": "售后",
+          "tag2Code": "ADB001001",
+          "value1": 33.37,
+          "value2": 5221
+      },
+      {
+          "brandName": "欧尚",
+          "brandCode": "OS",
+          "brandImageUrl": null,
+          "tag1Name": "服务",
+          "tag1Code": "ADB001",
+          "tag2Name": "售后",
+          "tag2Code": "ADB001002",
+          "value1": 34.59,
+          "value2": 5180
+      },
+      {
+          "brandName": "欧尚",
+          "brandCode": "OS",
+          "brandImageUrl": null,
+          "tag1Name": "服务",
+          "tag1Code": "ADB001",
+          "tag2Name": "售后1",
+          "tag2Code": "ADB001001",
+          "value1": 32.27,
+          "value2": 440
+      },
+      {
+          "brandName": "欧尚",
+          "brandCode": "OS",
+          "brandImageUrl": null,
+          "tag1Name": "服务",
+          "tag1Code": "ADB001",
+          "tag2Name": "售后2",
+          "tag2Code": "ADB001002",
+          "value1": 37.41,
+          "value2": 425
+      },
+      {
+          "brandName": "欧尚",
+          "brandCode": "OS",
+          "brandImageUrl": null,
+          "tag1Name": "营销",
+          "tag1Code": "ADB003",
+          "tag2Name": "活动",
+          "tag2Code": "ADB003001",
+          "value1": 34.17,
+          "value2": 5703
+      },
+      {
+          "brandName": "欧尚",
+          "brandCode": "OS",
+          "brandImageUrl": null,
+          "tag1Name": "营销",
+          "tag1Code": "ADB003",
+          "tag2Name": "渠道",
+          "tag2Code": "ADB003002",
+          "value1": 33.74,
+          "value2": 5539
+      },
+      {
+          "brandName": "凯程",
+          "brandCode": "KC",
+          "brandImageUrl": null,
+          "tag1Name": "服务",
+          "tag1Code": "ADB001",
+          "tag2Name": "售后",
+          "tag2Code": "ADB001001",
+          "value1": 34.78,
+          "value2": 5236
+      },
+      {
+          "brandName": "凯程",
+          "brandCode": "KC",
+          "brandImageUrl": null,
+          "tag1Name": "服务",
+          "tag1Code": "ADB001",
+          "tag2Name": "售后",
+          "tag2Code": "ADB001002",
+          "value1": 32.76,
+          "value2": 5171
+      },
+      {
+          "brandName": "凯程",
+          "brandCode": "KC",
+          "brandImageUrl": null,
+          "tag1Name": "服务",
+          "tag1Code": "ADB001",
+          "tag2Name": "售后1",
+          "tag2Code": "ADB001001",
+          "value1": 32.1,
+          "value2": 433
+      },
+      {
+          "brandName": "凯程",
+          "brandCode": "KC",
+          "brandImageUrl": null,
+          "tag1Name": "服务",
+          "tag1Code": "ADB001",
+          "tag2Name": "售后2",
+          "tag2Code": "ADB001002",
+          "value1": 33.42,
+          "value2": 407
+      },
+      {
+          "brandName": "凯程",
+          "brandCode": "KC",
+          "brandImageUrl": null,
+          "tag1Name": "营销",
+          "tag1Code": "ADB003",
+          "tag2Name": "渠道",
+          "tag2Code": "ADB003002",
+          "value1": 33.1,
+          "value2": 5765
+      },
+      {
+          "brandName": "凯程",
+          "brandCode": "KC",
+          "brandImageUrl": null,
+          "tag1Name": "营销",
+          "tag1Code": "ADB003",
+          "tag2Name": "活动",
+          "tag2Code": "ADB003001",
+          "value1": 32.92,
+          "value2": 5590
+      },
+      {
+          "brandName": "深蓝",
+          "brandCode": "SL",
+          "brandImageUrl": null,
+          "tag1Name": "服务",
+          "tag1Code": "ADB001",
+          "tag2Name": "售后",
+          "tag2Code": "ADB001002",
+          "value1": 33.63,
+          "value2": 5230
+      },
+      {
+          "brandName": "深蓝",
+          "brandCode": "SL",
+          "brandImageUrl": null,
+          "tag1Name": "服务",
+          "tag1Code": "ADB001",
+          "tag2Name": "售后",
+          "tag2Code": "ADB001001",
+          "value1": 32.57,
+          "value2": 5219
+      },
+      {
+          "brandName": "深蓝",
+          "brandCode": "SL",
+          "brandImageUrl": null,
+          "tag1Name": "服务",
+          "tag1Code": "ADB001",
+          "tag2Name": "售后1",
+          "tag2Code": "ADB001001",
+          "value1": 35.6,
+          "value2": 455
+      },
+      {
+          "brandName": "深蓝",
+          "brandCode": "SL",
+          "brandImageUrl": null,
+          "tag1Name": "服务",
+          "tag1Code": "ADB001",
+          "tag2Name": "售后2",
+          "tag2Code": "ADB001002",
+          "value1": 33.56,
+          "value2": 438
+      },
+      {
+          "brandName": "深蓝",
+          "brandCode": "SL",
+          "brandImageUrl": null,
+          "tag1Name": "营销",
+          "tag1Code": "ADB003",
+          "tag2Name": "活动",
+          "tag2Code": "ADB003001",
+          "value1": 32.34,
+          "value2": 5610
+      },
+      {
+          "brandName": "深蓝",
+          "brandCode": "SL",
+          "brandImageUrl": null,
+          "tag1Name": "营销",
+          "tag1Code": "ADB003",
+          "tag2Name": "渠道",
+          "tag2Code": "ADB003002",
+          "value1": 32.87,
+          "value2": 5574
+      },
+      {
+          "brandName": "阿维塔",
+          "brandCode": "AVT",
+          "brandImageUrl": null,
+          "tag1Name": "服务",
+          "tag1Code": "ADB001",
+          "tag2Name": "售后",
+          "tag2Code": "ADB001002",
+          "value1": 32.81,
+          "value2": 5245
+      },
+      {
+          "brandName": "阿维塔",
+          "brandCode": "AVT",
+          "brandImageUrl": null,
+          "tag1Name": "服务",
+          "tag1Code": "ADB001",
+          "tag2Name": "售后",
+          "tag2Code": "ADB001001",
+          "value1": 32.86,
+          "value2": 5121
+      },
+      {
+          "brandName": "阿维塔",
+          "brandCode": "AVT",
+          "brandImageUrl": null,
+          "tag1Name": "服务",
+          "tag1Code": "ADB001",
+          "tag2Name": "售后2",
+          "tag2Code": "ADB001002",
+          "value1": 31.14,
+          "value2": 456
+      },
+      {
+          "brandName": "阿维塔",
+          "brandCode": "AVT",
+          "brandImageUrl": null,
+          "tag1Name": "服务",
+          "tag1Code": "ADB001",
+          "tag2Name": "售后1",
+          "tag2Code": "ADB001001",
+          "value1": 34.75,
+          "value2": 446
+      },
+      {
+          "brandName": "阿维塔",
+          "brandCode": "AVT",
+          "brandImageUrl": null,
+          "tag1Name": "营销",
+          "tag1Code": "ADB003",
+          "tag2Name": "活动",
+          "tag2Code": "ADB003001",
+          "value1": 34.34,
+          "value2": 5571
+      },
+      {
+          "brandName": "阿维塔",
+          "brandCode": "AVT",
+          "brandImageUrl": null,
+          "tag1Name": "营销",
+          "tag1Code": "ADB003",
+          "tag2Name": "渠道",
+          "tag2Code": "ADB003002",
+          "value1": 33.16,
+          "value2": 5564
+      }
+  ];
+
+  // 展示顺序（动态推导：按数据首次出现的顺序）
+  const brandOrder = Array.from(new Set(rows.map(r => r.brandName)));
+  const tag1Order = Array.from(new Set(rows.map(r => r.tag1Name)));
+
+  // 获取各一级标签下的二级标签集合（按出现顺序去重）
+  const tag2UnderTag1 = new Map();
+  for (const t1 of tag1Order) tag2UnderTag1.set(t1, []);
+  for (const r of rows) {
+    const list = tag2UnderTag1.get(r.tag1Name) || [];
+    if (!list.includes(r.tag2Name)) list.push(r.tag2Name);
+    tag2UnderTag1.set(r.tag1Name, list);
+  }
+
+  // 预聚合：按 brand + tag1 + tag2Name 合并（value1 取均值，value2 求和）
+  const agg = {}; // key: brand|tag1|tag2Name
+  for (const r of rows) {
+    const k = `${r.brandName}|${r.tag1Name}|${r.tag2Name}`;
+    if (!agg[k]) agg[k] = {sumV1:0, cntV1:0, sumV2:0};
+    agg[k].sumV1 += Number(r.value1)||0; agg[k].cntV1 += 1; agg[k].sumV2 += Number(r.value2)||0;
+  }
+  const getAgg = (brand, t1, t2) => {
+    const a = agg[`${brand}|${t1}|${t2}`];
+    if (!a) return {v1: null, v2: null};
+    return {v1: a.cntV1 ? (a.sumV1/a.cntV1) : null, v2: a.sumV2};
+  };
+
+  // 渲染表
+  const table = document.getElementById('matrix');
+
+  // 构建表头
+  const thead = document.createElement('thead');
+  const tr1 = document.createElement('tr');
+  const thBrand = document.createElement('th'); thBrand.textContent = '品牌'; thBrand.className='w-brand'; thBrand.rowSpan = 2; tr1.appendChild(thBrand);
+  const thMetric = document.createElement('th'); thMetric.textContent = '指标'; thMetric.className='w-metric'; thMetric.rowSpan = 2; tr1.appendChild(thMetric);
+  for (const t1 of tag1Order) {
+    const t2s = tag2UnderTag1.get(t1) || [];
+    if (t2s.length === 0) continue;
+    const th = document.createElement('th'); th.textContent = t1; th.colSpan = t2s.length; th.className='tag1'; tr1.appendChild(th);
+  }
+  thead.appendChild(tr1);
+
+  const tr2 = document.createElement('tr');
+  for (const t1 of tag1Order) {
+    const t2s = tag2UnderTag1.get(t1) || [];
+    for (const t2 of t2s) {
+      const th = document.createElement('th'); th.textContent = t2; tr2.appendChild(th);
+    }
+  }
+  thead.appendChild(tr2);
+  table.appendChild(thead);
+
+  // 构建表体
+  const tbody = document.createElement('tbody');
+  const formatPct = v => (v==null || Number.isNaN(v)) ? '-' : (Math.round(v*100)/100).toFixed(2) + '%';
+  const formatNum = v => (v==null || Number.isNaN(v)) ? '-' : String(v);
+  const hot = (v) => v!=null && v >= 34.0; // 简单示例：>=34% 高亮
+
+  for (const brand of brandOrder) {
+    // 第一行：负面率
+    const trRate = document.createElement('tr');
+    const tdBrand = document.createElement('td'); tdBrand.textContent = brand; tdBrand.rowSpan = 2; trRate.appendChild(tdBrand);
+    const tdMetric1 = document.createElement('td'); tdMetric1.textContent = '负面率'; trRate.appendChild(tdMetric1);
+
+    for (const t1 of tag1Order) {
+      const t2s = tag2UnderTag1.get(t1) || [];
+      for (const t2 of t2s) {
+        const {v1} = getAgg(brand, t1, t2);
+        const td = document.createElement('td');
+        td.className = 'percent' + (hot(v1) ? ' hot' : '');
+        td.textContent = formatPct(v1);
+        trRate.appendChild(td);
+      }
+    }
+    tbody.appendChild(trRate);
+
+    // 第二行：提及量
+    const trMentions = document.createElement('tr');
+    const tdMetric2 = document.createElement('td'); tdMetric2.textContent = '提及量'; trMentions.appendChild(tdMetric2);
+    for (const t1 of tag1Order) {
+      const t2s = tag2UnderTag1.get(t1) || [];
+      for (const t2 of t2s) {
+        const {v2} = getAgg(brand, t1, t2);
+        const td = document.createElement('td');
+        td.textContent = formatNum(v2);
+        trMentions.appendChild(td);
+      }
+    }
+    tbody.appendChild(trMentions);
+  }
+
+  table.appendChild(tbody);
+  </script>
+</body>
+</html>
+

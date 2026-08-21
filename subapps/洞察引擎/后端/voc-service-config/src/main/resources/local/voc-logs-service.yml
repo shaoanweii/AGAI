@@ -1,0 +1,15 @@
+consumer.biglogs.enabled: true
+consumer.loginlogs.enabled: true
+
+
+threadpool:
+  async:
+    executor:
+      enabled: true
+      corePoolSize: 100
+      maxPoolSize: 1000
+      queueCapacity: 3000
+      threadNamePrefix: logs-
+
+logging.level:
+  com.voc: debug

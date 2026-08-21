@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.insights.engine.data.mapper.InsDataResourceMapper">
+    <resultMap type="com.voc.service.insights.engine.data.entity.InsDataResourceEntity" id="InsDataResourceMap">
+        <result column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="update_time" property="updateTime" />
+        <result column="create_time" property="createTime" />
+        <result column="update_by" property="updateBy" />
+        <result column="create_by" property="createBy" />
+        <result column="type" property="type" />
+        <result column="rule_type" property="ruleType" />
+        <result column="icon" property="icon" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,
+                name,
+                update_time,
+                create_time,
+                update_by,
+                create_by,
+                type,
+                rule_type,
+                icon
+    </sql>
+    <select id="findDataResourceList"
+            resultType="com.voc.service.insights.engine.data.entity.InsDataResourceEntity">
+        select
+            <include refid="Base_Column_List"/>
+        from
+            ins_data_resource
+        where 1=1
+        <if test="model.type !=null and model.type !=''">
+            and type = #{model.type}
+        </if>
+        order by create_time desc
+    </select>
+    <select id="findAllDataResourceList"
+            resultType="com.voc.service.insights.engine.data.entity.InsDataResourceEntity">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        ins_data_resource
+        where 1=1
+        <if test="model.type !=null and model.type !=''">
+            and type = #{model.type}
+        </if>
+        order by create_time desc
+    </select>
+</mapper>
+

@@ -1,0 +1,44 @@
+/**
+ * 数据源分析组件类型定义
+ * 数据来源：接口返回数据经过转换后的格式
+ */
+
+export interface DataSourceItem {
+  /** 数据源名称 */
+  dataSource: string
+  /** 总提及量 */
+  totalMentionValue: number
+  /** 正面提及量 */
+  positiveMentionValue: number
+  /** 中性提及量 */
+  neutralMentionValue: number
+  /** 负面提及量 */
+  negativeMentionValue: number
+}
+
+export interface TrendItem {
+  /** 时间（日期） */
+  keyWord: string
+  /** 正面提及量 */
+  positiveMentionValue: number
+  /** 中性提及量 */
+  neutralMentionValue: number
+  /** 负面提及量 */
+  negativeMentionValue: number
+}
+
+export interface WordCloudItem {
+  /** 热词名称 */
+  name: string
+  /** 热词权重值 */
+  value: number,
+  /** 情感 */
+  sentiment: string
+}
+
+export interface DataSourceRemark {
+  /** 提及量趋势数据 */
+  trend?: TrendItem[]
+  /** 词云图数据 */
+  wordCloud?: WordCloudItem[]
+}

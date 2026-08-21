@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.insights.engine.mapper.InsCustomerInfoMapper">
+
+    <resultMap id="BaseResultMap" type="com.voc.service.insights.engine.entity.InsCustomerInfoEntity">
+        <result column="id" property="id"/>
+        <result column="full_name" property="fullName"/>
+        <result column="abbreviation" property="abbreviation"/>
+        <result column="code" property="code"/>
+        <result column="province" property="province"/>
+        <result column="city" property="city"/>
+        <result column="contacts" property="contacts"/>
+        <result column="phone" property="phone"/>
+        <result column="email" property="email"/>
+        <result column="address" property="address"/>
+        <result column="remark" property="remark"/>
+        <result column="status" property="status"/>
+        <result column="del_flag" property="delFlag"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="sort" property="sort"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,
+                full_name,
+                abbreviation,
+                code,
+                province,
+                city,
+                contacts,
+                phone,
+                email,
+                address,
+                remark,
+                status,
+                del_flag,
+                create_time,
+                update_time,
+                sort
+    </sql>
+
+
+    <update id="deleteCustomerInfo">
+        update ins_customer_info
+        set del_flag    = #{del},
+            update_time = #{updateTime}
+        where id = #{id}
+    </update>
+
+    <select id="findCustomerInfo" resultType="com.voc.service.insights.engine.entity.InsCustomerInfoEntity">
+        select
+        <include refid="Base_Column_List"/>
+        from ins_customer_info where id = #{id} and del_flag = 0
+    </select>
+
+    <select id="findAllCustomerList" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from ins_customer_info
+        where
+        1=1
+        and del_flag = 0
+    </select>
+
+    <select id="findCustomerListByCondition" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from ins_customer_info
+        where
+        1=1
+        <if test="customerInfoModel.provinces !=null and customerInfoModel.provinces.size()>0">
+            and province in
+            <foreach item="item" collection="customerInfoModel.provinces" separator="," open="(" close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="customerInfoModel.cities !=null and customerInfoModel.cities.size()>0">
+            and city in
+            <foreach item="item" collection="customerInfoModel.cities" separator="," open="(" close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="customerInfoModel.status !=null and customerInfoModel.status !=''">
+            and status = #{customerInfoModel.status}
+        </if>
+        <if test="customerInfoModel.fullName !=null and customerInfoModel.fullName !=''">
+            and (full_name like concat('%',#{customerInfoModel.fullName},'%') or abbreviation like
+            concat('%',#{customerInfoModel.fullName},'%') )
+        </if>
+        and del_flag = 0
+        and code !='system'
+        <if test="customerInfoModel.order !=null and customerInfoModel.order !=''">
+            order by ${customerInfoModel.order}
+        </if>
+        <if test="customerInfoModel.order ==null or customerInfoModel.order ==''">
+            order by create_time desc
+        </if>
+    </select>
+
+    <select id="checkCustomerCode" resultType="java.lang.Integer">
+        select count(1)
+        from ins_customer_info
+        where code = #{customerInfoModel.code}
+          and del_flag = 0
+    </select>
+
+    <select id="findTest" resultType="com.alibaba.fastjson.JSONObject">
+        select
+        <foreach item="item" collection="colums" separator=",">
+            ${item}
+        </foreach>
+        from ins_customer_info
+    </select>
+
+    <update id="updateCustomerInfo">
+        update ins_customer_info
+        <set>
+            <if test="customerInfo.fullName !=null and customerInfo.fullName !=''">
+                full_name = #{customerInfo.fullName},
+            </if>
+            <if test="customerInfo.abbreviation !=null and customerInfo.abbreviation !=''">
+                abbreviation = #{customerInfo.abbreviation},
+            </if>
+            <if test="customerInfo.code !=null and customerInfo.code !=''">
+                code = #{customerInfo.code},
+            </if>
+            <if test="customerInfo.province !=null and customerInfo.province !=''">
+                province = #{customerInfo.province},
+            </if>
+            <if test="customerInfo.city !=null and customerInfo.city !=''">
+                city = #{customerInfo.city},
+            </if>
+                contacts = #{customerInfo.contacts},
+                phone = #{customerInfo.phone},
+                email = #{customerInfo.email},
+                address = #{customerInfo.address},
+                remark = #{customerInfo.remark},
+                status = #{customerInfo.status},
+                update_time = #{customerInfo.updateTime}
+        </set>
+        where id = #{customerInfo.id}
+    </update>
+</mapper>

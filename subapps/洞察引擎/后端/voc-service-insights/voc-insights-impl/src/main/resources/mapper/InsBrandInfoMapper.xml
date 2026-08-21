@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.insights.engine.mapper.InsBrandInfoMapper">
+
+    <sql id="insBrandInfoEntityDbMap">
+        t.id id,
+		t.name name,
+		t.name_en nameEn,
+		t.alias alias,
+		t.exclusion_words exclusionWords,
+		t.code code,
+		t.order_by orderBy,
+		t.operator operator,
+		t.create_time createTime,
+		t.update_time updateTime,
+		t.del_flag delFlag,
+		t.img img,
+		t.app_id appId,
+        t.competitive_product
+    </sql>
+
+    <resultMap id="BaseResultMap" type="com.voc.service.insights.engine.entity.InsBrandInfoEntity" >
+        <result column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="name_en" property="nameEn" />
+        <result column="alias" property="alias" />
+        <result column="exclusion_words" property="exclusionWords" />
+        <result column="code" property="code" />
+        <result column="order_by" property="orderBy" />
+        <result column="operator" property="operator" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="del_flag" property="delFlag" />
+        <result column="img" property="img" />
+        <result column="app_id" property="appId" />
+        <result column="nature" property="nature" />
+        <result column="country" property="country" />
+        <result column="competitive_type" property="competitiveType" />
+        <result column="competitive_product" property="competitiveProduct" typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
+        <result column="automark" property="automark" />
+        <result column="is_core" property="isCore" />
+        <result column="update_user" property="updateUser" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,
+                name,
+                name_en,
+                alias,
+                exclusion_words,
+                code,
+                order_by,
+                operator,
+                create_time,
+                update_time,
+                del_flag,
+                img,
+                app_id,
+                nature,
+                country,
+                competitive_type,
+                competitive_product,
+                automark,
+                is_core,
+                update_user
+    </sql>
+
+    <insert id="insertInsBrandInfoEntity" parameterType="com.voc.service.insights.engine.entity.InsBrandInfoEntity"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO ins_brand_info
+        (id, name, name_en, alias, exclusion_words, code, order_by, operator, create_time, update_time, del_flag, img,
+         app_id)
+        VALUES (#{id}, #{name}, #{nameEn}, #{alias}, #{exclusionWords}, #{code}, #{orderBy}, #{operator}, #{createTime},
+                #{updateTime}, #{delFlag}, #{img}, #{appId})
+    </insert>
+
+    <update id="updateInsBrandInfoEntity" parameterType="com.voc.service.insights.engine.entity.InsBrandInfoEntity">
+        <if test="id != null">
+            UPDATE
+            ins_brand_info t
+            <set>
+                <if test="name != null">
+                    t.name = #{name},
+                </if>
+                <if test="nameEn != null">
+                    t.name_en = #{nameEn},
+                </if>
+                <if test="alias != null">
+                    t.alias = #{alias},
+                </if>
+                <if test="exclusionWords != null">
+                    t.exclusion_words = #{exclusionWords},
+                </if>
+                <if test="code != null">
+                    t.code = #{code},
+                </if>
+                <if test="orderBy != null">
+                    t.order_by = #{orderBy},
+                </if>
+                <if test="operator != null">
+                    t.operator = #{operator},
+                </if>
+                <if test="createTime != null">
+                    t.create_time = #{createTime},
+                </if>
+                <if test="updateTime != null">
+                    t.update_time = #{updateTime},
+                </if>
+                <if test="delFlag != null">
+                    t.del_flag = #{delFlag},
+                </if>
+                <if test="img != null">
+                    t.img = #{img},
+                </if>
+                <if test="appId != null">
+                    t.app_id = #{appId},
+                </if>
+            </set>
+            WHERE
+            t.id = #{id}
+        </if>
+    </update>
+
+    <update id="delInsBrandInfoEntity" parameterType="String">
+        <if test="id != null">
+            UPDATE
+            ins_brand_info t
+            <set>
+                t.del_flag = 1
+            </set>
+            WHERE
+            t.id = #{id}
+        </if>
+    </update>
+
+    <select id="selectMultiPagingInsBrandInfoEntity"
+            resultType="com.voc.service.insights.engine.entity.InsBrandInfoEntity">
+        SELECT
+        <include refid="insBrandInfoEntityDbMap"/>
+        FROM
+        ins_brand_info t
+        where 1
+        <if test="name != null and name != '' ">
+            and t.name = #{name}
+        </if>
+        <if test="nameEn != null and nameEn != '' ">
+            and t.name_en = #{nameEn}
+        </if>
+        <if test="alias != null and alias != '' ">
+            and t.alias = #{alias}
+        </if>
+        <if test="exclusionWords != null and exclusionWords != '' ">
+            and t.exclusion_words = #{exclusionWords}
+        </if>
+        <if test="code != null and code != '' ">
+            and t.code = #{code}
+        </if>
+        <if test="orderBy != null and orderBy != '' ">
+            and t.order_by = #{orderBy}
+        </if>
+        <if test="operator != null and operator != '' ">
+            and t.operator = #{operator}
+        </if>
+        <if test="createTime != null and createTime != '' ">
+            and t.create_time = #{createTime}
+        </if>
+        <if test="updateTime != null and updateTime != '' ">
+            and t.update_time = #{updateTime}
+        </if>
+        <if test="delFlag != null and delFlag != '' ">
+            and t.del_flag = #{delFlag}
+        </if>
+        <if test="img != null and img != '' ">
+            and t.img = #{img}
+        </if>
+        <if test="appId != null and appId != '' ">
+            and t.app_id = #{appId}
+        </if>
+        order by update_time desc
+        limit #{start},#{pagesize}
+    </select>
+
+    <select id="selectMultiInsBrandInfoEntity"
+            resultType="com.voc.service.insights.engine.entity.InsBrandInfoEntity">
+        SELECT
+        <include refid="insBrandInfoEntityDbMap"/>
+        FROM
+        ins_brand_info t
+        inner join ins_car_series_info car on t.code = car.brand_id
+        where 1
+        <if test="brandFilters != null and brandFilters.size() > 0 ">
+            and t.code in
+            <foreach collection="brandFilters" item="item" index="index" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="carTypeFilter != null and carTypeFilter.size() > 0 ">
+            and (car.car_level1 in
+            <foreach collection="carTypeFilter" item="item" index="index" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+            or car.car_level2 in
+            <foreach collection="carTypeFilter" item="item" index="index" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+            )
+        </if>
+        <if test="energyTypeFilter != null and energyTypeFilter.size() > 0 ">
+            and (car.energy_type1 in
+            <foreach collection="energyTypeFilter" item="item" index="index" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+            or car.energy_type2 in
+            <foreach collection="energyTypeFilter" item="item" index="index" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+            )
+        </if>
+        <if test="nameFilter != null and nameFilter != '' ">
+            and car.name like concat('%',#{nameFilter},'%')
+        </if>
+        <if test="name != null and name != '' ">
+            and t.name = #{name}
+        </if>
+        <if test="nameEn != null and nameEn != '' ">
+            and t.name_en = #{nameEn}
+        </if>
+        <if test="alias != null and alias != '' ">
+            and t.alias = #{alias}
+        </if>
+        <if test="exclusionWords != null and exclusionWords != '' ">
+            and t.exclusion_words = #{exclusionWords}
+        </if>
+        <if test="code != null and code != '' ">
+            and t.code = #{code}
+        </if>
+        <if test="orderBy != null and orderBy != '' ">
+            and t.order_by = #{orderBy}
+        </if>
+        <if test="operator != null and operator != '' ">
+            and t.operator = #{operator}
+        </if>
+        <if test="createTime != null and createTime != '' ">
+            and t.create_time = #{createTime}
+        </if>
+        <if test="updateTime != null and updateTime != '' ">
+            and t.update_time = #{updateTime}
+        </if>
+        <if test="delFlag != null and delFlag != '' ">
+            and t.del_flag = #{delFlag}
+        </if>
+        <if test="img != null and img != '' ">
+            and t.img = #{img}
+        </if>
+        <if test="appId != null and appId != '' ">
+            and t.app_id = #{appId}
+        </if>
+        group by t.id
+    </select>
+
+    <select id="findAllBrandAndCarSeries" resultType="com.voc.service.insights.engine.vo.InsALlBrandAndCarSeriesVo">
+        select
+            b.id as brandId,
+            b.code as brandCode,
+            b.name as brandName,
+            b.alias as brandAlias,
+            b.exclusion_words as brandExclusionWords,
+            c.code as carSeriesCode,
+            c.name as carSeriesName,
+            c.alias as carSeriesAlias,
+            c.exclusion_words as carSeriesExclusionWords,
+            c.car_level1 as carLevel1,
+            c.car_level2 as carLevel2,
+            c.energy_type1 as energyType1,
+            c.energy_type2 as energyType2
+        from ins_brand_info b
+                 left join ins_car_series_info c on b.id = c.brand_id
+        where b.del_flag = 0
+    </select>
+    <select id="getSelfBrandCodes" resultType="java.lang.String">
+        SELECT
+            GROUP_CONCAT(code) AS code_list  -- 拼接所有code为逗号分隔的字符串
+        FROM ins_brand_info i
+        WHERE i.status = '1'
+          AND i.del_flag = '0'
+          AND i.competitive_type = '1'
+        order by i.order_by asc;
+    </select>
+    <select id="findBrandInfoList" resultType="com.voc.service.insights.engine.entity.InsBrandInfoEntity">
+        select
+            ibi.id,
+            ibi.name,
+            ibi.create_time,
+            ibi.update_time,
+            sdi.item_text as competitiveTypeName,
+            ibi.automark,
+            sd.item_text as isCoreName,
+            ibi.update_user as operator,
+            sd1.item_text as statusName,
+            ibi.status
+        from ins_brand_info ibi
+        left join (select sdi.item_text,sdi.item_value from ins_dict sd left join ins_dict_item sdi on sdi.dict_id = sd.id where sd.dict_code = 'competitive_type' ) sdi on sdi.item_value = ibi.competitive_type
+        left join (select sdi.item_text,sdi.item_value from ins_dict sd left join ins_dict_item sdi on sdi.dict_id = sd.id where sd.dict_code = 'is_core' ) sd on sd.item_value = ibi.is_core
+        left join (select sdi.item_text,sdi.item_value from ins_dict sd left join ins_dict_item sdi on sdi.dict_id = sd.id where sd.dict_code = 'enable_type' ) sd1 on sd1.item_value = ibi.status
+        where 1=1
+        <if test="brandModel.automarkList !=null and brandModel.automarkList.size()>0">
+            and ibi.automark in
+            <foreach item="item" index="index" collection="brandModel.automarkList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="brandModel.name !=null and brandModel.name !=''">
+            and ibi.name like concat('%', #{brandModel.name}, '%')
+        </if>
+        <if test="brandModel.isCore !=null">
+            and ibi.is_core = #{brandModel.isCore}
+        </if>
+        <if test="brandModel.competitiveType !=null">
+            and ibi.competitive_type = #{brandModel.competitiveType}
+        </if>
+        <if test="brandModel.status !=null and brandModel.status !=''">
+            and ibi.status = #{brandModel.status}
+        </if>
+        <if test="brandModel.operator !=null and brandModel.operator !=''">
+            and ibi.operator like concat('%', #{brandModel.operator}, '%')
+        </if>
+        <if test="brandModel.order !=null and brandModel.order !=''">
+            order by ibi.${brandModel.order}
+        </if>
+        <if test="brandModel.order ==null or brandModel.order ==''">
+            order by ibi.competitive_type asc,ibi.is_core desc,ibi.code asc
+        </if>
+
+    </select>
+</mapper>

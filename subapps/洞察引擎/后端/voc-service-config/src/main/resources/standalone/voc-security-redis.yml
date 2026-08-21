@@ -1,0 +1,58 @@
+spring:
+  data:
+    redis:
+      type: host
+      host: localhost
+      port: 6379
+      password: root
+      database: 1
+      lettuce:
+        pool:
+          min-idle: 1
+          max-idle: 5
+          max-active: 20
+          max-wait: 2000
+
+jetcache:
+  statIntervalMinutes: 15
+  areaInCacheName: true
+  local:
+    default:
+      type: caffeine
+      limit: 10000
+      keyConvertor: bean:myFastjson2KeyConvertor
+      expireAfterWriteInMillis: 100000
+    VDP:
+      type: caffeine
+      limit: 10000
+      keyConvertor: bean:myFastjson2KeyConvertor
+      expireAfterWriteInMillis: 100000
+  remote:
+    default:
+      type: redis
+      valueEncoder: bean:cacheJackson2
+      valueDecoder: bean:cacheJackson2
+      keyConvertor: bean:myFastjson2KeyConvertor
+      broadcastChannel: ${spring.application.name}
+      poolConfig:
+        minIdle: ${spring.data.redis.lettuce.pool.min-idle}
+        maxIdle: ${spring.data.redis.lettuce.pool.max-idle}
+        maxTotal: ${spring.data.redis.lettuce.pool.max-active}
+      host: ${spring.data.redis.host}
+      port: ${spring.data.redis.port}
+      password: ${spring.data.redis.password}
+      database: ${spring.data.redis.database}
+    VDP:
+      type: redis
+      valueEncoder: bean:cacheJackson2
+      valueDecoder: bean:cacheJackson2
+      keyConvertor: bean:myFastjson2KeyConvertor
+      broadcastChannel: ${spring.application.name}
+      poolConfig:
+        minIdle: ${spring.data.redis.lettuce.pool.min-idle}
+        maxIdle: ${spring.data.redis.lettuce.pool.max-idle}
+        maxTotal: ${spring.data.redis.lettuce.pool.max-active}
+      host: ${spring.data.redis.host}
+      port: ${spring.data.redis.port}
+      password: ${spring.data.redis.password}
+      database: ${spring.data.redis.database}

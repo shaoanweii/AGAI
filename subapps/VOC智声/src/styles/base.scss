@@ -1,0 +1,146 @@
+// @use 'sass:list';
+
+//设计规范变量
+@import './_variables.scss';
+@import './generate.scss';
+// 工具类
+@import './utilities';
+// Element Plus 重置样式
+@import './element-plus-reset';
+
+// ==================== CSS 自定义属性 (CSS Variables) ====================
+:root {
+  // 品牌色
+  --brand-primary: #{$brand-primary};
+  --brand-secondary: #{$brand-secondary};
+
+  // 功能色
+  --color-error: #{$color-error};
+  --color-warning: #{$color-warning};
+  --color-success: #{$color-success};
+  --color-info: #{$color-info};
+  --color-error-light: #{$color-error-light};
+  --color-warning-light: #{$color-warning-light};
+  --color-success-light: #{$color-success-light};
+  --color-info-light: #{$color-info-light};
+
+  // 文字色
+  --text-primary: #{$text-primary};
+  --text-secondary: #{$text-secondary};
+  --text-tertiary: #{$text-tertiary};
+  --text-placeholder: #{$text-placeholder};
+  --text-link: #{$text-link};
+  --text-danger: #{$text-danger};
+  --text-warning: #{$text-warning};
+  --text-success: #{$text-success};
+
+  // 基础色
+  --border-dark: #{$border-dark};
+  --border-regular: #{$border-regular};
+  --bg-regular: #{$bg-regular};
+  --bg-light: #{$bg-light};
+  --color-disabled: #{$color-disabled};
+  --color-mask: #{$color-mask};
+
+  // 字体
+  --font-family: #{$font-family};
+
+  // 圆角
+  --border-radius-s: #{$border-radius-s};
+  --border-radius-m: #{$border-radius-m};
+  --border-radius-l: #{$border-radius-l};
+  --border-radius-xl: #{$border-radius-xl};
+  --border-radius-c: #{$border-radius-c};
+
+  // header高度
+  --header-height: #{$header-height};
+
+  // H5 端底部 Tabbar 高度，供布局统一预留底部空间
+  --h5-tabbar-height: #{$h5-tabbar-height};
+
+  --neutral-white: #{$neutral-white};
+
+  --menu-width: 280px;
+  --menu-width-collapsed: #{$menu-width-collapsed};
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  width: 100%;
+  height: 100%;
+  background: #f5f5f5;
+  font-size: 14px;
+  line-height: 1;
+  font-family: var(--font-family);
+  color: var(--text-primary);
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--el-fill-color-lighter);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--el-border-color-darker);
+  border-radius: 3px;
+
+  &:hover {
+    background: var(--el-color-primary-light-3);
+  }
+}
+
+/* 全局 tooltip 样式，可复用 */
+.public-tooltip-div {
+  padding-top: 11px;
+  padding-left: 17px;
+  padding-right: 15px;
+
+  .axis-name {
+    margin-bottom: 10px;
+    font-size: 16px;
+    color: rgba(0, 0, 0, 0.85);
+    font-weight: 600;
+  }
+  .each-series {
+    margin-bottom: 10px;
+    color: rgba(0, 0, 0, 0.95);
+    font-weight: 500;
+    .each-series-name {
+      width: 100px;
+      margin-right: 10px;
+      display: inline-block;
+      text-align: left;
+    }
+    .each-series-value {
+      display: inline-block;
+      min-width: 40px;
+      text-align: right;
+    }
+  }
+}
+.public-tooltip-click-tips {
+  padding: 8px 0;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.05);
+  color: rgba(135, 135, 135, 0.85);
+}
+svg {
+  outline: none;
+}
+
+.el-popper.is-dark.el-tooltip {
+  max-width: 500px;
+}

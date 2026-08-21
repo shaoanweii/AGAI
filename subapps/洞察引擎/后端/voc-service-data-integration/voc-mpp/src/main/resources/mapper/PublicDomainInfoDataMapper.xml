@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.data.integration.mapper.PublicDomainInfoDataMapper">
+    <resultMap id="BaseResultMap" type="com.voc.service.data.integration.entity.PublicDomainInfoDataEntity">
+        <result column="id" property="id"/>
+        <result column="data" property="data"/>
+        <result column="date_type" property="dateType"/>
+        <result column="insert_dt" property="insertDt"/>
+    </resultMap>
+
+    <select id="findByIds" resultMap="BaseResultMap">
+        select id, data, data_type,insert_dt
+        from voc_anal_di_pub_domain_data_batch_range_mv
+        where id in
+        <foreach item="item" index="index" collection="ids" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+</mapper>

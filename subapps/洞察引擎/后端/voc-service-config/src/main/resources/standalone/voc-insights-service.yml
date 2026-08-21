@@ -1,0 +1,35 @@
+threadpool:
+  async:
+    executor:
+      enabled: true
+      corePoolSize: 10
+      maxPoolSize: 100
+      queueCapacity: 300
+      threadNamePrefix: ins-
+
+logging.level:
+  com.voc: debug
+  com.alicp: info
+
+password.default.client: Q2m#yC18@Yo?
+username.default.client: admin
+ins.project.id: 4cb464bb8f604284dd83c92356fd62a4
+
+default:
+  common:
+    clientId: 764547797eb2e192763f5334028d49c9
+
+xxl:
+  job:
+    admin:
+      addresses:
+      username: admin
+      password:
+    accessToken: default_token
+    executor:
+      appname: vdp-voc-data-insights-standalone
+      address:
+      ip:
+      port: 9999
+      logpath:
+      logretentiondays: 3

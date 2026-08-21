@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.insights.engine.data.mapper.SentimentResultDataMapper">
+    <select id="pageSentimentResultDataList"
+            resultType="com.voc.service.insights.engine.data.entity.SentimentResultDataEntity">
+        <!--SELECT
+        COALESCE(id, '') AS id,
+        COALESCE(publish_time, '') AS publish_time,
+        COALESCE(channel_id, '') AS channel_id,
+        COALESCE(data_id, '') AS data_id,
+        COALESCE(one_id, '') AS one_id,
+        COALESCE(work_id, '') AS work_id,
+        COALESCE(client_id, '') AS client_id,
+        COALESCE(content_type, '') AS content_type,
+        COALESCE(sample_data_type, '') AS sample_data_type,
+        COALESCE(original_id, '') AS original_id,
+        COALESCE(input_data_id, '') AS input_data_id,
+        COALESCE(original_text_scene, '') AS original_text_scene,
+        COALESCE(brand_code, '') AS brand_code,
+        COALESCE(car_series_code, '') AS car_series_code,
+        COALESCE(label_type, '') AS label_type,
+        COALESCE(scenario, '') AS scenario,
+        COALESCE(sentiment, '') AS sentiment,
+        COALESCE(intention_type, '') AS intention_type,
+        COALESCE(topic, '') AS topic,
+        COALESCE(opinion, '') AS opinion,
+        COALESCE(subject, '') AS subject,
+        COALESCE(fault_level, '') AS fault_level,
+        COALESCE(description, '') AS description,
+        COALESCE(sentiment_score, '') AS sentiment_score,
+        COALESCE(keywords, '') AS keywords,
+        COALESCE(title, '') AS title,
+        COALESCE(model_type, 0) AS model_type,
+        COALESCE(abandon, 0) AS abandon,
+        COALESCE(done, 0) AS done,
+        COALESCE(raw_data, '') AS raw_data,
+        COALESCE(raw_data, '') AS raw_data,
+        COALESCE(ext_fields, '') AS ext_fields,
+        COALESCE(biz_ext_attrs, '') AS biz_ext_attrs,
+        COALESCE(biz_ext_attrs2, '') AS biz_ext_attrs2,
+        COALESCE(biz_ext_attrs3, '') AS biz_ext_attrs3,
+        COALESCE(cust_ext_attrs, '') AS cust_ext_attrs,
+        COALESCE(vhl_ext_attrs, '') AS vhl_ext_attrs,
+        COALESCE(dealer_ext_attrs, '') AS dealer_ext_attrs,
+        COALESCE(prd_ext_attrs, '') AS prd_ext_attrs,
+        COALESCE(tags_ext_attrs, '') AS tags_ext_attrs,
+        COALESCE(create_time, '') AS create_time,
+        COALESCE(update_time, '') AS update_time
+        FROM
+        voc_anal_flow_model_sentiment_result where 1=1
+
+        <if test="originalId != null and originalId !=''">
+            and data_id like concat('%',#{originalId},'%')
+        </if>
+
+        <if test="title != null and title !=''">
+            and topic like concat('%',#{title},'%')
+        </if>
+
+        <if test="content != null and content !=''">
+            and description like concat('%',#{content},'%')
+        </if>
+
+        <if test="originalTextScene != null and originalTextScene !=''">
+            and original_text_scene like concat('%',#{originalTextScene},'%')
+        </if>
+
+        <if test="soundsId != null and soundsId !=''">
+            and id like concat('%',#{soundsId},'%')
+        </if>
+
+        <if test="isWsaterArmy != null and isWsaterArmy !='' and isWsaterArmy ==1">
+            and (abandon = 1)
+        </if>
+
+        <if test="isWsaterArmy != null and isWsaterArmy !='' and isWsaterArmy ==0">
+            and (abandon = 0)
+        </if>
+
+        <if test="authorId != null and authorId !=''">
+            and one_id like concat('%',#{authorId},'%')
+        </if>
+
+        <if test="userName != null and userName !=''">
+            and one_id like concat('%',#{userName},'%')
+        </if>
+
+        <if test="idList != null and idList.size()!=0">
+            and id in
+            <foreach item="item" index="index" collection="idList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="dataId != null and dataId.size()!=0">
+            and data_id in
+            <foreach item="item" index="index" collection="dataId" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="topicList != null and topicList.size()!=0">
+            and topic in
+            <foreach item="item" index="index" collection="topicList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="dataStatus != null and dataStatus.size()!=0">
+            and abandon in
+            <foreach item="item" index="index" collection="dataStatus" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="startTime != null and startTime !=''">
+            and date(publish_time) BETWEEN DATE(#{startTime}) and DATE(#{endTime})
+        </if>
+        <if test="sentiment != null and sentiment.size()!=0">
+            and sentiment in
+            <foreach item="item" index="index" collection="sentiment" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="intention != null and intention.size()!=0 ">
+            and intention_type in
+            <foreach item="item" index="index" collection="intention" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="brandCode != null and brandCode.size()!=0 ">
+            and brand_code in
+            <foreach item="item" index="index" collection="brandCode" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="carSeries != null and carSeries.size()!=0 ">
+            and car_series_code in
+            <foreach item="item" index="index" collection="carSeries" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="threeChannelCodeList != null and threeChannelCodeList.size() !=0 ">
+            and channel_id in
+            <foreach item="item" index="index" collection="threeChannelCodeList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="contentType != null and contentType !=''">
+            and content_type= #{contentType}
+        </if>
+        <if test="sentimentScore != null and sentimentScore !=''">
+            and sentiment_score= #{sentimentScore}
+        </if>
+        order by id desc-->
+    </select>
+
+</mapper>

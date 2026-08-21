@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.analysis.core.v2.mapper.AysBatchPushRecordV2Mapper">
+
+
+    <select id="findGroupByRequestId" resultType="com.voc.service.analysis.model.AysBatchPushRecordGroupByModel">
+        select reqeut_id as reqeutId, work_id as workId, count(*) as num, 1 as handleType
+        from dws_voc2_batch_push_record
+        where status!='0' and reqeut_id!='-1' AND work_id =#{workId}
+        group by reqeut_id, work_id
+        UNION ALL
+        select reqeut_id as reqeutId, work_id as workId, count(*) as num, 0 as handleType
+        from dws_voc2_batch_push_record where reqeut_id!='-1' AND work_id =#{workId}
+        group by reqeut_id, work_id
+    </select>
+
+
+    <select id="findExceptionRecordList" resultType="com.voc.service.analysis.model.AysBatchPushRecordExceptionModel">
+        select
+        abpr.id,
+        abpr.reqeut_id as reqeutId,
+        amda.`data` as metaData
+        from
+        (
+        select
+        id,
+        reqeut_id
+        from
+        dws_voc2_batch_push_record
+        where
+        reqeut_id in
+        <foreach item="item" index="index" collection="ids" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and status = "-1") abpr
+        LEFT JOIN dwd_voc2_all_meta_data amda on
+        abpr.id = amda.new_id
+    </select>
+
+</mapper>

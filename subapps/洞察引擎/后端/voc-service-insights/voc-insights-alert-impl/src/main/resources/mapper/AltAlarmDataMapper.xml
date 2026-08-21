@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.insights.engine.alert.mapper.AltAlarmDataMapper">
+    <resultMap type="com.voc.service.insights.engine.alert.entity.AltAlarmDataEntity" id="AltCoreDataMap">
+        <id property="id" column="id" jdbcType="VARCHAR"/>
+        <result property="dataType" column="data_type" jdbcType="VARCHAR"/>
+        <result property="taskId" column="task_id" jdbcType="VARCHAR"/>
+        <result property="channelId" column="channel_id" jdbcType="VARCHAR"/>
+        <result property="clientId" column="client_id" jdbcType="VARCHAR"/>
+        <result property="level" column="level" jdbcType="VARCHAR"/>
+        <result property="pushStatus" column="push_status" jdbcType="INTEGER"/>
+        <result property="pushList" column="push_list" jdbcType="INTEGER"/>
+        <result property="pushMsg" column="push_msg" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="alertBarChart" resultType="com.voc.service.insights.engine.model.alert.AltAlarmDataDto">
+        SELECT channel_id,
+               create_time
+        FROM alt_alarm_data
+        WHERE 1 = 1
+          AND data_type = 'metaData'
+          AND DATE(create_time) = CURDATE()
+        group by channel_id,create_time
+    </select>
+
+</mapper>
+

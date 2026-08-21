@@ -1,0 +1,27 @@
+spring.application.name: springbootadmin
+
+
+spring.cloud.nacos.discovery.server-addr: ${NACOS_SERVER_ADDR_URLS:nacos-svc.voc-test.svc.cluster.local:8848}
+spring.cloud.nacos.discovery.username: nacos
+spring.cloud.nacos.discovery.password: L7bzd1gmm+nacos
+spring.cloud.nacos.discovery.namespace: ${NACOS_CONFIG_NAMESPACE:8eb419b4-dc2c-4038-9489-1835b3c4b980}
+
+spring.cloud.nacos.config.server-addr: ${NACOS_SERVER_ADDR_URLS:nacos-svc.voc-test.svc.cluster.local:8848}
+spring.cloud.nacos.config.file-extension: yml
+spring.cloud.nacos.config.group: ${NACOS_CONFIG_GROUP:DEFAULT_GROUP}
+spring.cloud.nacos.config.namespace: ${NACOS_CONFIG_NAMESPACE:8eb419b4-dc2c-4038-9489-1835b3c4b980}
+spring.cloud.nacos.config.username: nacos
+spring.cloud.nacos.config.password: L7bzd1gmm+nacos
+#spring.cloud.nacos.config.context-path: /nacos
+
+spring.cloud.nacos.config.enabled: ${NACOS_CONFIG_ENABLED:true}
+spring.cloud.nacos.discovery.enabled: ${NACOS_DISCOVERY_ENABLED:true}
+
+spring.main.allow-bean-definition-overriding: true
+
+spring:
+  security:
+    user:
+      #admin Server端登录时用的账户密码
+      name: ${USERNAME:admin}
+      password: ${PASSWORD:Passw0rd}

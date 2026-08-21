@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
+       default-autowire="byName">
+
+    <!--    <bean id="commonService" class="common.com.voc.service.CommonService"/>-->
+
+    <!-- <bean id="IBrandProductManagerService" class="impl.ops.service.com.voc.service.BrandProductManagerServiceImpl"/>
+     <sofa:service ref="IBrandProductManagerService" interface="api.ops.service.com.voc.service.IBrandProductManagerService">
+         <sofa:binding.jvm/>
+         <sofa:binding.bolt/>
+     </sofa:service>-->
+
+    <!-- <bean id="ISysFillRuleService" class="impl.ops.service.com.voc.service.SysFillRuleServiceImpl"/>
+     <sofa:service ref="ISysFillRuleService" interface="api.ops.service.com.voc.service.ISysFillRuleService">
+         <sofa:binding.jvm/>
+ &lt;!&ndash;        <sofa:binding.rest/>&ndash;&gt;
+         <sofa:binding.bolt/>
+     </sofa:service>-->
+
+    <!--<bean id="IModelGroupRelationService" class="impl.ops.service.com.voc.service.ModelGroupRelationServiceImpl"/>
+        <sofa:service ref="IModelGroupRelationService" interface="api.ops.service.com.voc.service.IModelGroupRelationService">
+            <sofa:binding.jvm/>
+    &lt;!&ndash;        <sofa:binding.rest/>&ndash;&gt;
+            <sofa:binding.bolt/>
+        </sofa:service>-->
+
+    <!--<bean id="IProvinceAreaService" class="impl.ops.service.com.voc.service.IProvinceAreaServiceImpl"/>
+        <sofa:service ref="IProvinceAreaService" interface="api.ops.service.com.voc.service.IProvinceAreaService">
+            <sofa:binding.jvm/>
+    &lt;!&ndash;        <sofa:binding.rest/>&ndash;&gt;
+            <sofa:binding.bolt/>
+        </sofa:service>
+        -->
+    <!--<bean id="ISysCategoryService" class="impl.ops.service.com.voc.service.SysCategoryServiceImpl"/>
+        <sofa:service ref="ISysCategoryService" interface="api.ops.service.com.voc.service.ISysCategoryService">
+            <sofa:binding.jvm/>
+    &lt;!&ndash;        <sofa:binding.rest/>&ndash;&gt;
+            <sofa:binding.bolt/>
+        </sofa:service>-->
+
+    <!--<bean id="ISysDictItemService" class="impl.ops.service.com.voc.service.SysDictItemServiceImpl"/>
+        <sofa:service ref="ISysDictItemService" interface="api.ops.service.com.voc.service.ISysDictItemService">
+            <sofa:binding.jvm/>
+    &lt;!&ndash;        <sofa:binding.rest/>&ndash;&gt;
+            <sofa:binding.bolt/>
+        </sofa:service>-->
+
+    <!--<bean id="ISysDictService" class="impl.ops.service.com.voc.service.SysDictServiceImpl"/>
+        <sofa:service ref="ISysDictService" interface="api.ops.service.com.voc.service.ISysDictService">
+            <sofa:binding.jvm/>
+    &lt;!&ndash;        <sofa:binding.rest/>&ndash;&gt;
+            <sofa:binding.bolt/>
+        </sofa:service>-->
+
+    <!--<bean id="IVocBusinessTagService" class="impl.ops.service.com.voc.service.VocBusinessTagServiceImpl"/>
+        <sofa:service ref="IVocBusinessTagService" interface="api.ops.service.com.voc.service.IVocBusinessTagService">
+            <sofa:binding.jvm/>
+    &lt;!&ndash;        <sofa:binding.rest/>&ndash;&gt;
+            <sofa:binding.bolt/>
+        </sofa:service>-->
+
+    <!--
+    <bean id="SysRoleBusinessTagService" class="impl.ops.service.com.voc.service.SysRoleBusinessTagServiceImpl"/>
+        <sofa:service ref="SysRoleBusinessTagService" interface="api.ops.service.com.voc.service.SysRoleBusinessTagService">
+            <sofa:binding.jvm/>
+    &lt;!&ndash;        <sofa:binding.rest/>&ndash;&gt;
+            <sofa:binding.bolt/>
+        </sofa:service>
+    -->
+
+
+</beans>

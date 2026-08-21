@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow>
+
+    <!--<前置规则处理数据流程节点>-->
+    <chain name="pre_process_flow">
+		THEN(
+            IF(isExistPreDataNode, THEN(
+                loadPreDataNode,
+                WHEN(
+                    loadStaticDataNode,
+                    loadRuleDataNode.tag("pre")
+                ),
+                IF(isExistRuleDataNode, THEN(
+                    generateRuleEventsNode,
+                    runRuleNode,
+                    preProcessExceptionNode
+                )),
+                savePreDataNode,
+                modifyMetaDataAnalysisStatusNode,
+                notificationNode.tag("callModel")
+            ))
+        );
+    </chain>
+
+
+    <!--<模型API处理数据流程节点>-->
+    <chain name="call_model_flow">
+        THEN(
+            IF(isExistCallModelDataNode, THEN(
+                loadCallModelDataNode,
+                CATCH(
+                   THEN(
+                      callModelApiServiceNode,
+                      analysisModelResultDataNode
+                       )
+                ).DO(exceptionModelDataNode),
+                WHEN(
+                  saveModelNotLabelDataNode,
+                  saveHighFrequencyWordsNode,
+                  modifyToMetaDataAnalysisStatusNode
+                 ),
+                IF(isExistLabelDataNode, THEN(
+                   saveModelLabelDataNode,
+                   notificationNode.tag("postRules")
+                )),
+                modifyApiResultDataStatusNode
+            ))
+        );
+    </chain>
+
+    <!--<模型MQ发送数据流程节点>-->
+    <chain name="call_model_flow_mq_push">
+     THEN(
+        IF(isExistCallModelDataNode, THEN(
+            loadCallModelDataNode,
+            callModelMqPushServiceNode,
+            modifyModelRequestDataStatusNode
+          ))
+        );
+    </chain>
+
+    <!--<模型MQ接收数据流程节点>-->
+    <chain name="call_model_flow_mq_receive">
+        THEN(
+             callModelMqReceiveServiceNode,
+             loadCallModelDataNode,
+             analysisModelResultDataNode,
+            WHEN(
+                saveModelNotLabelDataNode,
+                saveHighFrequencyWordsNode,
+                modifyToMetaDataAnalysisStatusNode
+             ),
+             IF(isExistLabelDataNode, THEN(
+                saveModelLabelDataNode,
+                modifyApiResultDataStatusNode,
+                notificationNode.tag("postRules")
+            ))
+          );
+    </chain>
+
+    <!--<后置规则处理数据流程节点>-->
+    <chain name="post_process_flow">
+        THEN(
+            IF(isExistPostDataNode, THEN(
+                loadPostDataNode,
+                WHEN(
+                    loadStaticDataNode,
+                    loadRuleDataNode.tag("post")
+                ),
+                IF(isExistRuleDataNode, THEN(
+                    generateRuleEventsNode,
+                    runRuleNode,
+                    postProcessExceptionNode
+                )),
+                savePostDataNode,
+                modifyModelResltDataAnalysisStatusNode
+            ))
+        );
+    </chain>
+
+
+    <!--<后置规则验证处理数据流程节点>-->
+    <chain name="valid_post_process_flow">
+        THEN(
+            IF(isExistValidPostDataNode, THEN(
+                WHILE(splitValidDataWhileNode).DO(THEN(
+                    WHEN(
+                        loadStaticDataNode.tag("valid"),
+                        loadValidRuleDataNode.tag("post")
+                    ),
+                    IF(isExistRuleDataNode, THEN(
+                        generateRuleEventsNode,
+                        runRuleNode
+                    )),
+                    saveValidPostDataNode,
+                    modifyModelResltDataAnalysisValidStatusNode
+                )))
+            )
+        );
+    </chain>
+
+    <!--<样本间处理数据流程节点>-->
+    <chain name="template_process_flow">
+		THEN(
+			THEN(
+				WHEN(
+					loadStaticDataNode,
+					loadRuleDataNode.tag("pre")
+				),
+				IF(isExistRuleDataNode, THEN(
+					generateRuleEventsNode,
+					runRuleNode
+				))
+			),
+			THEN(
+                callModelApiServiceNode,
+                modelResultAnalysisDataNode
+			),
+			THEN(
+				WHEN(
+					loadStaticDataNode,
+					loadRuleDataNode.tag("post")
+				),
+				IF(isExistRuleDataNode, THEN(
+					generateRuleEventsNode,
+					runRuleNode
+				))
+			)
+		);
+    </chain>
+</flow>

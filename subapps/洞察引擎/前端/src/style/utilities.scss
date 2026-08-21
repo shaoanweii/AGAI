@@ -1,0 +1,286 @@
+// ==================== 间距工具类 ====================
+@for $i from 1 through 500 {
+  .mt-#{$i} {
+    margin-top: #{$i}px;
+  }
+  .mr-#{$i} {
+    margin-right: #{$i}px;
+  }
+  .mb-#{$i} {
+    margin-bottom: #{$i}px;
+  }
+  .ml-#{$i} {
+    margin-left: #{$i}px;
+  }
+  .m-#{$i} {
+    margin: #{$i}px;
+  }
+
+  .pt-#{$i} {
+    padding-top: #{$i}px;
+    box-sizing: border-box;
+  }
+  .pr-#{$i} {
+    padding-right: #{$i}px;
+    box-sizing: border-box;
+  }
+  .pb-#{$i} {
+    padding-bottom: #{$i}px;
+    box-sizing: border-box;
+  }
+  .pl-#{$i} {
+    padding-left: #{$i}px;
+    box-sizing: border-box;
+  }
+  .p-#{$i} {
+    padding: #{$i}px;
+    box-sizing: border-box;
+  }
+
+  .px-#{$i} {
+    padding-left: #{$i}px;
+    padding-right: #{$i}px;
+  }
+
+  .t-#{$i} {
+    top: #{$i}px;
+  }
+  .l-#{$i} {
+    left: #{$i}px;
+  }
+  .b-#{$i} {
+    bottom: #{$i}px;
+  }
+  .r-#{$i} {
+    right: #{$i}px;
+  }
+
+  .lh-#{$i} {
+    line-height: #{$i}px;
+  }
+  .h-#{$i} {
+    height: #{$i}px;
+  }
+
+  .min-h-#{$i} {
+    min-height: #{$i}px;
+  }
+  .max-h-#{$i} {
+    max-height: #{$i}px;
+  }
+
+  .w-#{$i} {
+    width: #{$i}px;
+  }
+  .iw-#{$i} {
+    width: #{$i}px !important;
+  }
+  .fs-#{$i} {
+    font-size: #{$i}px;
+  }
+  .fw-#{$i} {
+    font-weight: #{$i};
+  }
+
+  .gap-#{$i} {
+    gap: #{$i}px;
+  }
+
+  // 查询项的行高
+  .search-form-label-lh-#{$i} {
+    .el-form-item__label {
+      line-height: #{$i}px;
+    }
+  }
+}
+
+.w-full {
+  width: 100%;
+}
+
+.iw-full {
+  width: 100% !important;
+}
+
+.h-full {
+  height: 100%;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-s-none {
+  flex-shrink: 0;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
+// flex 工具类
+@for $i from 1 through 10 {
+  .flex-#{$i} {
+    flex: $i;
+  }
+}
+
+.flex-none {
+  flex: none;
+}
+
+.flex-auto {
+  flex: auto;
+}
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+// X轴两端对齐
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+}
+
+.items-center {
+  align-items: center;
+}
+
+// X轴居中
+.flex-x-center {
+  display: flex;
+  justify-content: center;
+}
+// Y轴居中
+.flex-y-center {
+  display: flex;
+  align-items: center;
+}
+
+.inline-flex-y-center {
+  display: inline-flex;
+  align-items: center;
+}
+// X轴两端对齐，Y轴居中
+.flex-x-between-x-center {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.text-center {
+  text-align: center;
+}
+// 居中定位
+.position-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.ps-relative {
+  position: relative;
+}
+
+.ps-absolute {
+  position: absolute;
+}
+
+.ps-fixed {
+  position: fixed;
+}
+
+.inline-block {
+  display: inline-block;
+}
+
+.cursor-point {
+  cursor: pointer;
+}
+
+.overflow-auto {
+  overflow: auto;
+}
+
+.overflow-hidden {
+  overflow: hidden;
+}
+
+.overflow-y-auto {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+// ==================== 通用工具类 ====================
+
+.multi-line-ellipsis {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3; /* 显示的最大行数 */
+  overflow: hidden; /* 隐藏超出部分 */
+}
+
+.single-line-ellipsis {
+  white-space: nowrap; /* 禁止文字换行 */
+  overflow: hidden; /* 隐藏超出容器的内容 */
+  text-overflow: ellipsis; /* 超出部分显示省略号 */
+  min-width: 0;
+}
+
+.f-card-border {
+  box-shadow: 0px 1px 2px 0px rgba(10, 13, 18, 0.05);
+  border: 1px solid #ebedf0;
+  border-radius: 8px;
+  width: 100%;
+  min-width: 0; // 确保组件可以正确收缩
+
+  &.primary {
+    border: 1px solid #1677ff;
+  }
+}
+
+.reser-card-title {
+  font-weight: 600;
+  font-size: 20px;
+  color: #333333;
+  line-height: 32px;
+  display: flex;
+  align-items: center;
+  .line-height {
+    font-weight: 500;
+    font-size: 20px;
+    color: #1677ff;
+    line-height: 20px;
+  }
+}
+
+.iround-8 {
+  border-radius: 8px !important;
+}
+
+.object-contain {
+  object-fit: contain;
+}
+
+.border-left-e5e6eb {
+  border-left: 1px solid #e5e6eb;
+}
+
+.status-icon {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}

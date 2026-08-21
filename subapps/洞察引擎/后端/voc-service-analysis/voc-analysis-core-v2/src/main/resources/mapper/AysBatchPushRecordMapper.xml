@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.analysis.core.v2.mapper.AysBatchPushRecordMapper">
+
+
+
+    <select id="selectByReqeustId" parameterType="com.voc.service.analysis.core.v2.entity.AysBatchPushRecordEntity" >
+        select work_id from dws_voc2_batch_push_record
+        where reqeut_id  = #{reqeutId}
+        group by work_id
+        limit 1
+    </select>
+
+    <update id="cumulativeSum" >
+        update dws_voc2_batch_push_record
+        set received_total = received_total + cast(#{currentBatchTotal} AS INT)
+        where work_id = #{workId}
+    </update>
+
+    <update id="cumulativePreFinishedSum" >
+        update dws_voc2_batch_push_record
+        set pre_finished_data_size = pre_finished_data_size + cast(#{currentBatchTotal} AS INT)
+        where work_id = #{workId} and pre_finished_data_size + cast(#{currentBatchTotal} AS INT)&lt;=received_total
+    </update>
+
+    <update id="cumulativeModelAnalysisSum" >
+        update dws_voc2_batch_push_record
+        set model_miss_analysis_size = model_miss_analysis_size + cast(#{currentBatchTotal} AS INT)
+        where work_id = #{workId} and model_miss_analysis_size + cast(#{currentBatchTotal} AS INT)&lt;=received_total
+    </update>
+
+    <update id="cumulativePostFinishedSum" >
+        update dws_voc2_batch_push_record
+        set post_finished_data_size = post_finished_data_size + cast(#{currentBatchTotal} AS INT)
+        where work_id = #{workId} and post_finished_data_size + cast(#{currentBatchTotal} AS INT)&lt;=received_total
+    </update>
+</mapper>

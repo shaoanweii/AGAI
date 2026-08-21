@@ -1,0 +1,31 @@
+druid.mysql.usePingMethod: false
+
+spring:
+  datasource:
+    dynamic:
+      strict: false
+      datasource:
+        starrock_dndc:
+          driverClassName: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://localhost:3306/vdp_ms_td?characterEncoding=UTF-8&useUnicode=true&useSSL=false&tinyInt1isBit=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
+          username: root
+          password: root
+          hikari:
+            minimum-idle: 1
+            maximum-pool-size: 5
+        starrock_voc:
+          driverClassName: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://localhost:3306/vdp_ms_be?characterEncoding=UTF-8&useUnicode=true&useSSL=false&tinyInt1isBit=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
+          username: root
+          password: root
+          hikari:
+            minimum-idle: 1
+            maximum-pool-size: 5
+        starrocks1:
+          driverClassName: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://localhost:3306/vdp_ms_td?characterEncoding=UTF-8&useUnicode=true&useSSL=false&tinyInt1isBit=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
+          username: root
+          password: root
+          hikari:
+            minimum-idle: 1
+            maximum-pool-size: 5

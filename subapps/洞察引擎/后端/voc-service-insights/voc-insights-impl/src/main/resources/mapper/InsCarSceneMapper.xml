@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.insights.engine.mapper.InsCarSceneMapper">
+
+    <select id="findCarSceneList" resultType="com.voc.service.insights.engine.vo.InsCarSceneVo">
+        select
+            cs.id as id,
+            cs.scene_name as sceneName,
+            cs.scene_description as sceneDescription,
+            cs.synonyms as synonyms,
+            cs.status as status,
+            sd1.item_text as statusName,
+            concat(su.firstname, '-', su.employee_id) as operator,
+            cs.create_time as createTime,
+            cs.update_time as updateTime
+        from ins_car_scene cs
+        left join sys_users su on su.id = cs.update_by
+        left join (select sdi.item_text,sdi.item_value from ins_dict sd left join ins_dict_item sdi on sdi.dict_id = sd.id where sd.dict_code = 'enable_type' ) sd1 on sd1.item_value = cs.status
+        where 1 = 1
+        <if test="model.id != null and model.id != ''">
+            and cs.id = #{model.id}
+        </if>
+        <if test="model.sceneName != null and model.sceneName != ''">
+            and cs.scene_name like concat('%', #{model.sceneName}, '%')
+        </if>
+        <if test="model.sceneDescription != null and model.sceneDescription != ''">
+            and cs.scene_description like concat('%', #{model.sceneDescription}, '%')
+        </if>
+        <if test="model.synonyms != null and model.synonyms != ''">
+            and cs.synonyms like concat('%', #{model.synonyms}, '%')
+        </if>
+        <if test="model.status != null and model.status != ''">
+            and cs.status = #{model.status}
+        </if>
+        <if test="model.ids != null and model.ids.size() > 0">
+            and cs.id in
+            <foreach collection="model.ids" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="model.operator !=null and model.operator !=''">
+            and cs.update_by = #{model.operator}
+        </if>
+        <if test="model.order != null and model.order != ''">
+            order by ${model.order}
+        </if>
+        <if test="model.order == null or model.order == ''">
+            order by cs.create_time desc
+        </if>
+    </select>
+
+    <select id="findCarSceneOperatorUserIds" resultType="java.lang.String">
+        select distinct update_by
+        from ins_car_scene
+        where update_by is not null
+          and update_by != ''
+    </select>
+
+    <select id="findVisibleCarSceneOperatorList" resultType="com.voc.service.insights.engine.vo.InsCarSceneOperatorVo">
+        select distinct
+            su.id as id,
+            concat(ifnull(su.firstname, ''), '-', ifnull(su.employee_id, '')) as userName
+        from sys_credentials sc
+        left join sys_users su on sc.user_id = su.id
+        where sc.app_id = #{appId}
+        <if test="userIds != null and userIds.size() > 0">
+            and sc.user_id in
+            <foreach collection="userIds" item="userId" open="(" separator="," close=")">
+                #{userId}
+            </foreach>
+        </if>
+        order by su.firstname asc, su.employee_id asc
+    </select>
+
+    <select id="findCategoryAndDescendantIds" resultType="java.lang.String">
+        with recursive category_tree as (
+            select id, patent_id
+            from ins_car_scene_category
+            where id = #{categoryId}
+            union all
+            select c.id, c.patent_id
+            from ins_car_scene_category c
+                     inner join category_tree ct on c.patent_id = ct.id
+            where c.id != c.patent_id
+        )
+        select id
+        from category_tree
+    </select>
+
+    <select id="countSceneByCategoryIds" resultType="java.util.Map">
+        select
+            category_id as categoryId,
+            count(1) as sceneCount
+        from ins_car_scene
+        where category_id in
+        <foreach collection="categoryIds" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+        group by category_id
+    </select>
+</mapper>

@@ -1,0 +1,8 @@
+security:
+  client:
+    enabled: false
+
+application:
+  security:
+    white-list:
+      - /**

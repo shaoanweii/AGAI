@@ -1,0 +1,1 @@
+rpcCommonClientFilter=com.voc.service.security.client.sofa.filter.RpcCommonClientFilter

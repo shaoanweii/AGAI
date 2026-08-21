@@ -1,0 +1,13 @@
+server:
+  port: 8000
+
+spring:
+  cloud.nacos:
+    config:
+      enabled: false
+    discovery:
+      enabled: false
+  config:
+    location: classpath:${spring.profiles.active}/common.yml,classpath:${spring.profiles.active}/common-security-mysql.yml,classpath:${spring.profiles.active}/voc-security-redis.yml,classpath:${spring.profiles.active}/common-swagger.yml,classpath:${spring.profiles.active}/voc-security-service.yml,classpath:${spring.profiles.active}/voc-analysis-redis.yml
+
+

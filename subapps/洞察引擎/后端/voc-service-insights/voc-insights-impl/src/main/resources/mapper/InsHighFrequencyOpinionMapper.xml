@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.insights.engine.mapper.InsHighFrequencyOpinionsMapper">
+
+
+    <select id="queryPageHighFrequencyOpinionsList"
+            resultType="com.voc.service.insights.engine.model.InsOpinionsListModel">
+        with lag_date as (
+        select
+        date_sub(sd, interval abs(DATEDIFF(sd, ed)) day) psd,
+        date_sub(sd, interval 1 day) ped,
+        sd,
+        ed
+        from
+        (
+        select
+        #{model.startTime} as sd ,
+        #{model.endTime} as ed) y
+        )
+        select
+        id,
+        tag_type,
+        tag_id,
+        tag_category,
+        current_frequency,
+        allocation_status,
+        format(((cp - pp) / cp) * 100, 2 ) as seq,
+        /** 环比 **/
+        client_id,
+        channel_source,
+        normalized_opinions,
+        corresponding_opinions
+        from
+        (
+        select
+        c1.count_ as cp,
+        /** 本周期 **/
+        ifnull(c2.count_, 0 ) as pp,
+        /** 上周期 **/
+        c4.id as id,
+        c4.tag_type,
+        c4.tag_id,
+        c4.tag_category,
+        c4.current_frequency,
+        c4.allocation_status,
+        c4.corresponding_opinions,
+        c1.client_id,
+        c1.channel_source,
+        c1.normalized_opinions
+        from
+        (
+        select
+        if(sum(current_frequency) is null,
+        0,
+        sum(current_frequency)) count_,
+        client_id,
+        channel_source,
+        normalized_opinions,
+        max(update_time) as update_time,
+        max(create_time) as create_time
+        from
+        cli_high_frequency_opinions,
+        lag_date l
+        where
+        create_time between l.sd and l.ed
+        <if test="model.allocationStatus != null and model.allocationStatus != '' ">
+            and allocation_status = #{model.allocationStatus}
+        </if>
+        <if test="model.tagType != null and model.tagType != '' ">
+            and tag_type = #{model.tagType}
+        </if>
+        <if test="model.name != null and model.name != '' ">
+            and normalized_opinions like concat('%',#{model.name},'%')
+        </if>
+        group by
+        client_id,
+        channel_source,
+        normalized_opinions order by update_time desc
+        )c1
+        left join
+        (
+        select
+        if(sum(current_frequency) is null,
+        0,
+        sum(current_frequency)) count_,
+        client_id,
+        channel_source,
+        normalized_opinions
+        from
+        cli_high_frequency_opinions,
+        lag_date l
+        where
+        create_time between l.psd and l.ped
+        <if test="model.allocationStatus != null and model.allocationStatus != '' ">
+            and allocation_status = #{model.allocationStatus}
+        </if>
+        <if test="model.tagType != null and model.tagType != '' ">
+            and tag_type = #{model.tagType}
+        </if>
+        <if test="model.name != null and model.name != '' ">
+            and normalized_opinions like concat('%',#{model.name},'%')
+        </if>
+        group by
+        client_id,
+        channel_source,
+        normalized_opinions
+        )c2
+        on
+        c1.client_id = c2.client_id
+        and c1.channel_source = c2.channel_source
+        and c1.normalized_opinions = c2.normalized_opinions
+        left join
+        (
+        select
+        id,
+        tag_type,
+        tag_id,
+        tag_category,
+        current_frequency,
+        allocation_status,
+        client_id,
+        channel_source,
+        normalized_opinions,
+        corresponding_opinions,
+        update_time,
+        create_time
+        from
+        cli_high_frequency_opinions,
+        lag_date l
+        where
+        create_time between l.sd and l.ed
+        <if test="model.allocationStatus != null and model.allocationStatus != '' ">
+            and allocation_status = #{model.allocationStatus}
+        </if>
+        <if test="model.tagType != null and model.tagType != '' ">
+            and tag_type = #{model.tagType}
+        </if>
+        <if test="model.name != null and model.name != '' ">
+            and normalized_opinions like concat('%',#{model.name},'%')
+        </if>
+        )c4
+        on
+        c1.client_id = c4.client_id
+        and c1.channel_source = c4.channel_source
+        and c1.normalized_opinions = c4.normalized_opinions
+        and c1.update_time = c4.update_time
+        and c1.create_time = c4.create_time
+        ) a
+    </select>
+
+
+    <insert id="saveOrUpdateBatch">
+
+        insert into cli_high_frequency_opinions (id, client_id,
+        tag_id, tag_type, tag_category, normalized_opinions,corresponding_opinions, current_frequency,
+        system_suggested_business,
+        system_suggested_quality, channel_source, allocation_status, create_time,update_time,operate_user,operate_time
+        )
+        values
+        <foreach collection="insHighFrequencyOpinionsEntities" item="item" separator=",">
+            (
+            #{item.id},
+            #{item.clientId},
+            #{item.tagId},
+            #{item.tagType},
+            #{item.tagCategory},
+            #{item.normalizedOpinions},
+            #{item.correspondingOpinions},
+            #{item.currentFrequency},
+            #{item.systemSuggestedBusiness},
+            #{item.systemSuggestedQuality},
+            #{item.channelSource},
+            #{item.allocationStatus},
+            #{item.createTime},
+            #{item.updateTime},
+            #{item.operateUser},
+            #{item.operateTime}
+            )
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        current_frequency = values(current_frequency),
+        corresponding_opinions =values(corresponding_opinions),
+        update_time=values(update_time)
+    </insert>
+
+
+    <select id="queryAllocationRecord" resultType="com.voc.service.insights.engine.model.InsAllocationRecordModel">
+        select tag_id       as tagId,
+               tag_type     as tagType,
+               tag_category as tagCategoryName,
+               create_time  as operateTime
+        from cli_allocation_opinions_record
+        where opinions_id = #{id}
+        order by create_time desc
+    </select>
+
+
+    <select id="queryHistoryTotalFrequency" resultType="java.lang.Long">
+        select if(sum(current_frequency) is null,
+                  0,
+                  sum(current_frequency)) historyTotalFrequency
+        from cli_high_frequency_opinions
+        where normalized_opinions = #{name}
+          and client_id = #{clientId}
+          and channel_source = #{channelSource}
+        group by client_id,
+                 channel_source,
+                 normalized_opinions
+    </select>
+
+</mapper>

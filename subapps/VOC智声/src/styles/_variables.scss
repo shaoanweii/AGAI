@@ -1,0 +1,137 @@
+@use 'sass:list';
+
+/**
+ * UI 设计规范 - Design Tokens
+ * 包含品牌色、功能色、文字色、基础色、字体、间距、圆角、阴影等设计变量
+ */
+
+// ==================== 品牌色 ====================
+$brand-primary: #1677ff; // 主色
+$brand-secondary: #0b457f; // 品牌色
+
+// ==================== 功能色 ====================
+$color-error: #ff5959; // 失败提示
+$color-warning: #fab007; // 警告提示
+$color-success: #14ca64; // 成功提示
+$color-info: #1677ff; // 信息提示
+
+// 功能色/浅色版本
+$color-error-light: #ffd1c9; // 失败提示/浅
+$color-warning-light: #fef2b4; // 警告提示/浅
+$color-success-light: #b3f2c6; // 成功提示/浅
+$color-info-light: #bde2ff; // 信息提示/浅
+
+// ==================== 文字色 ====================
+$text-primary: #1f2733; // 主要文字
+$text-secondary: #5f6a7a; // 次要文字
+$text-tertiary: #929aa6; // 辅助文字
+$text-placeholder: #c9ced6; // 预设文字
+$text-link: #1677ff; // 链接文字
+$text-danger: #ff5959; // 危险文字
+$text-warning: #fab007; // 警示文字
+$text-success: #14ca64; // 成功文字
+
+// ==================== 基础色 ====================
+$border-dark: #dfe2e8; // 分割线&描边/深
+$border-regular: #ebedf0; // 分割线/常规
+// $bg-regular: #f2f4f7; // 背景色/常规
+$bg-regular: #eaf3ff; // 背景色/常规
+$bg-light: #f5f7fa; // 背景色/浅
+
+// 状态色
+$color-disabled: rgba(31, 39, 51, 0.2); // 禁用状态
+$color-mask: rgba(31, 39, 51, 0.3); // 蒙层
+
+// ==================== 中性色板 ====================
+$neutral-black: #000000;
+$neutral-900: #1f2733;
+$neutral-700: #5f6a7a;
+$neutral-500: #929aa6;
+$neutral-400: #c9ced6;
+$neutral-300: #dfe2e8;
+$neutral-200: #ebedf0;
+$neutral-100: #f2f4f7;
+$neutral-50: #f5f7fa;
+$neutral-white: #ffffff;
+
+// ==================== 图表主题色 ====================
+$chart-color-1: #1677ff;
+$chart-color-2: #0aadff;
+$chart-color-3: #28c7c7;
+$chart-color-4: #14ca64;
+$chart-color-5: #face0c;
+$chart-color-6: #fab007;
+$chart-color-7: #fe7840;
+$chart-color-8: #ff5959;
+$chart-color-9: #9772fb;
+$chart-color-10: #6675ff;
+$chart-color-11: #7298d0;
+
+// 图表色板数组
+$chart-colors: (
+  $chart-color-1,
+  $chart-color-2,
+  $chart-color-3,
+  $chart-color-4,
+  $chart-color-5,
+  $chart-color-6,
+  $chart-color-7,
+  $chart-color-8,
+  $chart-color-9,
+  $chart-color-10,
+  $chart-color-11
+);
+
+// ==================== 字体 ====================
+$font-family:
+  ui-sans-serif,
+  system-ui,
+  -apple-system,
+  BlinkMacSystemFont,
+  'Segoe UI',
+  Roboto,
+  'Helvetica Neue',
+  Arial,
+  'Noto Sans',
+  sans-serif,
+  'Apple Color Emoji',
+  'Segoe UI Emoji',
+  'Segoe UI Symbol',
+  'Noto Color Emoji';
+
+// 字号/行高
+$font-size-h1: 32px; // 一级标题
+$line-height-h1: 40px;
+$font-size-h2: 24px; // 二级标题
+$line-height-h2: 32px;
+$font-size-h3: 20px; // 三级标题
+$line-height-h3: 28px;
+$font-size-h4: 16px; // 四级标题
+$line-height-h4: 24px;
+$font-size-body: 14px; // 正文内容
+$line-height-body: 22px;
+$font-size-caption: 12px; // 次要文字
+$line-height-caption: 20px;
+
+// 字重
+$font-weight-thin: 200; // 纤细体
+$font-weight-normal: 400; // 常规体
+$font-weight-medium: 500; // 中黑体
+$font-weight-semibold: 600; // 中粗体
+
+// ==================== 圆角 ====================
+$border-radius-s: 2px; // 小圆角 - 小标签tag/小button
+$border-radius-m: 4px; // 中等圆角 - 常规button/条单/提示
+$border-radius-l: 6px; // 大圆角 - 卡片/页面模块/填充组件/气泡
+$border-radius-xl: 8px; // 超大圆角 - 卡片/页面模块/填充组件/气泡
+$border-radius-c: 50%; // 全圆角 - 全圆角Button/头像/开关
+
+// ==================== header高度 ====================
+$header-height: 84px;
+
+$menu-width: 240px;
+$menu-width-collapsed: 84px;
+
+// ==================== H5 端专用变量 ====================
+// H5 底部 Tabbar 视觉高度（不含安全区），用于统一控制底部预留空间
+$h5-tabbar-height: 50px;

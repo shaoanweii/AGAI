@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.voc.service.analysis.core.v2.mapper.AysMetaDataAnalysisMapper">
+
+
+    <!--<select id="readUnprocessedData" resultType="com.voc.service.analysis.core.v2.entity.AysMetaDataExtAnalysisEntity" >
+        with comm_data as (
+            select work_id, client_id  from voc_anal_flow_mate_data_full
+            group by work_id,client_id,content_type
+            limit 1
+        )
+        select data_id, id, f.work_id, f.client_id, f.content_type, channel_id,`data`, done, create_time
+        from voc_anal_flow_mate_data_full_v f, comm_data c
+        where   done = '0'
+          and f.work_id = c.work_id
+          and f.client_id= c.client_id
+          and f.content_type= c.content_type
+        order by create_time
+        limit ${size}
+    </select>-->
+
+   <!-- <update id="updateErrorMsgById" parameterType="com.voc.service.analysis.core.v2.entity.AysMetaDataExtAnalysisEntity">
+        UPDATE voc_anal_flow_mate_data_full
+        SET validate_message = #{validateMessage} , validate = #{validate}
+        where id = #{id}
+    </update>-->
+
+    <!--<delete id="removeHistoryData">
+        delete from voc_anal_flow_mate_data_full
+        where to_date(publish_time)  &lt;= to_date(DATE_SUB(now(), INTERVAL ${days} day))
+    </delete>-->
+
+    <!--<select id="findIincompleteData" resultType="java.lang.String" >
+        with find_1 as (
+            select data_id, work_id
+            from voc_anal_flow_mate_data_full
+            where done = '0'
+            group by data_id,work_id
+            limit 1
+        )
+        select data_id
+        from voc_anal_flow_mate_data_full_v
+        where
+            done = '0'
+        order by create_time asc
+        limit 100
+    </select>-->
+
+
+    <!--<select id="findByNewIdList" resultType="java.lang.String" >
+        select data_id
+        from voc_anal_flow_mate_data_full_v
+        where
+        <if test="newIdList != null and newIdList.size!=0 ">
+            data_id in
+            <foreach item="item" index="index" collection="newIdList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        limit 1000
+    </select>-->
+
+
+    <select id="pageMetaDataAnalysisList" resultType="com.voc.service.analysis.core.v2.entity.AysMetaDataExtAnalysisEntity" >
+        SELECT
+        data_id,
+        id,
+        work_id,
+        client_id,
+        channel_id,
+        content_type,
+        title,
+        content,
+        user_name,
+        `data`,
+        done,
+        data_status,
+        publish_time,
+        create_time,
+        ext_fields,
+        biz_ext_attrs,
+        biz_ext_attrs2,
+        biz_ext_attrs3
+        FROM
+        voc_anal_flow_mate_data_full
+        where
+        client_id = #{clientId}
+        <if test="workIdList != null and workIdList.size!=0 ">
+            and work_id in
+            <foreach item="item" index="index" collection="workIdList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="dataStatus != null and dataStatus.size!=0 ">
+            and data_status in
+            <foreach item="item" index="index" collection="dataStatus" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="startTime != null and startTime !=''">
+            and date(publish_time) BETWEEN DATE(#{startTime}) and DATE(#{endTime})
+        </if>
+        <if test="channelIdList != null and channelIdList.size !=0 ">
+            and channel_id in
+            <foreach item="item" index="index" collection="channelIdList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="showType != null and showType !=''">
+            and ext_fields -> '$.showType' = #{showType}
+        </if>
+        <if test="date != null and date !=''">
+            and date(create_time) BETWEEN DATE(#{date}) and DATE(#{date})
+        </if>
+        <if test="keywords != null and keywords !='' ">
+            and (
+            trim(biz_ext_attrs -> '$.category_1') like concat('%',#{keywords},'%')
+            or trim(biz_ext_attrs -> '$.category_2') like concat('%',#{keywords},'%')
+            or trim(biz_ext_attrs -> '$.category_3') like concat('%',#{keywords},'%')
+            or trim(biz_ext_attrs -> '$.category_4') like concat('%',#{keywords},'%')
+            or trim(biz_ext_attrs -> '$.category_5') like concat('%',#{keywords},'%')
+            or trim(biz_ext_attrs -> '$.abstract') like concat('%',#{keywords},'%')
+            or trim(biz_ext_attrs -> '$.serverorder') like concat('%',#{keywords},'%')
+            or content like concat('%',#{keywords},'%')
+            )
+        </if>
+        order by create_time desc
+    </select>
+
+
+
+    <select id="getDataResultStatus" resultType="com.voc.service.analysis.model.DataStatusModel" >
+        select
+        count(*) as num,
+        data_status as dataStatus,
+        date(create_time) as createTime
+        from
+            voc_anal_flow_mate_data_full_v
+        where
+        data_status in (-1,1,2,3)
+        and create_time is not null
+        and client_id = #{clientId}
+        and ext_fields -> '$.showType' = 2
+        group by
+        data_status,date(create_time)
+        order by createTime
+    </select>
+
+
+
+    <!--<select id="pageProjectDataAnalysisList" resultType="com.voc.service.analysis.core.v2.entity.AysMetaDataExtAnalysisEntity" >
+
+        select
+        ARRAY_AGG(car_series_name) as carSeriesName,
+        ANY_VALUE(biz_ext_attrs) as bizExtAttrs,
+        ANY_VALUE(publish_time) as publishTime,
+        ARRAY_AGG(mention_car_series) as mentionCarSeries
+        from
+        ins_ays_post_process_data
+        where
+        client_id = #{clientId} and showType ="2"
+        <if test="labelTypeList != null and labelTypeList.size!=0">
+            and label_type in
+            <foreach item="item" index="index" collection="labelTypeList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="channelIdList != null and channelIdList.size !=0 ">
+            and channel_id in
+            <foreach item="item" index="index" collection="channelIdList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="labelTypeLevelFourDisableList !=null and labelTypeLevelFourDisableList.size() >0">
+            and  label_type_level_four_code not in
+            <foreach item="item" index="index" collection="labelTypeLevelFourDisableList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="cityCodeList != null and cityCodeList.size!=0">
+            and small_area_code in
+            <foreach item="item" index="index" collection="cityCodeList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="ownCarSeries != null and ownCarSeries.size !=0 ">
+            and car_series_name in
+            <foreach item="item" index="index" collection="ownCarSeries" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="competitorsCarSeries != null and competitorsCarSeries.size !=0 ">
+            and car_series_name in
+            <foreach item="item" index="index" collection="competitorsCarSeries" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="brandCode != null and brandCode.size!=0 ">
+            and brand_code_name in
+            <foreach item="item" index="index" collection="brandCode" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="mentionCarSeriesString != null and mentionCarSeriesString !='' ">
+            and mention_car_series IS  not null and mention_car_series!="[]"
+            and  array_length(array_intersect(cast(trim(mention_car_series)  as  <![CDATA[array<STRING>]]> ) ,split(#{mentionCarSeriesString} ,','))) > 0
+        </if>
+        <if test="startTime != null and startTime !=''">
+            and date(publish_time) BETWEEN DATE(#{startTime}) and DATE(#{endTime})
+        </if>
+        <if test="keywords != null and keywords !='' ">
+            and (category_1 like concat('%',#{keywords},'%')
+            or category_2 like concat('%',#{keywords},'%')
+            or category_3 like concat('%',#{keywords},'%')
+            or category_4 like concat('%',#{keywords},'%')
+            or category_5 like concat('%',#{keywords},'%')
+            or abstract like concat('%',#{keywords},'%')
+            or trim(biz_ext_attrs -> '$.serverorder') like concat('%',#{keywords},'%')
+            or original_text_scene like concat('%',#{keywords},'%')
+            )
+        </if>
+        group by original_id order by publishTime desc
+        <if test="pageType==1">
+            limit #{pageNum},#{pageSize}
+        </if>
+    </select>-->
+
+
+
+
+
+    <!--<select id="pageProjectDataAnalysisCount" resultType="java.lang.Long" >
+        select
+        count(DISTINCT original_id)
+        from
+        ins_ays_post_process_data
+        where
+        client_id = #{clientId} and showType="2"
+        <if test="labelTypeList != null and labelTypeList.size!=0">
+            and label_type in
+            <foreach item="item" index="index" collection="labelTypeList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="channelIdList != null and channelIdList.size !=0 ">
+            and channel_id in
+            <foreach item="item" index="index" collection="channelIdList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="labelTypeLevelFourDisableList !=null and labelTypeLevelFourDisableList.size() >0">
+            and  label_type_level_four_code not in
+            <foreach item="item" index="index" collection="labelTypeLevelFourDisableList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="cityCodeList != null and cityCodeList.size!=0">
+            and small_area_code in
+            <foreach item="item" index="index" collection="cityCodeList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="ownCarSeries != null and ownCarSeries.size !=0 ">
+            and car_series_name in
+            <foreach item="item" index="index" collection="ownCarSeries" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="competitorsCarSeries != null and competitorsCarSeries.size !=0 ">
+            and car_series_name in
+            <foreach item="item" index="index" collection="competitorsCarSeries" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="brandCode != null and brandCode.size!=0 ">
+            and brand_code_name in
+            <foreach item="item" index="index" collection="brandCode" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="mentionCarSeriesString != null and mentionCarSeriesString !='' ">
+            and mention_car_series IS  not null and mention_car_series!="[]"
+            and array_length(array_intersect(cast(trim(mention_car_series)  as  <![CDATA[array<STRING>]]> ) ,split(#{mentionCarSeriesString} ,','))) > 0
+        </if>
+        <if test="startTime != null and startTime !=''">
+            and date(publish_time) BETWEEN DATE(#{startTime}) and DATE(#{endTime})
+        </if>
+        <if test="keywords != null and keywords !='' ">
+            and (category_1 like concat('%',#{keywords},'%')
+            or category_2 like concat('%',#{keywords},'%')
+            or category_3 like concat('%',#{keywords},'%')
+            or category_4 like concat('%',#{keywords},'%')
+            or category_5 like concat('%',#{keywords},'%')
+            or abstract like concat('%',#{keywords},'%')
+            or trim(biz_ext_attrs -> '$.serverorder') like concat('%',#{keywords},'%')
+            or original_text_scene like concat('%',#{keywords},'%')
+            )
+        </if>
+    </select>-->
+    <!--<select id="checkData" resultType="java.lang.Long">
+        select count(*) from voc_anal_flow_mate_data_full
+        where  date(publish_time) &lt; date_sub(date(now()),#{days})
+    </select>
+    <select id="checkHistoryData" resultType="java.lang.Long">
+        select count(*) from ays_meta_data_analysis_history
+        where date(back_time) = date(now())
+    </select>
+    <select id="moveToHistoryData"  >
+        insert into ays_meta_data_analysis_history(new_id, id, work_id, one_id, client_id, channel_id, content_type, title, content, user_name, `data`, done, data_status, model_type, ext_fields, biz_ext_attrs, biz_ext_attrs2, biz_ext_attrs3, publish_time, create_time)
+        select new_id, id, work_id, one_id, client_id, channel_id, content_type, title, content, user_name, `data`, done, data_status, model_type, ext_fields, biz_ext_attrs, biz_ext_attrs2, biz_ext_attrs3, publish_time, create_time
+        from voc_anal_flow_mate_data_full
+        where date(publish_time ) &lt; date_sub(date(now()), #{days})
+    </select>
+    <select id="deleteHistoryData"  >
+        delete from voc_anal_flow_mate_data_full
+        where date(publish_time) &lt; date_sub(date(now()),#{days})
+    </select>
+
+    <update id="updateBatch">
+        <foreach collection="entities" item="item" index="index" separator=";">
+            UPDATE voc_anal_flow_mate_data_full
+            SET
+            done = #{item.done},
+            data_status = #{item.dataStatus}
+            WHERE new_id = #{item.newId}
+        </foreach>
+    </update>
+
+    &lt;!&ndash; 批量更新数据状态 &ndash;&gt;
+    <update id="batchUpdateDataStatus">
+        UPDATE voc_anal_flow_mate_data_full
+        SET data_status = #{status}
+        WHERE data_id IN
+        <foreach collection="dataIds" item="dataId" open="(" separator="," close=")">
+            #{dataId}
+        </foreach>
+    </update>-->
+</mapper>

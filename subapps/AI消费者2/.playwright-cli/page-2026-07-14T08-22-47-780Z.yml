@@ -1,0 +1,395 @@
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - complementary [ref=e4]:
+      - generic [ref=e5]:
+        - img "AI消费者洞察平台" [ref=e6]
+        - generic [ref=e7]:
+          - strong [ref=e8]: AI消费者洞察平台
+          - generic [ref=e9]: Consumer Insight OS
+      - navigation [ref=e10]:
+        - generic [ref=e11]:
+          - button "模拟问答" [ref=e12] [cursor=pointer]
+          - button "消费调研" [ref=e16] [cursor=pointer]
+        - generic [ref=e20]:
+          - generic [ref=e21]: 数据资产
+          - button "消费者库" [ref=e22] [cursor=pointer]
+          - button "调研场景" [ref=e27] [cursor=pointer]
+          - button "标签体系" [ref=e31] [cursor=pointer]
+          - button "用户数据" [ref=e36] [cursor=pointer]
+        - generic [ref=e41]:
+          - generic [ref=e42]: 问答记录
+          - generic [ref=e43]:
+            - button "20万定价接受度追问" [ref=e44] [cursor=pointer]
+            - button "后排娱乐屏必要性" [ref=e50] [cursor=pointer]
+            - button "智能座舱卖点验证" [ref=e56] [cursor=pointer]
+            - button "18.5万价格下探" [ref=e62] [cursor=pointer]
+      - generic [ref=e68]:
+        - generic [ref=e69]:
+          - generic [ref=e70]: 李
+          - generic [ref=e71]:
+            - strong [ref=e72]: 李建秋
+            - generic [ref=e73]: 产品经理
+        - button "系统设置" [ref=e74] [cursor=pointer]
+    - main [ref=e78]:
+      - generic [ref=e81]:
+        - generic [ref=e82]:
+          - heading "消费调研" [level=2] [ref=e83]
+          - generic [ref=e84]:
+            - tablist "任务状态筛选" [ref=e85]:
+              - button "全部" [ref=e86] [cursor=pointer]
+              - button "已完成" [ref=e87] [cursor=pointer]
+              - button "进行中" [ref=e88] [cursor=pointer]
+              - button "未开始" [ref=e89] [cursor=pointer]
+            - button "新建调研" [ref=e91] [cursor=pointer]
+        - generic [ref=e93]:
+          - generic [ref=e94]:
+            - generic [ref=e95]: 任务编号
+            - generic [ref=e96]: 任务名称
+            - generic [ref=e97]: 调研场景
+            - generic [ref=e98]: 消费者
+            - generic [ref=e99]: 创建人
+            - generic [ref=e100]: 创建时间
+            - generic [ref=e101]: 任务状态
+            - generic [ref=e102]: 操作
+          - generic [ref=e103]:
+            - article [ref=e104]:
+              - generic [ref=e105]: T-240718-001
+              - strong [ref=e106]: 2025款 智行 Compact EV SUV · 造型方向验证
+              - generic [ref=e107]: 造型方向验证
+              - generic [ref=e108]: 25-35岁新能源潜客
+              - generic [ref=e109]: 张明
+              - generic [ref=e110]: 今天 11:20
+              - generic [ref=e111]: 已完成
+              - generic [ref=e114]:
+                - button "查看报告" [ref=e115] [cursor=pointer]
+                - button "删除" [ref=e116] [cursor=pointer]
+            - article [ref=e117]:
+              - generic [ref=e118]: T-240718-002
+              - strong [ref=e119]: 中配版配置组合偏好测试
+              - generic [ref=e120]: 配置偏好验证
+              - generic [ref=e121]: 家庭首购换购人群
+              - generic [ref=e122]: 李倩
+              - generic [ref=e123]: 今天 10:06
+              - generic [ref=e124]: 进行中
+              - button "中止任务" [ref=e128] [cursor=pointer]
+            - article [ref=e129]:
+              - generic [ref=e130]: T-240717-009
+              - strong [ref=e131]: 上市前购买意愿与市占预测
+              - generic [ref=e132]: 购买意愿与市占预测
+              - generic [ref=e133]: 中高消费新能源潜客
+              - generic [ref=e134]: 王珂
+              - generic [ref=e135]: 昨天 18:42
+              - generic [ref=e136]: 已完成
+              - generic [ref=e139]:
+                - button "查看报告" [ref=e140] [cursor=pointer]
+                - button "删除" [ref=e141] [cursor=pointer]
+            - article [ref=e142]:
+              - generic [ref=e143]: T-240716-004
+              - strong [ref=e144]: 20万价格点敏感度复测
+              - generic [ref=e145]: 价格敏感度与定价优化
+              - generic [ref=e146]: 待配置
+              - generic [ref=e147]: 赵宁
+              - generic [ref=e148]: 昨天 15:30
+              - generic [ref=e149]: 未开始
+              - generic [ref=e152]:
+                - button "开始任务" [ref=e153] [cursor=pointer]
+                - button "编辑" [ref=e154] [cursor=pointer]
+                - button "删除" [ref=e155] [cursor=pointer]
+            - article [ref=e156]:
+              - generic [ref=e157]: T-240716-003
+              - strong [ref=e158]: 前脸贯穿灯带接受度复核
+              - generic [ref=e159]: 造型方向验证
+              - generic [ref=e160]: 科技尝鲜者
+              - generic [ref=e161]: 陈露
+              - generic [ref=e162]: 07-16 14:12
+              - generic [ref=e163]: 已完成
+              - generic [ref=e166]:
+                - button "查看报告" [ref=e167] [cursor=pointer]
+                - button "删除" [ref=e168] [cursor=pointer]
+            - article [ref=e169]:
+              - generic [ref=e170]: T-240715-011
+              - strong [ref=e171]: 后排娱乐屏选装价值评估
+              - generic [ref=e172]: 配置偏好验证
+              - generic [ref=e173]: 有孩家庭用户
+              - generic [ref=e174]: 周航
+              - generic [ref=e175]: 07-15 17:36
+              - generic [ref=e176]: 已完成
+              - generic [ref=e179]:
+                - button "查看报告" [ref=e180] [cursor=pointer]
+                - button "删除" [ref=e181] [cursor=pointer]
+            - article [ref=e182]:
+              - generic [ref=e183]: T-240715-006
+              - strong [ref=e184]: 18.5万价格点购买概率测试
+              - generic [ref=e185]: 价格敏感度与定价优化
+              - generic [ref=e186]: 预算15-25万潜客
+              - generic [ref=e187]: 赵宁
+              - generic [ref=e188]: 07-15 12:08
+              - generic [ref=e189]: 已完成
+              - generic [ref=e192]:
+                - button "查看报告" [ref=e193] [cursor=pointer]
+                - button "删除" [ref=e194] [cursor=pointer]
+            - article [ref=e195]:
+              - generic [ref=e196]: T-240714-014
+              - strong [ref=e197]: 智能座舱卖点吸引力测试
+              - generic [ref=e198]: 购买意愿与市占预测
+              - generic [ref=e199]: 汽车垂媒高活跃
+              - generic [ref=e200]: 王珂
+              - generic [ref=e201]: 07-14 19:20
+              - generic [ref=e202]: 进行中
+              - button "中止任务" [ref=e206] [cursor=pointer]
+            - article [ref=e207]:
+              - generic [ref=e208]: T-240714-008
+              - strong [ref=e209]: 悬浮式车顶审美分层分析
+              - generic [ref=e210]: 造型方向验证
+              - generic [ref=e211]: 一线城市年轻用户
+              - generic [ref=e212]: 陈露
+              - generic [ref=e213]: 07-14 10:46
+              - generic [ref=e214]: 已完成
+              - generic [ref=e217]:
+                - button "查看报告" [ref=e218] [cursor=pointer]
+                - button "删除" [ref=e219] [cursor=pointer]
+            - article [ref=e220]:
+              - generic [ref=e221]: T-240713-017
+              - strong [ref=e222]: 基础版配置减配风险评估
+              - generic [ref=e223]: 配置偏好验证
+              - generic [ref=e224]: 首次购车用户
+              - generic [ref=e225]: 李倩
+              - generic [ref=e226]: 07-13 16:24
+              - generic [ref=e227]: 未开始
+              - generic [ref=e230]:
+                - button "开始任务" [ref=e231] [cursor=pointer]
+                - button "编辑" [ref=e232] [cursor=pointer]
+                - button "删除" [ref=e233] [cursor=pointer]
+          - generic [ref=e234]:
+            - generic [ref=e235]: 共 20 条，每页 10 条
+            - generic [ref=e236]:
+              - button "上一页" [disabled] [ref=e237]
+              - button "1" [ref=e238] [cursor=pointer]
+              - button "2" [ref=e239] [cursor=pointer]
+              - button "下一页" [ref=e240] [cursor=pointer]
+      - generic [ref=e242]:
+        - generic [ref=e243]:
+          - generic [ref=e244]:
+            - strong [ref=e245]: 车型X 外观造型验证研究（定量调研）
+            - generic [ref=e246]: 报告编号：R-20240518-001 样本量：1,206 研究时间：2024.05.10 – 2024.05.16
+          - navigation [ref=e247]:
+            - button "概览" [ref=e248] [cursor=pointer]
+            - button "消费者画像" [ref=e249] [cursor=pointer]
+            - button "归因路径" [ref=e250] [cursor=pointer]
+          - button "校准优化" [active] [ref=e251] [cursor=pointer]
+          - button "导出报告" [ref=e253] [cursor=pointer]
+          - button "关闭" [ref=e257] [cursor=pointer]
+        - complementary [ref=e261]:
+          - generic [ref=e262]:
+            - generic [ref=e263]:
+              - paragraph [ref=e269]:
+                - strong [ref=e270]: 建议延续
+                - generic [ref=e271]: 保留贯穿式灯带、运动前脸和低趴姿态，强化已形成的造型识别资产。
+              - paragraph [ref=e276]:
+                - strong [ref=e277]: 重点优化
+                - generic [ref=e278]: 提升尾灯与后保险杠的精致度，降低尾部视觉厚重感。
+              - paragraph [ref=e283]:
+                - strong [ref=e284]: 验证动作
+                - generic [ref=e285]: 量产冻结前补充尾部 A/B 方案与 18–35 岁核心客群复测。
+            - generic [ref=e286]:
+              - heading "总体评价 (Overall Favorability)" [level=3] [ref=e287]
+              - generic [ref=e288]:
+                - generic [ref=e289]:
+                  - application [ref=e292]
+                  - generic [ref=e293]:
+                    - strong [ref=e294]: 76%
+                    - generic [ref=e295]: 总体喜爱度
+                - generic [ref=e296]:
+                  - strong [ref=e297]: 结论：整体造型获得较高认可，符合目标人群审美偏好。
+                  - paragraph [ref=e298]: 76%的受访者对车型X的外观造型表示喜欢（Top2 Box），其中“非常喜欢”占比22%，“比较喜欢”占比54%。负向评价（不喜欢）占比12%，中立占比12%。
+            - generic [ref=e299]:
+              - heading "关键指标（与基准车型对比）" [level=3] [ref=e300]
+              - generic [ref=e301]:
+                - generic [ref=e302]:
+                  - generic [ref=e303]: 总体喜爱度
+                  - strong [ref=e304]: 76%
+                  - emphasis [ref=e305]:
+                    - text: vs 基准
+                    - generic [ref=e306]: +7pp ▲
+                - generic [ref=e307]:
+                  - generic [ref=e308]: 独特性
+                  - strong [ref=e309]: 68%
+                  - emphasis [ref=e310]:
+                    - text: vs 基准
+                    - generic [ref=e311]: +10pp ▲
+                - generic [ref=e312]:
+                  - generic [ref=e313]: 动感
+                  - strong [ref=e314]: 72%
+                  - emphasis [ref=e315]:
+                    - text: vs 基准
+                    - generic [ref=e316]: +8pp ▲
+                - generic [ref=e317]:
+                  - generic [ref=e318]: 精致感
+                  - strong [ref=e319]: 70%
+                  - emphasis [ref=e320]:
+                    - text: vs 基准
+                    - generic [ref=e321]: +6pp ▲
+                - generic [ref=e322]:
+                  - generic [ref=e323]: 高级感
+                  - strong [ref=e324]: 65%
+                  - emphasis [ref=e325]:
+                    - text: vs 基准
+                    - generic [ref=e326]: +5pp ▲
+                - generic [ref=e327]:
+                  - generic [ref=e328]: 购买意向
+                  - strong [ref=e329]: 61%
+                  - emphasis [ref=e330]:
+                    - text: vs 基准
+                    - generic [ref=e331]: +7pp ▲
+            - generic [ref=e332]:
+              - generic [ref=e333]:
+                - heading "总体喜爱度分布" [level=3] [ref=e334]
+                - strong [ref=e335]: Top2 Box（喜欢）76%
+              - generic [ref=e336]:
+                - generic [ref=e337]: 22%
+                - generic [ref=e338]: 54%
+                - generic [ref=e339]: 12%
+                - generic [ref=e340]: 8%
+                - generic [ref=e341]: 4%
+              - generic [ref=e342]:
+                - generic [ref=e343]: 非常喜欢（5分）
+                - generic [ref=e345]: 比较喜欢（4分）
+                - generic [ref=e347]: 一般（3分）
+                - generic [ref=e349]: 不太喜欢（2分）
+                - generic [ref=e351]: 非常不喜欢（1分）
+            - generic [ref=e353]:
+              - generic [ref=e354]:
+                - heading "人群对比 （与体喜爱度 Top2 Box %）" [level=3] [ref=e355]
+                - generic [ref=e356]:
+                  - button "按人群维度" [ref=e357] [cursor=pointer]
+                  - button "按年龄段" [ref=e358] [cursor=pointer]
+              - application [ref=e361]:
+                - generic [ref=e416]:
+                  - generic [ref=e417]:
+                    - generic [ref=e418]: 总体
+                    - generic [ref=e420]: 男性
+                    - generic [ref=e422]: 女性
+                    - generic [ref=e424]: 18-25岁
+                    - generic [ref=e426]: 26-35岁
+                    - generic [ref=e428]: 36-45岁
+                    - generic [ref=e430]: 一线城市
+                    - generic [ref=e432]: 新一线城市
+                    - generic [ref=e434]: 二线城市
+                    - generic [ref=e436]: 三线及以下
+                  - generic [ref=e438]:
+                    - generic [ref=e439]: 0%
+                    - generic [ref=e441]: 25%
+                    - generic [ref=e443]: 50%
+                    - generic [ref=e445]: 75%
+                    - generic [ref=e447]: 100%
+            - generic [ref=e449]:
+              - heading "造型维度评价 （Top2 Box %）" [level=3] [ref=e450]
+              - application [ref=e453]:
+                - generic [ref=e665]:
+                  - generic [ref=e666]: 动感 72%
+                  - generic [ref=e668]: 独特性 68%
+                  - generic [ref=e671]: 精致感 70%
+                  - generic [ref=e674]: 高级感 65%
+                  - generic [ref=e676]: 力量感 69%
+                  - generic [ref=e679]: 协调性 75%
+            - generic [ref=e486]:
+              - heading "消费者原声（节选）" [level=3] [ref=e487]
+              - generic [ref=e488]:
+                - generic [ref=e489]:
+                  - generic [ref=e490]: 评价方向
+                  - generic [ref=e491]: 原声评论
+                  - generic [ref=e492]: 情感倾向
+                  - generic [ref=e493]: 占比
+                - generic [ref=e494]:
+                  - generic [ref=e495]: 整体造型
+                  - generic [ref=e496]: 整体比例很协调，看起来很舒服，符合我的审美。
+                  - generic [ref=e497]: 正向
+                  - generic [ref=e498]: 18%
+                - generic [ref=e499]:
+                  - generic [ref=e500]: 前脸设计
+                  - generic [ref=e501]: 前脸很有辨识度，大灯造型很犀利，喜欢这种感觉。
+                  - generic [ref=e502]: 正向
+                  - generic [ref=e503]: 16%
+                - generic [ref=e504]:
+                  - generic [ref=e505]: 侧面线条
+                  - generic [ref=e506]: 侧面的腰线很流畅，显得车身修长有动感。
+                  - generic [ref=e507]: 正向
+                  - generic [ref=e508]: 14%
+                - generic [ref=e509]:
+                  - generic [ref=e510]: 尾部设计
+                  - generic [ref=e511]: 尾灯造型一般，感觉不够精致，希望能再优化。
+                  - generic [ref=e512]: 负向
+                  - generic [ref=e513]: 9%
+                - generic [ref=e514]:
+                  - generic [ref=e515]: 细节质感
+                  - generic [ref=e516]: 细节处理还可以再提升，比如轮毂设计有点普通。
+                  - generic [ref=e517]: 中性
+                  - generic [ref=e518]: 8%
+            - generic [ref=e519]: 注：基准车型为竞品A，行业均值来自本平台同级别车型研究数据库（2023–2024）
+      - region "校准优化" [ref=e683]:
+        - generic [ref=e684]:
+          - generic [ref=e685]:
+            - strong [ref=e686]: 校准优化
+            - generic [ref=e687]: 2025款 智行 Compact EV SUV · 造型方向验证 · 仅作用于当前调研任务
+          - button "关闭校准优化" [ref=e688] [cursor=pointer]
+        - generic [ref=e692]:
+          - generic [ref=e693]:
+            - generic [ref=e694]:
+              - strong [ref=e695]: 上传真实反馈数据
+              - generic [ref=e696]: 读取后展示当前任务的反馈结果，并由你选择可作为校准依据的证据。
+            - generic [ref=e697] [cursor=pointer]: 上传数据
+          - generic [ref=e701]:
+            - generic [ref=e702]:
+              - generic [ref=e704]:
+                - strong [ref=e705]: 真实反馈结果
+                - generic [ref=e706]: 请先上传当前任务的真实反馈数据
+              - generic [ref=e707]:
+                - strong [ref=e711]: 上传后展示真实反馈结果
+                - generic [ref=e712]: 支持 JSON 或 CSV；建议包含：反馈内容、来源、问题、样本画像。
+                - generic [ref=e713] [cursor=pointer]: 上传反馈数据
+            - generic [ref=e717]:
+              - generic [ref=e718]:
+                - generic [ref=e719]:
+                  - strong [ref=e720]: 校准指令
+                  - generic [ref=e721]: 让洞察更贴近真实消费者认知
+                - generic [ref=e722]: 0 条证据已引用
+              - generic [ref=e723]:
+                - generic [ref=e724]:
+                  - text: 期望调整
+                  - emphasis [ref=e725]: "*"
+                - textbox "期望调整 * 0/200" [ref=e726]:
+                  - /placeholder: 选择真实反馈后，填写希望校准的洞察判断…
+                - generic: 0/200
+              - generic [ref=e727]:
+                - generic [ref=e728]: 当前任务消费者
+                - generic [ref=e729]:
+                  - generic [ref=e730]: 25-35岁新能源潜客
+                  - generic [ref=e731]: 任务样本 1,258 人
+                - generic: 从当前调研任务继承，不支持在校准时另行圈选。
+              - generic [ref=e732]:
+                - generic [ref=e733]:
+                  - text: 约束条件
+                  - emphasis [ref=e734]: "*"
+                - textbox "约束条件 * 0/200" [ref=e735]
+                - generic: 0/200
+              - generic [ref=e736]:
+                - strong [ref=e737]: 校准依据与影响范围
+                - generic [ref=e738]:
+                  - generic [ref=e739]: 依据数据
+                  - paragraph [ref=e740]: 请先上传并引用真实反馈；系统不会基于预置示例生成修改建议。
+                - generic [ref=e741]:
+                  - generic [ref=e742]: 影响对象
+                  - paragraph [ref=e743]: 仅重新计算当前任务「25-35岁新能源潜客」的报告洞察、归因结论与问答生成口径。
+                - generic [ref=e744]:
+                  - generic [ref=e745]: 不影响
+                  - paragraph [ref=e746]: 不会修改用户数据、标签体系、消费者模板或其他调研任务。
+              - generic [ref=e747]:
+                - generic [ref=e748]:
+                  - text: 指令备注
+                  - emphasis [ref=e749]: （可选）
+                - textbox "指令备注 （可选）" [ref=e750]:
+                  - /placeholder: 选填，补充说明该指令的背景或适用场景…
+              - generic [ref=e751]:
+                - button "保存草稿" [disabled] [ref=e752] [cursor=pointer]
+                - button "生成并验证校准版本" [disabled] [ref=e753]
+  - generic [ref=e520]: 0%
